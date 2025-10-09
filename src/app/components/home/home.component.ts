@@ -9,6 +9,7 @@ import { HomeService, AnnonceResponse, Company, AdResponse } from '../../../serv
 import { SecteurService, Country, SecteurResponse } from '../../../services/secteur.service';
 import { PartenaireService, Partenaire } from '../../../services/partenaire.service';
 import { Subscription } from 'rxjs';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 interface MembreDisplay {
   id: number;
@@ -260,7 +261,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private languageService: LanguageService,
     private homeService: HomeService,
     private secteurService: SecteurService,
-    private partenaireService: PartenaireService
+    private partenaireService: PartenaireService,
+    private sanitizer: DomSanitizer,
   ) { }
 
   ngOnInit(): void {
@@ -730,6 +732,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   get currentSlide() {
     return this.heroSlides[this.currentSlideIndex];
   }
+  getMailLink(email: string): SafeUrl {
+    const mailto = `mailto:${email}?subject=Contact%20depuis%20AmCham&body=Bonjour,%0AJe%20vous%20contacte%20depuis%20la%20plateforme%20AmCham.`;
+    return this.sanitizer.bypassSecurityTrustUrl(mailto);
+  }
+
 
   navigateToMembres() {
     this.router.navigate(['/membres']);

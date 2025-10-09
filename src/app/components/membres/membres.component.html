@@ -106,7 +106,7 @@
 
          
               <div class="flex items-center">
-                <div class="flex-shrink-0 h-12 w-12 rounded-lg overflow-hidden">
+                <div class="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden">
                   <img [src]=" 'https://wakana.online/repertoire_amchams/'+ membre.logo" [alt]="" class="h-full w-full object-cover">
                 </div>
             
@@ -172,13 +172,13 @@
 
                 <!-- Status Toggle -->
                 <button 
-                  class="relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  class="relative inline-flex flex-shrink-0 h-4 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         [ngClass]="{
-                          'bg-blue-600': membre.statut === 'Actif' || membre.statut === 'Active',
+                          'bg-slate-800 ': membre.statut === 'Actif' || membre.statut === 'Active',
                           'bg-gray-200': membre.statut !== 'Actif' && membre.statut !== 'Active'
                         }"
                         (click)="toggleMemberStatus(membre)">
-                  <span class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                  <span class="pointer-events-none inline-block h-3 w-3 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
                         [ngClass]="{
                           'translate-x-5': membre.statut === 'Actif' || membre.statut === 'Active',
                           'translate-x-0': membre.statut !== 'Actif' && membre.statut !== 'Active'

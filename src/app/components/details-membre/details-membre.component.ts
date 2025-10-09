@@ -6,7 +6,7 @@ import { HeaderComponent } from "../header/header.component";
 import { LanguageService } from '../../../services/language.service';
 import { CompanyService, Company, CompanySchedule, Ratings } from '../../../services/company.service';
 import { HomeService, Company as HomeCompany } from '../../../services/home.service';
-import { Subject, Subscription, forkJoin, switchMap, takeUntil } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 interface MembreDisplay {
@@ -26,12 +26,13 @@ interface MembreDisplay {
   email?: string;
   country?: string;
   countryAmcham?: string;
+  city?: string; 
 }
 
 @Component({
   selector: 'app-details-membre',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent,],
+  imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './details-membre.component.html',
   styleUrls: ['./details-membre.component.css']
 })
@@ -49,7 +50,6 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
   membresSimilaires: MembreDisplay[] = [];
   isLoading = true;
   mapUrl: SafeResourceUrl | null = null;
-   private destroy$ = new Subject<void>();
 
   certificationsSimules = [
     'ISO 9001:2015',
@@ -162,50 +162,15 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
     private languageService: LanguageService,
     private companyService: CompanyService,
     private homeService: HomeService,
-    private sanitizer: DomSanitizer,
-    
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
-        window.scrollTo(0, 0);
-
-    this.route.params
-  .pipe(
-    switchMap(params => {
-      this.membreId = +params['id'];
-      this.isLoading = true;
-      return forkJoin({
-        company: this.companyService.getCompanyById(this.membreId),
-        schedules: this.companyService.getHoraire(this.membreId),
-        ratings: this.companyService.getRatings(this.membreId) // ajouté ici
-      });
-    }),
-    takeUntil(this.destroy$)
-  )
-  .subscribe({
-    next: ({ company, schedules, ratings }) => {
-      this.membre = company;
-      this.horaires = schedules;
-      this.ratings = ratings;
-      this.isLoading = false;
-
-      this.loadMembresSimilaires();
-      this.initializeMap();
-      // gérer le carousel ratings ici
-    },
-    error: () => {
-      this.isLoading = false;
-    }
-  });
-
-  this.langSubscription = this.languageService.currentLang$.subscribe(lang => {
-    this.currentLang = lang;
-  });
-    /*this.route.params.subscribe(params => {
+    this.route.params.subscribe(params => {
       this.membreId = +params['id'];
       this.loadMembreDetails();
-      
-    });*/
+      this.loadMembresSimilaires();
+    });
 
     this.langSubscription = this.languageService.currentLang$.subscribe(lang => {
       this.currentLang = lang;
@@ -215,184 +180,61 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-     this.destroy$.next();
-    this.destroy$.complete();
     if (this.langSubscription) {
       this.langSubscription.unsubscribe();
     }
     if (this.ratingInterval) {
       clearInterval(this.ratingInterval);
     }
-    
-      // supprimer l'iframe pour éviter historique interne
-  const iframe = document.querySelector('iframe');
-  if (iframe) iframe.src = ''
   }
-  
-  // 🔥 VERSION AVEC DONNÉES PAR DÉFAUT
-private loadRatings() {
-  this.companyService.getRatings(this.membreId)
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
-      next: (ratings) => {
-        // 🔥 Si pas de ratings, utiliser des données par défaut
-        if (!ratings || ratings.length === 0) {
-          this.ratings = [this.createDefaultRating()];
-        } else {
-          this.ratings = ratings;
-        }
-        
-        this.setupCarousel();
-        
-        // Démarrer le carrousel
-        if (this.ratings.length > 0) {
-          this.startRatingCarousel();
-        }
-      },
-      error: () => {
-        // 🔥 En cas d'erreur, utiliser des données par défaut
-        this.ratings = [this.createDefaultRating()];
-        this.setupCarousel();
-        this.startRatingCarousel();
-      }
-    });
-}
 
-// 🔥 CONFIGURATION DU CARROUSEL
-private setupCarousel() {
-  const ratingsCount = this.ratings.length;
-  
-  if (ratingsCount === 0) {
-    this.displayedRatings = [];
-    return;
-  }
-  
-  if (ratingsCount === 1) {
-    // Pour 1 seul rating, créer un cycle fluide [A, A, A]
-    this.displayedRatings = Array(3).fill(this.ratings[0]);
-    this.currentRatingIndex = 1;
-  }
-  else if (ratingsCount === 2) {
-    // Pour 2 ratings, cycle [B, A, B, A, B]
-    this.displayedRatings = [
-      this.ratings[1], this.ratings[0], 
-      this.ratings[1], this.ratings[0], 
-      this.ratings[1]
-    ];
-    this.currentRatingIndex = 2;
-  }
-  else {
-    // Pour 3+ ratings, carrousel infini classique
-    this.displayedRatings = [
-      ...this.ratings.slice(-1), // Dernier
-      ...this.ratings,           // Tous
-      ...this.ratings.slice(0, 1) // Premier
-    ];
-    this.currentRatingIndex = 1;
-  }
-}
-
-// 🔥 CRÉER UN RATING PAR DÉFAUT
-private createDefaultRating(): any {
-  const defaultTexts = {
-    fr: "Soyez le premier à laisser un avis sur cette entreprise !",
-    en: "Be the first to review this company!"
-  };
-  
-  return {
-    id: 0,
-    score: 5,
-    comment: defaultTexts[this.currentLang as 'fr' | 'en'],
-    author: this.currentLang === 'fr' ? 'Aucun avis' : 'No reviews',
-    date: new Date().toISOString()
-  };
-}
-
-nextRating() {
-  if (this.displayedRatings.length === 0) return;
-  
-  // 🔥 CORRECTION : Logique de carrousel infini
-  this.currentRatingIndex++;
-  
-  // Si on arrive à la fin du tableau étendu, revenir au début sans transition
-  if (this.currentRatingIndex >= this.displayedRatings.length - 1) {
-    setTimeout(() => {
-      this.noTransition = true;
-      this.currentRatingIndex = 1;
-      setTimeout(() => {
-        this.noTransition = false;
-      }, 50);
-    }, 0);
-  }
-}
-
-// 🔥 CORRECTION : Méthode pour obtenir le dot actif
-getActiveDot(): number {
-  if (this.ratings.length === 0) return 0;
-  
-  const totalRealRatings = this.ratings.length;
-  const displayIndex = this.currentRatingIndex;
-  
-  // Calculer l'index réel en fonction de la configuration
-  if (totalRealRatings === 1) {
-    return 0; // Toujours le premier et seul dot
-  }
-  else if (totalRealRatings === 2) {
-    return (displayIndex - 1) % 2;
-  }
-  else {
-    return (displayIndex - 1) % totalRealRatings;
-  }
-}
-
-   loadMembreDetails() {
-  /*  this.isLoading = true;
-
+  loadMembreDetails() {
+    this.isLoading = true;
     forkJoin({
       company: this.companyService.getCompanyById(this.membreId),
       schedules: this.companyService.getHoraire(this.membreId)
-    })
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
+    }).subscribe({
       next: ({ company, schedules }) => {
         this.membre = company;
+        console.log('Données du membre:', this.membre);
         this.horaires = schedules;
         this.isLoading = false;
-        this.loadMembresSimilaires();
+
+        // Initialiser la carte après avoir chargé les données du membre
         this.initializeMap();
 
-        this.companyService.getRatings(this.membreId)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: (ratings) => {
-              this.ratings = ratings;
-              if (this.ratings.length < 3) {
-                while (this.ratings.length < 3) {
-                  this.ratings = [...this.ratings, ...this.ratings.slice(0, 3 - this.ratings.length)];
-                }
-                this.displayedRatings = this.ratings;
-              } else {
-                this.displayedRatings = [
-                  ...this.ratings.slice(-2),
-                  ...this.ratings,
-                  ...this.ratings.slice(0, 2)
-                ];
-                this.currentRatingIndex = 2;
-                this.startRatingCarousel();
+        this.companyService.getRatings(this.membreId).subscribe({
+          next: (ratings) => {
+            this.ratings = ratings;
+            if (this.ratings.length < 3) {
+              while (this.ratings.length < 3) {
+                this.ratings = [...this.ratings, ...this.ratings.slice(0, 3 - this.ratings.length)];
               }
-            },
-            error: () => {
-              this.ratings = [];
-              this.displayedRatings = [];
+              this.displayedRatings = this.ratings;
+            } else {
+              this.displayedRatings = [
+                ...this.ratings.slice(-2),
+                ...this.ratings,
+                ...this.ratings.slice(0, 2)
+              ];
+              this.currentRatingIndex = 2;
+              this.startRatingCarousel();
             }
-          });
+          },
+          error: (error) => {
+            console.warn('Aucun rating disponible pour cette entreprise', error);
+            this.ratings = [];
+            this.displayedRatings = [];
+          }
+        });
       },
-      error: () => {
+      error: (error) => {
+        console.error('Erreur lors du chargement des données du membre:', error);
         this.isLoading = false;
+        this.router.navigate(['/membres']);
       }
-    });*/
+    });
   }
-  
 
   // Méthode pour initialiser la carte Google Maps
   private initializeMap(): void {
@@ -405,23 +247,38 @@ getActiveDot(): number {
       this.mapUrl = null;
     }
   }
+  private mapSimilarCompanyToMembreDisplay(company: any): MembreDisplay {
+    return {
+      id: company.id,
+      name: company.name || 'N/A',
+      categoryFr: company.sector || 'N/A',
+      categoryEn: company.sector || 'N/A',
+      locationFr: company.country || 'N/A',
+      locationEn: company.country || 'N/A',
+      phone: company.telephone || 'N/A',
+      website: company.webLink || 'N/A',
+      descriptionFr: company.description || '',
+      descriptionEn: company.description || '',
 
-  loadMembresSimilaires() {
-    console.log(this.membre)
-    const params: any = {
-      page: 0,
-      size: 3,
-      sector: this.membre?.sector,
-      country: this.membre?.country,
-      id: this.membre?.id
+      logo: company.logo || '',
+      pictures: company.pictures || [],
+      address: company.address || 'N/A',
+      email: company.email || 'N/A',
+      country: company.country || 'N/A',
+      countryAmcham: company.countryAmcham || 'N/A',
+      
+      // ... mapping complet avec gestion des propriétés manquantes
+      city: company.city || ''  // Gestion de la propriété city
     };
-    this.homeService. getSimilarMembres(params).subscribe({
-      next: (response) => {
-        this.membresSimilaires = response.map(company => this.mapCompanyToMembreDisplay(company));
-          
-          
-          
-      },
+  }
+loadMembresSimilaires() {
+  this.companyService.getSimilarCompanies(this.membreId).subscribe({
+    next: (companies) => {
+      this.membresSimilaires = companies
+        .filter(c => c.id !== this.membreId)
+        .slice(0, 3) // Limiter à 3 membres
+        .map(c => this.mapSimilarCompanyToMembreDisplay(c));
+    },
       error: (error) => {
         console.error('Erreur lors du chargement des membres similaires:', error);
         this.membresSimilaires = [];
@@ -461,10 +318,24 @@ getActiveDot(): number {
   startRatingCarousel() {
     this.ratingInterval = setInterval(() => {
       this.nextRating();
-    }, 3000);
+    }, 4000);
   }
 
+  nextRating() {
+    if (this.currentRatingIndex === this.ratings.length + 1) {
+      this.noTransition = true;
+      this.currentRatingIndex = 1;
+      setTimeout(() => {
+        this.noTransition = false;
+      }, 0);
+    } else {
+      this.currentRatingIndex++;
+    }
+  }
 
+  getActiveDot(): number {
+    return (this.currentRatingIndex - 1) % this.ratings.length;
+  }
 
   getAverageRating(): number {
     if (!this.ratings || this.ratings.length === 0) {

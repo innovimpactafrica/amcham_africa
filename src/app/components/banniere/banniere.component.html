@@ -13,15 +13,15 @@
     <div *ngIf="error && !loading" class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
         <div class="flex items-start">
             <svg class="w-6 h-6 text-red-400 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clip-rule="evenodd"></path>
             </svg>
             <div>
                 <h3 class="text-red-800 font-medium text-lg mb-2">{{ texts.error }}</h3>
                 <p class="text-red-600">{{ error }}</p>
-                <button 
-                    (click)="loadBannieres()"
-                    class="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors duration-200"
-                >
+                <button (click)="loadBannieres()"
+                    class="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors duration-200">
                     {{ currentLang === 'fr' ? 'Réessayer' : 'Retry' }}
                 </button>
             </div>
@@ -43,19 +43,19 @@
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                                <path fill-rule="evenodd"
+                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                    clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        <input 
-                            type="text" 
-                            class="block w-64 pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
-                            [placeholder]="texts.searchPlaceholder"
-                            (input)="onSearch($event)">
+                        <input type="text"
+                            class="block w-64 pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            [placeholder]="texts.searchPlaceholder" (input)="onSearch($event)">
                     </div>
 
                     <!-- Status Filter -->
-                    <select 
-                        id="status-filter" 
+
+                    <select id="status-filter"
                         class="block w-48 pl-3 pr-10 py-2 text-sm border-gray-300 border focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md"
                         (change)="onStatusFilter($event)">
                         <option value="all">{{texts.allStatuses}}</option>
@@ -65,13 +65,15 @@
                     </select>
 
                     <!-- Add Banner Button -->
-                    <button 
-                        type="button" 
+                    <button type="button"
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#132742] hover:bg-[#0e1e33] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#132742] whitespace-nowrap"
                         (click)="openAddBanniereModal()">
-                        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M8.66667 12.6667C8.66667 13.1333 8.75333 13.58 8.9 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V3.33333C2 2.6 2.6 2 3.33333 2H12.6667C13.0203 2 13.3594 2.14048 13.6095 2.39052C13.8595 2.64057 14 2.97971 14 3.33333V8.9C13.58 8.75333 13.1333 8.66667 12.6667 8.66667V3.33333H3.33333V12.6667H8.66667ZM9.30667 8.19333L7.47333 10.5533L6.16667 8.98L4.33333 11.3333H8.9C9.16667 10.5867 9.64667 9.94 10.2667 9.47333L9.30667 8.19333ZM13.3333 12V10H12V12H10V13.3333H12V15.3333H13.3333V13.3333H15.3333V12H13.3333Z"
+                                fill="white" />
+                        </svg>&nbsp;
+
                         {{texts.addBanner}}
                     </button>
                 </div>
@@ -83,36 +85,43 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-[#FFFF]">
                     <tr>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {{texts.title}}
-                    </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-[#285D90] uppercase tracking-wider">
+                            {{texts.title}}
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-[#285D90] uppercase tracking-wider">
                             {{texts.permanent}}
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-[#285D90] uppercase tracking-wider">
                             {{texts.startDate}}
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-[#285D90] uppercase tracking-wider">
                             {{texts.endDate}}
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-[#285D90] uppercase tracking-wider">
                             {{texts.status}}
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-[#285D90] uppercase tracking-wider">
                             {{texts.actions}}
                         </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr *ngFor="let banniere of filteredBannieres" class="hover:bg-gray-50">
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium flex items-center gap-2 text-gray-900">
-                          <div class="flex-shrink-0 h-10 w-10 rounded-lg overflow-hidden">
-                            <img [src]=" 'https://wakana.online/repertoire_amchams/'+ banniere.mobileImg" [alt]="" class="h-full w-full object-cover">
-                          </div>
-                            {{ banniere.title}}
-                        </div>
-                    </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium flex items-center gap-2 text-gray-900">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-lg overflow-hidden">
+                                    <img [src]=" 'https://wakana.online/repertoire_amchams/'+ banniere.mobileImg"
+                                        [alt]="" class="h-full w-full object-cover">
+                                </div>
+                                {{ banniere.title}}
+                            </div>
+                        </td>
                         <!-- Permanent -->
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">
@@ -129,44 +138,52 @@
                         </td>
                         <!-- Statut -->
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" 
-                                  [ngClass]="getStatusClass(getBanniereStatus(banniere))">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                [ngClass]="getStatusClass(getBanniereStatus(banniere))">
                                 {{ getBanniereStatus(banniere) }}
                             </span>
                         </td>
                         <!-- Actions -->
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-3">
-                                <button 
-                                    class="text-[#132742] hover:text-[#0e1e33] font-medium"
+                                <button class="text-[#132742] hover:text-[#0e1e33] font-medium"
                                     (click)="viewBanniere(banniere)">
-                                    <svg width="23" height="22" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M11.4011 6.19505C13.0075 6.18971 14.5829 6.6378 15.946 7.48781C17.3091 8.33782 18.4046 9.55524 19.1067 11.0001C17.6652 13.9443 14.721 15.8052 11.4011 15.8052C8.08128 15.8052 5.13709 13.9443 3.69557 11.0001C4.39765 9.55524 5.49321 8.33782 6.85632 7.48781C8.21943 6.6378 9.79473 6.18971 11.4011 6.19505ZM11.4011 4.44775C7.0329 4.44775 3.30243 7.1648 1.79102 11.0001C3.30243 14.8354 7.0329 17.5525 11.4011 17.5525C15.7694 17.5525 19.4999 14.8354 21.0113 11.0001C19.4999 7.1648 15.7694 4.44775 11.4011 4.44775ZM11.4011 8.81599C11.9804 8.81599 12.5359 9.0461 12.9455 9.45571C13.3551 9.86531 13.5853 10.4208 13.5853 11.0001C13.5853 11.5794 13.3551 12.1349 12.9455 12.5445C12.5359 12.9541 11.9804 13.1842 11.4011 13.1842C10.8219 13.1842 10.2663 12.9541 9.85673 12.5445C9.44713 12.1349 9.21702 11.5794 9.21702 11.0001C9.21702 10.4208 9.44713 9.86531 9.85673 9.45571C10.2663 9.0461 10.8219 8.81599 11.4011 8.81599ZM11.4011 7.0687C9.23449 7.0687 7.46973 8.83347 7.46973 11.0001C7.46973 13.1668 9.23449 14.9315 11.4011 14.9315C13.5678 14.9315 15.3326 13.1668 15.3326 11.0001C15.3326 8.83347 13.5678 7.0687 11.4011 7.0687Z" fill="#4B4848"/>
-                                      </svg>
+                                    <svg width="23" height="22" viewBox="0 0 23 22" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M11.4011 6.19505C13.0075 6.18971 14.5829 6.6378 15.946 7.48781C17.3091 8.33782 18.4046 9.55524 19.1067 11.0001C17.6652 13.9443 14.721 15.8052 11.4011 15.8052C8.08128 15.8052 5.13709 13.9443 3.69557 11.0001C4.39765 9.55524 5.49321 8.33782 6.85632 7.48781C8.21943 6.6378 9.79473 6.18971 11.4011 6.19505ZM11.4011 4.44775C7.0329 4.44775 3.30243 7.1648 1.79102 11.0001C3.30243 14.8354 7.0329 17.5525 11.4011 17.5525C15.7694 17.5525 19.4999 14.8354 21.0113 11.0001C19.4999 7.1648 15.7694 4.44775 11.4011 4.44775ZM11.4011 8.81599C11.9804 8.81599 12.5359 9.0461 12.9455 9.45571C13.3551 9.86531 13.5853 10.4208 13.5853 11.0001C13.5853 11.5794 13.3551 12.1349 12.9455 12.5445C12.5359 12.9541 11.9804 13.1842 11.4011 13.1842C10.8219 13.1842 10.2663 12.9541 9.85673 12.5445C9.44713 12.1349 9.21702 11.5794 9.21702 11.0001C9.21702 10.4208 9.44713 9.86531 9.85673 9.45571C10.2663 9.0461 10.8219 8.81599 11.4011 8.81599ZM11.4011 7.0687C9.23449 7.0687 7.46973 8.83347 7.46973 11.0001C7.46973 13.1668 9.23449 14.9315 11.4011 14.9315C13.5678 14.9315 15.3326 13.1668 15.3326 11.0001C15.3326 8.83347 13.5678 7.0687 11.4011 7.0687Z"
+                                            fill="#4B4848" />
+                                    </svg>
                                 </button>
-                                <button 
-                                    class="text-[#132742] hover:text-[#0e1e33] font-medium"
+                                <button class="text-[#132742] hover:text-[#0e1e33] font-medium"
                                     (click)="editBanniere(banniere)">
-                                    <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M4.56706 15.8333H5.75456L13.9004 7.6875L12.7129 6.5L4.56706 14.6458V15.8333ZM2.90039 17.5V13.9583L13.9004 2.97917C14.0671 2.82639 14.2512 2.70833 14.4529 2.625C14.6546 2.54167 14.8662 2.5 15.0879 2.5C15.3096 2.5 15.5248 2.54167 15.7337 2.625C15.9426 2.70833 16.1232 2.83333 16.2754 3L17.4212 4.16667C17.5879 4.31944 17.7096 4.5 17.7862 4.70833C17.8629 4.91667 17.9009 5.125 17.9004 5.33333C17.9004 5.55556 17.8623 5.7675 17.7862 5.96917C17.7101 6.17083 17.5884 6.35472 17.4212 6.52083L6.44206 17.5H2.90039ZM13.2962 7.10417L12.7129 6.5L13.9004 7.6875L13.2962 7.10417Z" fill="#F68647"/>
-                                      </svg>
-                                      
+                                    <svg width="21" height="20" viewBox="0 0 21 20" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M4.56706 15.8333H5.75456L13.9004 7.6875L12.7129 6.5L4.56706 14.6458V15.8333ZM2.90039 17.5V13.9583L13.9004 2.97917C14.0671 2.82639 14.2512 2.70833 14.4529 2.625C14.6546 2.54167 14.8662 2.5 15.0879 2.5C15.3096 2.5 15.5248 2.54167 15.7337 2.625C15.9426 2.70833 16.1232 2.83333 16.2754 3L17.4212 4.16667C17.5879 4.31944 17.7096 4.5 17.7862 4.70833C17.8629 4.91667 17.9009 5.125 17.9004 5.33333C17.9004 5.55556 17.8623 5.7675 17.7862 5.96917C17.7101 6.17083 17.5884 6.35472 17.4212 6.52083L6.44206 17.5H2.90039ZM13.2962 7.10417L12.7129 6.5L13.9004 7.6875L13.2962 7.10417Z"
+                                            fill="#F68647" />
+                                    </svg>
+
                                 </button>
-                                <button 
-                                    class="text-red-600 hover:text-red-800 font-medium"
+                                <button class="text-red-600 hover:text-red-800 font-medium"
                                     (click)="deleteBanniere(banniere)">
-                                    <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <g clip-path="url(#clip0_1_2021)">
-                                      <path d="M3.40039 7.37988H13.4004V8.62988H3.40039V7.37988Z" fill="#FF4D4F"/>
-                                      <path d="M8.40039 0.499942C6.3454 0.435234 4.34872 1.1887 2.84878 2.59489C1.34884 4.00108 0.468259 5.94505 0.400391 7.99994C0.468259 10.0548 1.34884 11.9988 2.84878 13.405C4.34872 14.8112 6.3454 15.5647 8.40039 15.4999C10.4554 15.5647 12.4521 14.8112 13.952 13.405C15.4519 11.9988 16.3325 10.0548 16.4004 7.99994C16.3325 5.94505 15.4519 4.00108 13.952 2.59489C12.4521 1.1887 10.4554 0.435234 8.40039 0.499942ZM8.40039 14.2499C6.67756 14.3122 5.0002 13.6896 3.73523 12.5183C2.47026 11.347 1.72066 9.72246 1.65039 7.99994C1.72066 6.27742 2.47026 4.65284 3.73523 3.48157C5.0002 2.3103 6.67756 1.6877 8.40039 1.74994C10.1232 1.6877 11.8006 2.3103 13.0655 3.48157C14.3305 4.65284 15.0801 6.27742 15.1504 7.99994C15.0801 9.72246 14.3305 11.347 13.0655 12.5183C11.8006 13.6896 10.1232 14.3122 8.40039 14.2499Z" fill="#FF4D4F"/>
-                                      </g>
-                                      <defs>
-                                      <clipPath id="clip0_1_2021">
-                                      <rect width="16" height="16" fill="white" transform="translate(0.400391)"/>
-                                      </clipPath>
-                                      </defs>
-                                      </svg>
-                                      
+                                    <svg width="17" height="16" viewBox="0 0 17 16" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_1_2021)">
+                                            <path d="M3.40039 7.37988H13.4004V8.62988H3.40039V7.37988Z"
+                                                fill="#FF4D4F" />
+                                            <path
+                                                d="M8.40039 0.499942C6.3454 0.435234 4.34872 1.1887 2.84878 2.59489C1.34884 4.00108 0.468259 5.94505 0.400391 7.99994C0.468259 10.0548 1.34884 11.9988 2.84878 13.405C4.34872 14.8112 6.3454 15.5647 8.40039 15.4999C10.4554 15.5647 12.4521 14.8112 13.952 13.405C15.4519 11.9988 16.3325 10.0548 16.4004 7.99994C16.3325 5.94505 15.4519 4.00108 13.952 2.59489C12.4521 1.1887 10.4554 0.435234 8.40039 0.499942ZM8.40039 14.2499C6.67756 14.3122 5.0002 13.6896 3.73523 12.5183C2.47026 11.347 1.72066 9.72246 1.65039 7.99994C1.72066 6.27742 2.47026 4.65284 3.73523 3.48157C5.0002 2.3103 6.67756 1.6877 8.40039 1.74994C10.1232 1.6877 11.8006 2.3103 13.0655 3.48157C14.3305 4.65284 15.0801 6.27742 15.1504 7.99994C15.0801 9.72246 14.3305 11.347 13.0655 12.5183C11.8006 13.6896 10.1232 14.3122 8.40039 14.2499Z"
+                                                fill="#FF4D4F" />
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_1_2021">
+                                                <rect width="16" height="16" fill="white"
+                                                    transform="translate(0.400391)" />
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+
                                 </button>
                             </div>
                         </td>
@@ -178,7 +195,8 @@
         <!-- Empty State -->
         <div *ngIf="filteredBannieres.length === 0" class="text-center py-12">
             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             <h3 class="mt-2 text-sm font-medium text-gray-900">Aucune bannière trouvée</h3>
             <p class="mt-1 text-sm text-gray-500">Essayez de modifier vos critères de recherche ou de filtre.</p>
@@ -193,32 +211,28 @@
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
         <!-- Modal panel -->
-        <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
+        <div
+            class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
             <div class="sm:flex sm:items-start">
                 <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                     <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
                         {{texts.newBanner}}
                     </h3>
                     <form [formGroup]="banniereForm" (ngSubmit)="onSubmit()" class="mt-4 space-y-4">
-                        
+
                         <!-- Titre -->
                         <div>
-                            <label for="title" class="block text-sm font-medium text-gray-700">{{texts.bannerTitle}} *</label>
-                            <input 
-                                type="text" 
-                                id="title" 
-                                formControlName="title" 
-                                [placeholder]="texts.exampleTitle"
+                            <label for="title" class="block text-sm font-medium text-gray-700">{{texts.bannerTitle}}
+                                *</label>
+                            <input type="text" id="title" formControlName="title" [placeholder]="texts.exampleTitle"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                         </div>
 
                         <!-- Description -->
                         <div>
-                            <label for="description" class="block text-sm font-medium text-gray-700">{{texts.bannerDescription}}</label>
-                            <textarea 
-                                id="description" 
-                                formControlName="description" 
-                                rows="3" 
+                            <label for="description"
+                                class="block text-sm font-medium text-gray-700">{{texts.bannerDescription}}</label>
+                            <textarea id="description" formControlName="description" rows="3"
                                 [placeholder]="texts.writeDescription"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
                         </div>
@@ -227,21 +241,15 @@
 
                         <!-- Lien -->
                         <div>
-                            <label for="link" class="block text-sm font-medium text-gray-700">{{texts.websiteLink}}</label>
-                            <input 
-                                type="url" 
-                                id="link" 
-                                formControlName="link" 
-                                [placeholder]="texts.exampleLink"
+                            <label for="link"
+                                class="block text-sm font-medium text-gray-700">{{texts.websiteLink}}</label>
+                            <input type="url" id="link" formControlName="link" [placeholder]="texts.exampleLink"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                         </div>
 
                         <!-- Permanent Checkbox -->
                         <div class="flex items-center">
-                            <input 
-                                type="checkbox" 
-                                id="permanent" 
-                                formControlName="permanent"
+                            <input type="checkbox" id="permanent" formControlName="permanent"
                                 (change)="onPermanentChange()"
                                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                             <label for="permanent" class="ml-2 block text-sm text-gray-900">{{texts.permanent}}</label>
@@ -251,52 +259,61 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Date de début -->
                             <div>
-                                <label for="startDate" class="block text-sm font-medium text-gray-700">{{texts.startDateRequired}} *</label>
-                                <input 
-                                    type="date" 
-                                    id="startDate" 
-                                    formControlName="startDate" 
+                                <label for="startDate"
+                                    class="block text-sm font-medium text-gray-700">{{texts.startDateRequired}}
+                                    *</label>
+                                <input type="date" id="startDate" formControlName="startDate"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                
+
                                 <!-- Image Web -->
                                 <div class="mt-4">
                                     <label class="block text-sm font-medium text-gray-700">{{texts.webImage}}</label>
                                     <div class="mt-1 flex items-center">
-                                        <input type="file" id="imageWeb" (change)="onWebImageSelected($event)" class="sr-only" accept="image/*">
-                                        <label for="imageWeb" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                            <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                        <input type="file" id="imageWeb" (change)="onWebImageSelected($event)"
+                                            class="sr-only" accept="image/*">
+                                        <label for="imageWeb"
+                                            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                            <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
+                                                </path>
                                             </svg>
                                             {{texts.chooseFile}}
                                         </label>
-                                        <span class="ml-3 text-sm text-gray-500">{{ selectedWebImage ? selectedWebImage.name : texts.noFileChosen }}</span>
+                                        <span class="ml-3 text-sm text-gray-500">{{ selectedWebImage ?
+                                            selectedWebImage.name : texts.noFileChosen }}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Date de fin -->
                             <div>
-                                <label for="endDate" class="block text-sm font-medium text-gray-700">{{texts.endDateRequired}} *</label>
-                                <input 
-                                    type="date" 
-                                    id="endDate" 
-                                    formControlName="endDate" 
+                                <label for="endDate"
+                                    class="block text-sm font-medium text-gray-700">{{texts.endDateRequired}} *</label>
+                                <input type="date" id="endDate" formControlName="endDate"
                                     [class.opacity-50]="banniereForm.get('permanent')?.value"
                                     [disabled]="banniereForm.get('permanent')?.value"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                
+
                                 <!-- Image Mobile -->
                                 <div class="mt-4">
                                     <label class="block text-sm font-medium text-gray-700">{{texts.mobileImage}}</label>
                                     <div class="mt-1 flex items-center">
-                                        <input type="file" id="imageMobile" (change)="onMobileImageSelected($event)" class="sr-only" accept="image/*">
-                                        <label for="imageMobile" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                            <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                        <input type="file" id="imageMobile" (change)="onMobileImageSelected($event)"
+                                            class="sr-only" accept="image/*">
+                                        <label for="imageMobile"
+                                            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                            <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
+                                                </path>
                                             </svg>
                                             {{texts.chooseFile}}
                                         </label>
-                                        <span class="ml-3 text-sm text-gray-500">{{ selectedMobileImage ? selectedMobileImage.name : texts.noFileChosen }}</span>
+                                        <span class="ml-3 text-sm text-gray-500">{{ selectedMobileImage ?
+                                            selectedMobileImage.name : texts.noFileChosen }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -304,21 +321,22 @@
 
                         <!-- Modal Buttons -->
                         <div class="mt-6 flex justify-end space-x-3">
-                            <button 
-                                type="button" 
+                            <button type="button"
                                 class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                 (click)="closeAddBanniereModal()">
                                 {{texts.cancel}}
                             </button>
-                            <button 
-                                type="submit" 
-                                [disabled]="banniereForm.invalid || loading"
+                            <button type="submit" [disabled]="banniereForm.invalid || loading"
                                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#132742] hover:bg-[#0e1e33] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#132742] disabled:opacity-50 disabled:cursor-not-allowed">
                                 <span *ngIf="!loading">{{texts.create}}</span>
                                 <span *ngIf="loading" class="flex items-center">
-                                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none"
+                                        viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
                                     </svg>
                                     {{ currentLang === 'fr' ? 'Création...' : 'Creating...' }}
                                 </span>
@@ -333,163 +351,166 @@
 
 <!-- Edit Banner Modal (à ajouter après le modal d'ajout) -->
 <div *ngIf="showEditBanniereModal" class="fixed inset-0 overflow-y-auto z-50">
-  <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <!-- Background overlay -->
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Background overlay -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
-      <!-- Modal panel -->
-      <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
-          <div class="sm:flex sm:items-start">
-              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                  <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                      {{ currentLang === 'fr' ? 'Modifier la bannière' : 'Edit Banner' }}
-                  </h3>
-                  <form [formGroup]="banniereForm" (ngSubmit)="onSubmit()" class="mt-4 space-y-4">
-                      
-                      <!-- Titre -->
-                      <div>
-                          <label for="edit-title" class="block text-sm font-medium text-gray-700">{{texts.bannerTitle}} *</label>
-                          <input 
-                              type="text" 
-                              id="edit-title" 
-                              formControlName="title" 
-                              [placeholder]="texts.exampleTitle"
-                              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                      </div>
+        <!-- Modal panel -->
+        <div
+            class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
+            <div class="sm:flex sm:items-start">
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                        {{ currentLang === 'fr' ? 'Modifier la bannière' : 'Edit Banner' }}
+                    </h3>
+                    <form [formGroup]="banniereForm" (ngSubmit)="onSubmit()" class="mt-4 space-y-4">
 
-                      <!-- Description -->
-                      <div>
-                          <label for="edit-description" class="block text-sm font-medium text-gray-700">{{texts.bannerDescription}}</label>
-                          <textarea 
-                              id="edit-description" 
-                              formControlName="description" 
-                              rows="3" 
-                              [placeholder]="texts.writeDescription"
-                              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-                      </div>
+                        <!-- Titre -->
+                        <div>
+                            <label for="edit-title"
+                                class="block text-sm font-medium text-gray-700">{{texts.bannerTitle}} *</label>
+                            <input type="text" id="edit-title" formControlName="title"
+                                [placeholder]="texts.exampleTitle"
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
 
-                      <hr class="my-4">
+                        <!-- Description -->
+                        <div>
+                            <label for="edit-description"
+                                class="block text-sm font-medium text-gray-700">{{texts.bannerDescription}}</label>
+                            <textarea id="edit-description" formControlName="description" rows="3"
+                                [placeholder]="texts.writeDescription"
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                        </div>
 
-                      <!-- Lien -->
-                      <div>
-                          <label for="edit-link" class="block text-sm font-medium text-gray-700">{{texts.websiteLink}}</label>
-                          <input 
-                              type="url" 
-                              id="edit-link" 
-                              formControlName="link" 
-                              [placeholder]="texts.exampleLink"
-                              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                      </div>
+                        <hr class="my-4">
 
-                      <!-- Permanent Checkbox -->
-                      <div class="flex items-center">
-                          <input 
-                              type="checkbox" 
-                              id="edit-permanent" 
-                              formControlName="permanent"
-                              (change)="onPermanentChange()"
-                              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                          <label for="edit-permanent" class="ml-2 block text-sm text-gray-900">{{texts.permanent}}</label>
-                      </div>
+                        <!-- Lien -->
+                        <div>
+                            <label for="edit-link"
+                                class="block text-sm font-medium text-gray-700">{{texts.websiteLink}}</label>
+                            <input type="url" id="edit-link" formControlName="link" [placeholder]="texts.exampleLink"
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
 
-                      <!-- Images actuelles -->
-                      <div *ngIf="editingBanniere" class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
-                          <div>
-                              <p class="text-sm font-medium text-gray-700 mb-2">Image Web actuelle</p>
-                              <img 
-                                  [src]="'https://wakana.online/repertoire_amchams/' + editingBanniere.webImg" 
-                                  [alt]="editingBanniere.title"
-                                  class="w-full h-32 object-cover rounded-lg border border-gray-200">
-                          </div>
-                          <div>
-                              <p class="text-sm font-medium text-gray-700 mb-2">Image Mobile actuelle</p>
-                              <img 
-                                  [src]="'https://wakana.online/repertoire_amchams/' + editingBanniere.mobileImg" 
-                                  [alt]="editingBanniere.title"
-                                  class="w-full h-32 object-cover rounded-lg border border-gray-200">
-                          </div>
-                      </div>
+                        <!-- Permanent Checkbox -->
+                        <div class="flex items-center">
+                            <input type="checkbox" id="edit-permanent" formControlName="permanent"
+                                (change)="onPermanentChange()"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="edit-permanent"
+                                class="ml-2 block text-sm text-gray-900">{{texts.permanent}}</label>
+                        </div>
 
-                      <!-- Dates Section -->
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <!-- Date de début -->
-                          <div>
-                              <label for="edit-startDate" class="block text-sm font-medium text-gray-700">{{texts.startDateRequired}} *</label>
-                              <input 
-                                  type="date" 
-                                  id="edit-startDate" 
-                                  formControlName="startDate" 
-                                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                              
-                              <!-- Nouvelle Image Web -->
-                              <div class="mt-4">
-                                  <label class="block text-sm font-medium text-gray-700">{{texts.webImage}} ({{ currentLang === 'fr' ? 'Nouvelle' : 'New' }})</label>
-                                  <div class="mt-1 flex items-center">
-                                      <input type="file" id="edit-imageWeb" (change)="onWebImageSelected($event)" class="sr-only" accept="image/*">
-                                      <label for="edit-imageWeb" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
-                                          <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                                          </svg>
-                                          {{texts.chooseFile}}
-                                      </label>
-                                      <span class="ml-3 text-sm text-gray-500">{{ selectedWebImage ? selectedWebImage.name : texts.noFileChosen }}</span>
-                                  </div>
-                              </div>
-                          </div>
+                        <!-- Images actuelles -->
+                        <div *ngIf="editingBanniere"
+                            class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="text-sm font-medium text-gray-700 mb-2">Image Web actuelle</p>
+                                <img [src]="'https://wakana.online/repertoire_amchams/' + editingBanniere.webImg"
+                                    [alt]="editingBanniere.title"
+                                    class="w-full h-32 object-cover rounded-lg border border-gray-200">
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700 mb-2">Image Mobile actuelle</p>
+                                <img [src]="'https://wakana.online/repertoire_amchams/' + editingBanniere.mobileImg"
+                                    [alt]="editingBanniere.title"
+                                    class="w-full h-32 object-cover rounded-lg border border-gray-200">
+                            </div>
+                        </div>
 
-                          <!-- Date de fin -->
-                          <div>
-                              <label for="edit-endDate" class="block text-sm font-medium text-gray-700">{{texts.endDateRequired}} *</label>
-                              <input 
-                                  type="date" 
-                                  id="edit-endDate" 
-                                  formControlName="endDate" 
-                                  [class.opacity-50]="banniereForm.get('permanent')?.value"
-                                  [disabled]="banniereForm.get('permanent')?.value"
-                                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                              
-                              <!-- Nouvelle Image Mobile -->
-                              <div class="mt-4">
-                                  <label class="block text-sm font-medium text-gray-700">{{texts.mobileImage}} ({{ currentLang === 'fr' ? 'Nouvelle' : 'New' }})</label>
-                                  <div class="mt-1 flex items-center">
-                                      <input type="file" id="edit-imageMobile" (change)="onMobileImageSelected($event)" class="sr-only" accept="image/*">
-                                      <label for="edit-imageMobile" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
-                                          <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                                          </svg>
-                                          {{texts.chooseFile}}
-                                      </label>
-                                      <span class="ml-3 text-sm text-gray-500">{{ selectedMobileImage ? selectedMobileImage.name : texts.noFileChosen }}</span>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
+                        <!-- Dates Section -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Date de début -->
+                            <div>
+                                <label for="edit-startDate"
+                                    class="block text-sm font-medium text-gray-700">{{texts.startDateRequired}}
+                                    *</label>
+                                <input type="date" id="edit-startDate" formControlName="startDate"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
 
-                      <!-- Modal Buttons -->
-                      <div class="mt-6 flex justify-end space-x-3">
-                          <button 
-                              type="button" 
-                              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                              (click)="closeEditBanniereModal()">
-                              {{texts.cancel}}
-                          </button>
-                          <button 
-                              type="submit" 
-                              [disabled]="banniereForm.invalid || loading"
-                              class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#132742] hover:bg-[#0e1e33] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#132742] disabled:opacity-50 disabled:cursor-not-allowed">
-                              <span *ngIf="!loading">{{ currentLang === 'fr' ? 'Mettre à jour' : 'Update' }}</span>
-                              <span *ngIf="loading" class="flex items-center">
-                                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                  </svg>
-                                  {{ currentLang === 'fr' ? 'Mise à jour...' : 'Updating...' }}
-                              </span>
-                          </button>
-                      </div>
-                  </form>
-              </div>
-          </div>
-      </div>
-  </div>
+                                <!-- Nouvelle Image Web -->
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700">{{texts.webImage}} ({{
+                                        currentLang === 'fr' ? 'Nouvelle' : 'New' }})</label>
+                                    <div class="mt-1 flex items-center">
+                                        <input type="file" id="edit-imageWeb" (change)="onWebImageSelected($event)"
+                                            class="sr-only" accept="image/*">
+                                        <label for="edit-imageWeb"
+                                            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+                                            <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
+                                                </path>
+                                            </svg>
+                                            {{texts.chooseFile}}
+                                        </label>
+                                        <span class="ml-3 text-sm text-gray-500">{{ selectedWebImage ?
+                                            selectedWebImage.name : texts.noFileChosen }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Date de fin -->
+                            <div>
+                                <label for="edit-endDate"
+                                    class="block text-sm font-medium text-gray-700">{{texts.endDateRequired}} *</label>
+                                <input type="date" id="edit-endDate" formControlName="endDate"
+                                    [class.opacity-50]="banniereForm.get('permanent')?.value"
+                                    [disabled]="banniereForm.get('permanent')?.value"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+
+                                <!-- Nouvelle Image Mobile -->
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700">{{texts.mobileImage}} ({{
+                                        currentLang === 'fr' ? 'Nouvelle' : 'New' }})</label>
+                                    <div class="mt-1 flex items-center">
+                                        <input type="file" id="edit-imageMobile"
+                                            (change)="onMobileImageSelected($event)" class="sr-only" accept="image/*">
+                                        <label for="edit-imageMobile"
+                                            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+                                            <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
+                                                </path>
+                                            </svg>
+                                            {{texts.chooseFile}}
+                                        </label>
+                                        <span class="ml-3 text-sm text-gray-500">{{ selectedMobileImage ?
+                                            selectedMobileImage.name : texts.noFileChosen }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Buttons -->
+                        <div class="mt-6 flex justify-end space-x-3">
+                            <button type="button"
+                                class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                (click)="closeEditBanniereModal()">
+                                {{texts.cancel}}
+                            </button>
+                            <button type="submit" [disabled]="banniereForm.invalid || loading"
+                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#132742] hover:bg-[#0e1e33] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#132742] disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span *ngIf="!loading">{{ currentLang === 'fr' ? 'Mettre à jour' : 'Update' }}</span>
+                                <span *ngIf="loading" class="flex items-center">
+                                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none"
+                                        viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                    {{ currentLang === 'fr' ? 'Mise à jour...' : 'Updating...' }}
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

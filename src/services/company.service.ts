@@ -6,6 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 
 // Interfaces
 export interface Company {
+  updatedAt: string;
   id: number;
   name: string;
   city:string,

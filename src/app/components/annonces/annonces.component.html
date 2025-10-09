@@ -13,7 +13,9 @@
       </div>
       <button (click)="clearError()" class="text-red-500 hover:text-red-700">
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+          <path fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"></path>
         </svg>
       </button>
     </div>
@@ -35,20 +37,19 @@
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                <path fill-rule="evenodd"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                  clip-rule="evenodd"></path>
               </svg>
             </div>
-            <input 
-              type="text" 
-              class="block w-80 pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-colors" 
-              [placeholder]="texts.searchPlaceholder"
-              [value]="searchTerm"
-              (input)="onSearch($event)">
+            <input type="text"
+              class="block w-80 pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-colors"
+              [placeholder]="texts.searchPlaceholder" [value]="searchTerm" (input)="onSearch($event)">
           </div>
 
           <!-- Category Filter -->
           <div class="flex items-center">
-            <select 
+            <select
               class="block pl-4 pr-10 py-2.5 text-sm border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white rounded-lg transition-colors min-w-[180px]"
               (change)="onCategoryFilter($event)">
               <option value="all">{{texts.allCategories}}</option>
@@ -60,15 +61,15 @@
         </div>
 
         <!-- Add Announcement Button -->
-        <button 
-          type="button" 
+        <button type="button"
           class="inline-flex items-center px-4 py-2.5 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50"
-          style="background-color: #1E293B;"
-          [disabled]="loading"
-          (click)="openAddAnnouncementModal()">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
+          style="background-color: #1E293B;" [disabled]="loading" (click)="openAddAnnouncementModal()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M6.66667 10.6667C6.66667 11.1333 6.75333 11.58 6.9 12H1.33333C0.979711 12 0.640573 11.8595 0.390524 11.6095C0.140476 11.3594 0 11.0203 0 10.6667V1.33333C0 0.6 0.6 0 1.33333 0H10.6667C11.0203 0 11.3594 0.140476 11.6095 0.390524C11.8595 0.640573 12 0.979711 12 1.33333V6.9C11.58 6.75333 11.1333 6.66667 10.6667 6.66667V1.33333H1.33333V10.6667H6.66667ZM7.30667 6.19333L5.47333 8.55333L4.16667 6.98L2.33333 9.33333H6.9C7.16667 8.58667 7.64667 7.94 8.26667 7.47333L7.30667 6.19333ZM11.3333 10V8H10V10H8V11.3333H10V13.3333H11.3333V11.3333H13.3333V10H11.3333Z"
+              fill="white" />
+          </svg>&nbsp;
+
           {{texts.addAnnouncement}}
         </button>
       </div>
@@ -77,9 +78,12 @@
     <!-- Loading Indicator -->
     <div *ngIf="loading" class="px-6 py-8 text-center">
       <div class="inline-flex items-center">
-        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
         </svg>
         {{texts.loading}}
       </div>
@@ -116,12 +120,12 @@
                 </div>
                 <div class="ml-4">
                   <div class="text-sm font-semibold text-gray-900">{{annonce.title}}</div>
-                  <div class="text-xs text-gray-500 mt-1">{{annonce.description}}</div>
                 </div>
               </div>
             </td>
             <td class="px-6 py-5">
-              <span class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
+              <span
+                class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
                 {{getCategoryDisplayName(annonce.category)}}
               </span>
             </td>
@@ -129,7 +133,8 @@
               {{annonce.startDate}}
             </td>
             <td class="px-6 py-5">
-              <span class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">
+              <span
+                class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2"></span>
                 Publié
               </span>
@@ -137,36 +142,34 @@
             <td class="px-6 py-5">
               <div class="flex items-center space-x-3">
                 <!-- View Button -->
-                <button 
-                  class="text-gray-400 hover:text-blue-600 transition-colors p-1"
-                  [disabled]="loading"
-                  (click)="viewAnnouncement(annonce)"
-                  title="Voir">
+                <button class="text-gray-400 hover:text-blue-600 transition-colors p-1" [disabled]="loading"
+                  (click)="viewAnnouncement(annonce)" title="Voir">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                    </path>
                   </svg>
                 </button>
-                
+
                 <!-- Edit Button -->
-                <button 
-                  class="text-gray-400 hover:text-orange-600 transition-colors p-1"
-                  [disabled]="loading"
-                  (click)="editAnnouncement(annonce)"
-                  title="Modifier">
+                <button class="text-gray-400 hover:text-orange-600 transition-colors p-1" [disabled]="loading"
+                  (click)="editAnnouncement(annonce)" title="Modifier">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                    </path>
                   </svg>
                 </button>
 
                 <!-- Delete Button -->
-                <button 
-                  class="text-gray-400 hover:text-red-600 transition-colors p-1"
-                  [disabled]="loading"
-                  (click)="deleteAnnouncement(annonce)"
-                  title="Supprimer">
+                <button class="text-gray-400 hover:text-red-600 transition-colors p-1" [disabled]="loading"
+                  (click)="deleteAnnouncement(annonce)" title="Supprimer">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                    </path>
                   </svg>
                 </button>
               </div>
@@ -179,7 +182,8 @@
     <!-- Empty State -->
     <div *ngIf="!loading && filteredAnnonces.length === 0" class="text-center py-16">
       <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
       <h3 class="mt-4 text-lg font-medium text-gray-900">{{texts.noAnnouncementFound}}</h3>
       <p class="mt-2 text-sm text-gray-500">{{texts.tryDifferentSearch}}</p>
@@ -191,10 +195,12 @@
 <div *ngIf="showAddAnnouncementModal || showEditAnnouncementModal" class="fixed inset-0 overflow-y-auto z-50">
   <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
     <!-- Background overlay -->
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" (click)="closeModals()"></div>
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" (click)="closeModals()">
+    </div>
 
     <!-- Modal panel -->
-    <div class="inline-block align-bottom bg-white rounded-2xl px-8 pt-8 pb-6 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+    <div
+      class="inline-block align-bottom bg-white rounded-2xl px-8 pt-8 pb-6 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
       <div class="absolute top-6 right-6">
         <button (click)="closeModals()" class="text-gray-400 hover:text-gray-600">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -208,21 +214,18 @@
           <h3 class="text-2xl font-semibold text-gray-900 mb-8" id="modal-title">
             {{showEditAnnouncementModal ? texts.editAnnouncement : texts.newAnnouncement}}
           </h3>
-          
+
           <form [formGroup]="announcementForm" (ngSubmit)="onSubmit()" class="space-y-5">
             <!-- Titre -->
             <div>
               <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
                 {{texts.title}} <span class="text-red-500">*</span>
               </label>
-              <input 
-                type="text" 
-                id="title" 
-                formControlName="title" 
-                placeholder="Ex: Opportunités d'investissement"
+              <input type="text" id="title" formControlName="title" placeholder="Ex: Opportunités d'investissement"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 [class.border-red-300]="announcementForm.get('title')?.invalid && announcementForm.get('title')?.touched">
-              <div *ngIf="announcementForm.get('title')?.invalid && announcementForm.get('title')?.touched" class="mt-1 text-sm text-red-600">
+              <div *ngIf="announcementForm.get('title')?.invalid && announcementForm.get('title')?.touched"
+                class="mt-1 text-sm text-red-600">
                 Le titre est requis
               </div>
             </div>
@@ -232,11 +235,7 @@
               <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
                 {{texts.description}}
               </label>
-              <textarea 
-                id="description" 
-                formControlName="description" 
-                rows="3" 
-                placeholder="Écrivez une description"
+              <textarea id="description" formControlName="description" rows="3" placeholder="Écrivez une description"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
                 [class.border-red-300]="announcementForm.get('description')?.invalid && announcementForm.get('description')?.touched"></textarea>
             </div>
@@ -246,9 +245,7 @@
               <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">
                 {{texts.category}}
               </label>
-              <select 
-                id="categoryId" 
-                formControlName="categoryId" 
+              <select id="categoryId" formControlName="categoryId"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 [class.border-red-300]="announcementForm.get('categoryId')?.invalid && announcementForm.get('categoryId')?.touched">
                 <option [value]="null">{{texts.selectCategory}}</option>
@@ -263,26 +260,19 @@
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 {{texts.image}}
               </label>
-              <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+              <div
+                class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
                 <!-- Input file caché avec référence directe -->
-                <input 
-                  #fileInput
-                  type="file" 
-                  id="imageFile" 
-                  accept="image/*"
-                  (change)="onFileSelected($event)"
+                <input #fileInput type="file" id="imageFile" accept="image/*" (change)="onFileSelected($event)"
                   class="hidden">
-                
+
                 <!-- Zone de drop et bouton -->
-                <div *ngIf="!imagePreview" 
-                     class="cursor-pointer" 
-                     (click)="fileInput.click()">
+                <div *ngIf="!imagePreview" class="cursor-pointer" (click)="fileInput.click()">
                   <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                   </svg>
-                  <button 
-                    type="button"
-                    class="mt-3 px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                  <button type="button" class="mt-3 px-4 py-2 text-sm font-medium rounded-lg transition-colors"
                     style="background-color: #FEE2E2; color: #AA1520;">
                     {{texts.chooseFile}}
                   </button>
@@ -294,25 +284,22 @@
                 <div *ngIf="imagePreview" class="relative">
                   <img [src]="imagePreview" alt="Preview" class="mx-auto max-h-48 rounded-lg object-cover">
                   <div class="mt-2 flex justify-center space-x-2">
-                    <button 
-                      type="button"
-                      (click)="fileInput.click()"
+                    <button type="button" (click)="fileInput.click()"
                       class="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
                       Changer
                     </button>
-                    <button 
-                      type="button"
-                      (click)="imagePreview = null; selectedImageFile = null"
+                    <button type="button" (click)="imagePreview = null; selectedImageFile = null"
                       class="px-3 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600 transition-colors">
                       Supprimer
                     </button>
                   </div>
                 </div>
               </div>
-              
+
               <!-- Message d'info -->
               <div *ngIf="selectedImageFile" class="mt-2 text-xs text-green-600">
-                Fichier sélectionné: {{selectedImageFile.name}} ({{(selectedImageFile.size / 1024 / 1024).toFixed(2)}} MB)
+                Fichier sélectionné: {{selectedImageFile.name}} ({{(selectedImageFile.size / 1024 / 1024).toFixed(2)}}
+                MB)
               </div>
             </div>
 
@@ -322,10 +309,7 @@
                 <label for="startDate" class="block text-sm font-medium text-gray-700 mb-2">
                   {{texts.startDate}} <span class="text-red-500">*</span>
                 </label>
-                <input 
-                  type="date" 
-                  id="startDate" 
-                  formControlName="startDate" 
+                <input type="date" id="startDate" formControlName="startDate"
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
               </div>
 
@@ -333,10 +317,7 @@
                 <label for="endDate" class="block text-sm font-medium text-gray-700 mb-2">
                   {{texts.endDate}} <span class="text-red-500">*</span>
                 </label>
-                <input 
-                  type="date" 
-                  id="endDate" 
-                  formControlName="endDate" 
+                <input type="date" id="endDate" formControlName="endDate"
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
               </div>
             </div>
@@ -346,10 +327,7 @@
                 <label for="startTime" class="block text-sm font-medium text-gray-700 mb-2">
                   {{texts.startTime}} <span class="text-red-500">*</span>
                 </label>
-                <input 
-                  type="time" 
-                  id="startTime" 
-                  formControlName="startTime" 
+                <input type="time" id="startTime" formControlName="startTime"
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
               </div>
 
@@ -357,10 +335,7 @@
                 <label for="endTime" class="block text-sm font-medium text-gray-700 mb-2">
                   {{texts.endTime}} <span class="text-red-500">*</span>
                 </label>
-                <input 
-                  type="time" 
-                  id="endTime" 
-                  formControlName="endTime" 
+                <input type="time" id="endTime" formControlName="endTime"
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
               </div>
             </div>
@@ -370,31 +345,26 @@
               <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
                 {{texts.address}} <span class="text-red-500">*</span>
               </label>
-              <input 
-                type="text" 
-                id="address" 
-                formControlName="address" 
+              <input type="text" id="address" formControlName="address"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
             </div>
 
             <!-- Buttons -->
             <div class="mt-8 flex justify-between pt-4">
-              <button 
-                type="submit" 
-                [disabled]="!announcementForm.valid || loading"
+              <button type="submit" [disabled]="!announcementForm.valid || loading"
                 class="px-8 py-3 text-sm font-medium rounded-lg text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 style="background-color: #AA1520;">
-                <svg *ngIf="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg *ngIf="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline"
+                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                  </path>
                 </svg>
                 {{texts.save}}
               </button>
 
-              <button 
-                type="button" 
-                (click)="closeModals()" 
-                [disabled]="loading"
+              <button type="button" (click)="closeModals()" [disabled]="loading"
                 class="px-8 py-3 text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
                 style="background-color: #F8F9FA; color: #6B7280;">
                 {{texts.cancel}}

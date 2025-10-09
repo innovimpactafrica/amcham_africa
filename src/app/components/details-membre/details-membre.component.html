@@ -1,30 +1,17 @@
-
+<app-header></app-header>
 
 <div class="min-h-screen bg-[#F4F6FA]" *ngIf="membre && !isLoading">
   <!-- Header Section avec fond #141E34 -->
   <div class="bg-gradient-to-r from-[#1C365B] via-[#0C1B31] to-[#132742] text-white py-6 md:py-12">
     <div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <!-- Breadcrumb - Hidden on mobile -->
-     <div class="hidden sm:flex items-center space-x-2 text-sm md:text-base font-medium text-gray-400 mb-6 md:mb-8">
-  <!-- 🔙 Flèche de retour -->
-<!--<a 
-  href="/accueil" 
-  class="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-700 transition-colors mr-2"
-  title="Retour"
->
-  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-  </svg>
-</a>-->
-
-  <!-- 🧭 Fil d’Ariane -->
-  <a href="/accueil" class="text-gray-300 hover:text-white transition-colors">Accueil</a>
- <!--- <span>/</span>
-  <a href="/membres" class="text-gray-300 hover:text-white transition-colors">Membres</a>-->
-  <span>/</span>
-  <span class="text-white truncate">{{ membre.name }}</span>
-</div>
-
+      <div class="hidden sm:flex items-center space-x-2 text-sm md:text-base font-medium text-gray-400 mb-6 md:mb-8">
+        <a href="/accueil" class="text-gray-300 hover:text-white transition-colors">Accueil</a>
+        <span>/</span>
+        <a href="/membres" class="text-gray-300 hover:text-white transition-colors">Membres</a>
+        <span>/</span>
+        <span class="text-white truncate">{{ membre.name }}</span>
+      </div>
 
       <!-- Header Content - Stacked on mobile -->
       <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
@@ -89,7 +76,7 @@
               </div>
 
               <!-- Rating -->
-            <div class="flex items-center gap-1" *ngIf="ratings && ratings.length > 0">
+              <div class="flex items-center gap-1" *ngIf="ratings && ratings.length > 0">
                 <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                 </svg>
@@ -101,7 +88,7 @@
         </div>
 
         <!-- Review Button - Full width on mobile -->
-       <!--- <button (click)="laisserAvis()"
+        <button (click)="laisserAvis()"
           class="w-full sm:w-auto flex gap-2 bg-white hover:bg-gray-100 text-[#D11E2B] px-4 sm:px-5 py-3 rounded-full font-medium transition-colors justify-center sm:justify-start">
           <svg class="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" width="17" height="16" viewBox="0 0 17 16" fill="none"
             xmlns="http://www.w3.org/2000/svg">
@@ -110,7 +97,7 @@
               fill="#D11E2B" />
           </svg>
           <span>{{ texts.giveReview }}</span>
-        </button>-->
+        </button>
       </div>
     </div>
   </div>
@@ -226,13 +213,13 @@
         </div>
 
         <!-- Video -->
-       <!--- <div class="bg-white rounded-lg p-4 md:p-6" *ngIf="membre?.videoLink">
+        <div class="bg-white rounded-lg p-4 md:p-6" *ngIf="membre?.videoLink">
           <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-4">{{ texts.presentationVideo }}</h2>
           <div class="rounded-lg overflow-hidden">
             <iframe class="w-full h-48 sm:h-64 md:h-96 lg:h-[400px] rounded-lg" [src]="getSafeVideoUrl()" frameborder="0"
               allow="autoplay; encrypted-media" allowfullscreen></iframe>
           </div>
-        </div>-->
+        </div>
 
         <!-- Map -->
         <div class="bg-white rounded-lg p-4 md:p-6">
@@ -251,11 +238,11 @@
   </div>
 
   <!-- Reviews Section -->
- <!---- <div class="w-full bg-white py-6 md:py-8">
+  <div class="w-full bg-white py-6 md:py-8">
     <div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h2 class="text-2xl md:text-3xl font-bold text-gray-900">{{ texts.reviews }}</h2>
-   <button (click)="laisserAvis()"
+        <button (click)="laisserAvis()"
           class="w-full sm:w-auto px-4 py-3 rounded-full text-sm font-medium transition-colors text-white flex items-center gap-2 justify-center"
           style="background-color: #AA1520;" onmouseover="this.style.backgroundColor='#8B1018'"
           onmouseout="this.style.backgroundColor='#AA1520'">
@@ -269,12 +256,12 @@
         </button>
       </div>
 
-      
+      <!-- No reviews message -->
       <div *ngIf="!ratings || ratings.length === 0" class="text-center py-8 md:py-12 text-gray-500">
         <p>{{ currentLang === 'fr' ? 'Aucun avis pour le moment' : 'No reviews yet' }}</p>
       </div>
 
-  
+      <!-- Reviews Carousel -->
       <div *ngIf="ratings && ratings.length > 0" class="relative">
         <div class="overflow-hidden">
           <div class="flex w-full gap-4 md:gap-6 py-6 md:py-10"
@@ -307,7 +294,7 @@
           </div>
         </div>
 
-        
+        <!-- Review Dots -->
         <div class="flex justify-center mt-4 md:mt-6 gap-2 flex-wrap">
           @for (rating of ratings; track $index) {
           <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-colors" 
@@ -317,7 +304,7 @@
         </div>
       </div>
     </div>
-  </div>-->
+  </div>
 
   <!-- Similar Members Section -->
   <div class="w-full bg-[#F4F6FA] py-6 md:py-8">
@@ -327,7 +314,7 @@
           <h2 class="text-2xl md:text-3xl font-bold text-gray-900">{{ texts.similarMembers }}</h2>
           <p class="text-gray-600 text-sm md:text-base">{{ texts.discoverMembers }}</p>
         </div>
-       <!---- <button (click)="voirTousLesMembres()"
+        <button (click)="voirTousLesMembres()"
           class="text-red-600 hover:text-red-700 font-medium flex items-center gap-1 whitespace-nowrap text-sm md:text-base">
           <span>{{ texts.seeAllMembers }}</span>
           <svg width="24" height="15" viewBox="0 0 24 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -338,7 +325,7 @@
               d="M15 13.4997C14.9016 13.5009 14.8041 13.4815 14.7137 13.4428C14.6233 13.404 14.542 13.3468 14.475 13.2747C14.175 12.9747 14.175 12.5097 14.475 12.2097L19.2 7.48473L14.475 2.75973C14.175 2.45973 14.175 1.99473 14.475 1.69473C14.775 1.39473 15.24 1.39473 15.54 1.69473L20.79 6.94473C21.09 7.24473 21.09 7.70973 20.79 8.00973L15.54 13.2597C15.39 13.4097 15.195 13.4847 15.015 13.4847L15 13.4997Z"
               fill="#D11E2B" />
           </svg>
-        </button>-->
+        </button>
       </div>
 
       <!-- Members Grid -->

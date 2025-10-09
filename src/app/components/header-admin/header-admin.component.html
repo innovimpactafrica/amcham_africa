@@ -197,59 +197,91 @@
           
         </nav>
         
-        <!-- Info utilisateur/admin -->
-        <div class="flex items-center space-x-4">
-          <!-- Bouton Paramètres avec dropdown -->
-          <div class="relative">
-            <div 
-              (click)="toggleSettingsDropdown()"
-              class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3 cursor-pointer hover:bg-blue-200 transition-colors duration-200"
-              [class.bg-blue-200]="showSettingsDropdown">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.05039 6.4621C7.32255 6.5579 7.61221 6.59368 7.89949 6.56698C8.18678 6.54029 8.46489 6.45175 8.71473 6.30745C8.96458 6.16315 9.18024 5.9665 9.34693 5.73099C9.51361 5.49549 9.62737 5.22671 9.68039 4.9431L10.0004 3.2231C11.3162 2.92336 12.6826 2.92336 13.9984 3.2231L14.3204 4.9431C14.3734 5.22671 14.4872 5.49549 14.6539 5.73099C14.8205 5.9665 15.0362 6.16315 15.286 6.30745C15.5359 6.45175 15.814 6.54029 16.1013 6.56698C16.3886 6.59368 16.6782 6.5579 16.9504 6.4621L18.5994 5.8821C19.5173 6.87087 20.2012 8.05336 20.6004 9.3421L19.2704 10.4821C19.0513 10.6699 18.8755 10.9028 18.755 11.1649C18.6344 11.427 18.572 11.7121 18.572 12.0006C18.572 12.2891 18.6344 12.5742 18.755 12.8363C18.8755 13.0984 19.0513 13.3313 19.2704 13.5191L20.6004 14.6581C20.2012 15.9468 19.5173 17.1293 18.5994 18.1181L16.9494 17.5381C16.6772 17.4423 16.3876 17.4065 16.1003 17.4332C15.813 17.4599 15.5349 17.5484 15.285 17.6927C15.0352 17.837 14.8195 18.0337 14.6529 18.2692C14.4862 18.5047 14.3724 18.7735 14.3194 19.0571L14.0004 20.7771C12.6846 21.0768 11.3182 21.0768 10.0024 20.7771L9.68039 19.0571C9.62737 18.7735 9.51361 18.5047 9.34693 18.2692C9.18024 18.0337 8.96458 17.837 8.71473 17.6927C8.46489 17.5484 8.18678 17.4599 7.89949 17.4332C7.61221 17.4065 7.32255 17.4423 7.05039 17.5381L5.40139 18.1181C4.48348 17.1293 3.79962 15.9468 3.40039 14.6581L4.73039 13.5181C4.94927 13.3303 5.12495 13.0975 5.2454 12.8355C5.36585 12.5734 5.42821 12.2885 5.42821 12.0001C5.42821 11.7117 5.36585 11.4268 5.2454 11.1647C5.12495 10.9027 4.94927 10.6699 4.73039 10.4821L3.40039 9.3421C3.79933 8.05345 4.48284 6.87097 5.40039 5.8821L7.05039 6.4621ZM12.0004 9.0001C12.796 9.0001 13.5591 9.31617 14.1217 9.87878C14.6843 10.4414 15.0004 11.2044 15.0004 12.0001C15.0004 12.7957 14.6843 13.5588 14.1217 14.1214C13.5591 14.684 12.796 15.0001 12.0004 15.0001C11.2047 15.0001 10.4417 14.684 9.87907 14.1214C9.31646 13.5588 9.00039 12.7957 9.00039 12.0001C9.00039 11.2044 9.31646 10.4414 9.87907 9.87878C10.4417 9.31617 11.2047 9.0001 12.0004 9.0001Z" stroke="#252525" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>    
-            </div>
-            
-            <!-- Dropdown Paramètres -->
-            <div 
-              *ngIf="showSettingsDropdown" 
-              class="absolute top-full right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">{{ texts.parameters }}</h3>
-                
-                <!-- Gestion des secteurs d'activités -->
-                <div 
-                  (click)="navigateToSectors(); showSettingsDropdown = false"
-                  class="flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200 mb-2">
-            
-                  <div>
-                    <h4 class="font-medium text-gray-900">{{ texts.sectorsManagement }}</h4>
-                  </div>
-                </div>
-                
-                <!-- Gestion des catégories -->
-                <div 
-                  (click)="navigateToCategories(); showSettingsDropdown = false"
-                  class="flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200">
-           
-                  <div>
-                    <h4 class="font-medium text-gray-900">{{ texts.categoriesManagement }}</h4>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Avatar utilisateur -->
-          <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-            <img class="h-10 w-10 rounded-[50%]" src="" alt="CG">
-          </div>
-          
+   <!-- Info utilisateur/admin -->
+<div class="flex items-center space-x-4">
+  <!-- Bouton Paramètres avec dropdown -->
+  <div class="relative">
+    <div 
+      (click)="toggleSettingsDropdown()"
+      class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3 cursor-pointer hover:bg-blue-200 transition-colors duration-200"
+      [class.bg-blue-200]="showSettingsDropdown">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.05039 6.4621C7.32255 6.5579 7.61221 6.59368 7.89949 6.56698C8.18678 6.54029 8.46489 6.45175 8.71473 6.30745C8.96458 6.16315 9.18024 5.9665 9.34693 5.73099C9.51361 5.49549 9.62737 5.22671 9.68039 4.9431L10.0004 3.2231C11.3162 2.92336 12.6826 2.92336 13.9984 3.2231L14.3204 4.9431C14.3734 5.22671 14.4872 5.49549 14.6539 5.73099C14.8205 5.9665 15.0362 6.16315 15.286 6.30745C15.5359 6.45175 15.814 6.54029 16.1013 6.56698C16.3886 6.59368 16.6782 6.5579 16.9504 6.4621L18.5994 5.8821C19.5173 6.87087 20.2012 8.05336 20.6004 9.3421L19.2704 10.4821C19.0513 10.6699 18.8755 10.9028 18.755 11.1649C18.6344 11.427 18.572 11.7121 18.572 12.0006C18.572 12.2891 18.6344 12.5742 18.755 12.8363C18.8755 13.0984 19.0513 13.3313 19.2704 13.5191L20.6004 14.6581C20.2012 15.9468 19.5173 17.1293 18.5994 18.1181L16.9494 17.5381C16.6772 17.4423 16.3876 17.4065 16.1003 17.4332C15.813 17.4599 15.5349 17.5484 15.285 17.6927C15.0352 17.837 14.8195 18.0337 14.6529 18.2692C14.4862 18.5047 14.3724 18.7735 14.3194 19.0571L14.0004 20.7771C12.6846 21.0768 11.3182 21.0768 10.0024 20.7771L9.68039 19.0571C9.62737 18.7735 9.51361 18.5047 9.34693 18.2692C9.18024 18.0337 8.96458 17.837 8.71473 17.6927C8.46489 17.5484 8.18678 17.4599 7.89949 17.4332C7.61221 17.4065 7.32255 17.4423 7.05039 17.5381L5.40139 18.1181C4.48348 17.1293 3.79962 15.9468 3.40039 14.6581L4.73039 13.5181C4.94927 13.3303 5.12495 13.0975 5.2454 12.8355C5.36585 12.5734 5.42821 12.2885 5.42821 12.0001C5.42821 11.7117 5.36585 11.4268 5.2454 11.1647C5.12495 10.9027 4.94927 10.6699 4.73039 10.4821L3.40039 9.3421C3.79933 8.05345 4.48284 6.87097 5.40039 5.8821L7.05039 6.4621ZM12.0004 9.0001C12.796 9.0001 13.5591 9.31617 14.1217 9.87878C14.6843 10.4414 15.0004 11.2044 15.0004 12.0001C15.0004 12.7957 14.6843 13.5588 14.1217 14.1214C13.5591 14.684 12.796 15.0001 12.0004 15.0001C11.2047 15.0001 10.4417 14.684 9.87907 14.1214C9.31646 13.5588 9.00039 12.7957 9.00039 12.0001C9.00039 11.2044 9.31646 10.4414 9.87907 9.87878C10.4417 9.31617 11.2047 9.0001 12.0004 9.0001Z" stroke="#252525" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>    
+    </div>
+    
+    <!-- Dropdown Paramètres -->
+    <div 
+      *ngIf="showSettingsDropdown" 
+      class="absolute top-full right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+      <div class="p-4">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3">{{ texts.parameters }}</h3>
+        
+        <!-- Gestion des secteurs d'activités -->
+        <div 
+          (click)="navigateToSectors(); showSettingsDropdown = false"
+          class="flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200 mb-2">
+      
           <div>
-            <h2 class="font-semibold text-gray-900">Administrateur</h2>
-            <p class="text-sm text-gray-500">AmCham Platform</p>
+            <h4 class="font-medium text-gray-900">{{ texts.sectorsManagement }}</h4>
+            <p class="text-sm text-gray-500">{{ texts.sectorsDescription }}</p>
           </div>
         </div>
+        
+        <!-- Gestion des catégories -->
+        <div 
+          (click)="navigateToCategories(); showSettingsDropdown = false"
+          class="flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200">
+     
+          <div>
+            <h4 class="font-medium text-gray-900">{{ texts.categoriesManagement }}</h4>
+            <p class="text-sm text-gray-500">{{ texts.categoriesDescription }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Informations de l'entreprise (comme dans header-membre) -->
+  <div class="flex items-center">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="flex items-center">
+      <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3 animate-pulse">
+        <div class="w-8 h-8 bg-blue-200 rounded-full"></div>
+      </div>
+      <div>
+        <div class="h-4 bg-gray-200 rounded w-20 mb-1 animate-pulse"></div>
+        <div class="h-3 bg-gray-200 rounded w-16 animate-pulse"></div>
+      </div>
+    </div>
+
+    <!-- Données de l'entreprise -->
+    <div *ngIf="!isLoading && companyData" class="flex items-center">
+      <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+        <img 
+          class="h-10 w-10 rounded-[50%] object-cover" 
+          [src]="'https://wakana.online/repertoire_amchams/' + companyLogo" 
+          [alt]="companyName + ' logo'"
+        >
+      </div>
+      <div>
+        <h2 class="font-semibold text-gray-900">{{ companyName }}</h2>
+        <p class="text-sm text-gray-500">{{ companySector }}</p>
+      </div>
+    </div>
+
+    <!-- Fallback si pas de données d'entreprise -->
+    <div *ngIf="!isLoading && !companyData" class="flex items-center">
+      <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+        <img class="h-10 w-10 rounded-[50%]" src="../assets/logoAmcham.png" alt="Admin">
+      </div>
+      <div>
+        <h2 class="font-semibold text-gray-900">Administrateur</h2>
+        <p class="text-sm text-gray-500">AmCham Platform</p>
+      </div>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   </div>

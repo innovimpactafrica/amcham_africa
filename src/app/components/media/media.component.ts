@@ -5,6 +5,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { HeaderMembreComponent } from "../header-membre/header-membre.component";
 import { LanguageService } from '../../../services/language.service';
+import { AuthService } from '../../../services/auth.service';
 import { CompanyService, Company } from '../../../services/company.service';
 import { Subscription } from 'rxjs';
 
@@ -105,6 +106,7 @@ export class MediaComponent implements OnInit, OnDestroy {
     private router: Router,
     private sanitizer: DomSanitizer,
     private languageService: LanguageService,
+    private authService: AuthService,
     private companyService: CompanyService
   ) {
     this.currentRoute = this.router.url;
@@ -131,17 +133,103 @@ export class MediaComponent implements OnInit, OnDestroy {
 
   /**
    * Charger les données de l'entreprise depuis l'API
+   * Utilise getCurrentUserFromAPI() pour récupérer les données utilisateur fraîches
    */
   private loadCompanyData(): void {
     this.isLoading = true;
     this.errorMessage = '';
+    
+    // Vérifier d'abord qu'on a un token valide
+    if (!this.authService.isAuthenticated()) {
+      this.errorMessage = this.currentLang === 'fr'
+        ? 'Session expirée. Veuillez vous reconnecter.'
+        : 'Session expired. Please log in again.';
+      this.isLoading = false;
+      this.router.navigate(['/login']);
+      return;
+    }
+    
+    // Récupérer d'abord les informations utilisateur depuis l'API
+    this.authService.getCurrentUserFromAPI().subscribe({
+      next: (currentUser) => {
+        console.log('✅ [Media] Utilisateur récupéré avec succès:', currentUser);
+        
+        // Vérifier si l'utilisateur a une entreprise associée
+        if (!currentUser.companyId) {
+          this.errorMessage = this.currentLang === 'fr' 
+            ? 'Aucune entreprise associée à votre compte'
+            : 'No company associated with your account';
+          this.isLoading = false;
+          return;
+        }
 
-    console.log('🔍 [Media] Chargement de l\'entreprise avec ID fixe: 1');
+        console.log('🔍 [Media] Chargement de l\'entreprise avec ID:', currentUser.companyId);
 
-    // ✅ Appel direct avec companyId = 1
-    this.companyService.getCompanyById(1).subscribe({
+        // Charger les données de l'entreprise avec le companyId récupéré
+        this.companyService.getCompanyById(currentUser.companyId).subscribe({
+          next: (company: Company) => {
+            console.log('✅ [Media] Entreprise chargée avec succès:', company);
+            this.companyData = company;
+            
+            // Charger les photos depuis les pictures de l'entreprise
+            if (company.pictures && company.pictures.length > 0) {
+              this.photos = company.pictures;
+              console.log(`📸 [Media] ${this.photos.length} photos chargées`);
+            }
+            
+            // Charger l'URL de la vidéo
+            if (company.videoLink) {
+              this.videoUrl = company.videoLink;
+              console.log('🎬 [Media] Vidéo chargée:', this.videoUrl);
+            }
+            
+            this.isLoading = false;
+          },
+          error: (error) => {
+            console.error('❌ [Media] Erreur lors du chargement de l\'entreprise:', error);
+            this.errorMessage = this.texts.errorLoading;
+            this.isLoading = false;
+          }
+        });
+      },
+      error: (error) => {
+        console.error('❌ [Media] Erreur lors de la récupération des informations utilisateur:', error);
+        
+        // Gestion spécifique des erreurs d'authentification
+        if (error.status === 401 || error.status === 403) {
+          this.errorMessage = this.currentLang === 'fr'
+            ? 'Session expirée. Redirection vers la page de connexion...'
+            : 'Session expired. Redirecting to login page...';
+          
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
+        } else {
+          this.errorMessage = this.currentLang === 'fr'
+            ? 'Erreur lors de la récupération de vos informations utilisateur'
+            : 'Error retrieving your user information';
+        }
+        
+        this.isLoading = false;
+        
+        // En cas d'erreur non-authentification, on peut essayer de fallback sur les données locales
+        if (error.status !== 401 && error.status !== 403) {
+          const localUser = this.authService.getCurrentUser();
+          if (localUser?.companyId) {
+            console.log('🔄 [Media] Tentative avec les données locales...');
+            this.loadCompanyFromLocalUser(localUser.companyId);
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Méthode de fallback pour charger l'entreprise depuis les données locales
+   */
+  private loadCompanyFromLocalUser(companyId: number): void {
+    this.companyService.getCompanyById(companyId).subscribe({
       next: (company: Company) => {
-        console.log('✅ [Media] Entreprise chargée:', company);
         this.companyData = company;
         
         // Charger les photos depuis les pictures de l'entreprise
@@ -157,7 +245,7 @@ export class MediaComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('❌ [Media] Erreur chargement entreprise:', error);
+        console.error('❌ [Media] Erreur lors du chargement de l\'entreprise (fallback):', error);
         this.errorMessage = this.texts.errorLoading;
         this.isLoading = false;
       }
@@ -206,7 +294,7 @@ export class MediaComponent implements OnInit, OnDestroy {
       videoUrl: this.videoUrl
     };
     
-    console.log('Saving media data:', mediaData);
+    console.log('💾 [Media] Sauvegarde des données:', mediaData);
     
     // Simuler une sauvegarde réussie
     alert(this.texts.saveSuccess);
