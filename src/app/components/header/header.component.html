@@ -1,0 +1,143 @@
+<!-- Barre de langue -->
+<div class="bg-[#132742] h-10 sm:h-12">
+  <div class="w-[90%] mx-auto flex justify-between items-center h-full text-xs sm:text-sm">
+    <div class="text-white truncate">
+      <span class="hidden sm:inline">Plateforme AmCham - Réseau des Chambres de Commerce Américaines</span>
+      <span class="sm:hidden">Plateforme AmCham</span>
+    </div>
+
+    <div class="relative language-selector border border-white/20 py-1 px-2 rounded-lg">
+      <button (click)="toggleLanguagePopup()"
+        class="text-white text-xs sm:text-sm flex items-center space-x-1 sm:space-x-2 hover:opacity-80 transition-opacity">
+        <img [src]="currentLanguage.flag" alt="" class="w-4 h-4 rounded-sm">
+        <span class="hidden sm:inline">{{ currentLanguage.code }}</span>
+        <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <!-- Popup langue -->
+      <div *ngIf="showLanguagePopup"
+        class="absolute top-full right-0 mt-1 w-48 sm:w-64 bg-gradient-to-b from-[#4a5a7a] to-[#2a3a5a] rounded-lg shadow-lg overflow-hidden z-50">
+        <div class="p-3 sm:p-4">
+          <div class="flex justify-between items-center mb-3 sm:mb-4">
+            <h3 class="text-white font-medium text-sm sm:text-base">Langue</h3>
+            <button (click)="toggleLanguagePopup()" class="text-gray-300 hover:text-white">
+              <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div (click)="selectLanguage('fr')"
+            class="flex items-center justify-between p-2 sm:p-3 rounded-lg mb-2 cursor-pointer hover:bg-black/20 transition-colors"
+            [class.border-2]="currentLanguage.code === 'FR'" [class.border-red-500]="currentLanguage.code === 'FR'">
+            <div class="flex items-center space-x-3">
+              <img src="https://flagcdn.com/w20/fr.png" alt="Français" class="w-5 h-5 rounded-sm">
+              <span class="text-white text-sm">Français</span>
+            </div>
+            <div *ngIf="currentLanguage.code === 'FR'" class="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+              <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+
+          <div (click)="selectLanguage('en')"
+            class="flex items-center justify-between p-2 sm:p-3 rounded-lg cursor-pointer hover:bg-black/20 transition-colors"
+            [class.border-2]="currentLanguage.code === 'EN'" [class.border-red-500]="currentLanguage.code === 'EN'">
+            <div class="flex items-center space-x-3">
+              <img src="https://flagcdn.com/w20/gb.png" alt="English" class="w-5 h-5 rounded-sm">
+              <span class="text-white text-sm">Anglais</span>
+            </div>
+            <div *ngIf="currentLanguage.code === 'EN'" class="w-4 h-4 border-2 border-gray-400 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="sticky top-0 bg-white shadow-sm border-b z-40">
+  <div class="w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16 sm:h-20">
+      <!-- Logo -->
+      <div class="flex-shrink-0 cursor-pointer" (click)="navigateToHome()">
+        <img class="h-10 sm:h-16" src="../assets/logoAmcham.png" alt="Logo AmCham">
+      </div>
+
+      <!-- Menu desktop -->
+      <nav class="hidden md:flex space-x-6 lg:space-x-8 h-full items-end">
+        <a (click)="navigateToAccueil()"
+          class="px-2 lg:px-3 py-1 text-base lg:text-xl font-bold border-b-4 transition-all"
+          [ngClass]="{
+            'text-red-600 border-red-600': isActive('accueil'),
+            'text-gray-700 hover:text-red-600 border-transparent hover:border-red-300': !isActive('accueil')
+          }">
+          Accueil
+        </a>
+
+        <a (click)="navigateToAnnonces()"
+          class="px-2 lg:px-3 py-1 text-base lg:text-xl font-bold border-b-4 transition-all"
+          [ngClass]="{
+            'text-red-600 border-red-600': isActive('annonces'),
+            'text-gray-700 hover:text-red-600 border-transparent hover:border-red-300': !isActive('annonces')
+          }">
+          Annonces
+        </a>
+
+        <a (click)="navigateToAnnuaires()"
+          class="px-2 lg:px-3 py-1 text-base lg:text-xl font-bold border-b-4 transition-all"
+          [ngClass]="{
+            'text-red-600 border-red-600': isActive('annuaires'),
+            'text-gray-700 hover:text-red-600 border-transparent hover:border-red-300': !isActive('annuaires')
+          }">
+          Annuaires
+        </a>
+      </nav>
+
+      <!-- Bouton membre -->
+       <div class="hidden sm:flex items-center">
+        <button (click)="navigateToLogin()"
+          class="bg-red-600 hover:bg-red-700 text-white p-4 rounded-[30px] text-md font-semibold flex items-center space-x-2 transition-colors">
+          <svg width="19" height="20" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 8.492C16 4.08 12.416 0.5 8 0.5C3.584 0.5 0 4.08 0 8.492C0 10.922 1.104 13.112 2.832 14.582C2.848 14.598 2.864 14.598 2.864 14.614C3.008 14.726 3.152 14.838 3.312 14.95C3.392 14.998 3.456 15.061 3.536 15.125C4.8586 16.0202 6.41889 16.4991 8.016 16.5C9.61311 16.4991 11.1734 16.0202 12.496 15.125C12.576 15.077 12.64 15.014 12.72 14.965C12.864 14.854 13.024 14.742 13.168 14.63C13.184 14.614 13.2 14.614 13.2 14.598C14.896 13.111 16 10.922 16 8.492ZM8 15.493C6.496 15.493 5.12 15.013 3.984 14.214C4 14.086 4.032 13.959 4.064 13.831C4.15965 13.4842 4.29947 13.1512 4.48 12.84C4.656 12.536 4.864 12.264 5.12 12.024C5.36 11.784 5.648 11.561 5.936 11.385C6.24 11.209 6.56 11.081 6.912 10.985C7.26685 10.89 7.63264 10.8419 8 10.842C9.09075 10.8337 10.1415 11.2522 10.928 12.008C11.296 12.376 11.584 12.8077 11.792 13.303C11.904 13.591 11.984 13.8947 12.032 14.214C10.8512 15.0442 9.44343 15.4907 8 15.493ZM5.552 8.093C5.41131 7.77013 5.34043 7.42117 5.344 7.069C5.344 6.718 5.408 6.366 5.552 6.046C5.696 5.726 5.888 5.439 6.128 5.199C6.368 4.959 6.656 4.768 6.976 4.624C7.296 4.48 7.648 4.416 8 4.416C8.368 4.416 8.704 4.48 9.024 4.624C9.344 4.768 9.632 4.96 9.872 5.199C10.112 5.439 10.304 5.727 10.448 6.046C10.592 6.366 10.656 6.718 10.656 7.069C10.656 7.437 10.592 7.773 10.448 8.092C10.3098 8.4077 10.1145 8.69519 9.872 8.94C9.6271 9.18219 9.33963 9.37712 9.024 9.515C8.36272 9.78617 7.62128 9.78617 6.96 9.515C6.64437 9.37712 6.3569 9.18219 6.112 8.94C5.86925 8.69865 5.67864 8.41102 5.552 8.093ZM12.976 13.399C12.976 13.367 12.96 13.351 12.96 13.319C12.8029 12.8183 12.571 12.3443 12.272 11.913C11.9728 11.4786 11.6054 11.0953 11.184 10.778C10.8621 10.5357 10.5131 10.3317 10.144 10.17C10.3111 10.0582 10.4666 9.92989 10.608 9.787C10.8465 9.5515 11.056 9.2883 11.232 9.003C11.5876 8.42133 11.7707 7.75066 11.76 7.069C11.7652 6.56449 11.6672 6.06424 11.472 5.599C11.2795 5.15065 11.0025 4.74357 10.656 4.4C10.3092 4.06105 9.90226 3.78974 9.456 3.6C8.99007 3.40485 8.48911 3.30718 7.984 3.313C7.47882 3.3075 6.97786 3.40551 6.512 3.601C6.06084 3.78843 5.65256 4.06572 5.312 4.416C4.97128 4.76097 4.69973 5.16795 4.512 5.615C4.31678 6.08024 4.21877 6.58049 4.224 7.085C4.224 7.437 4.272 7.77267 4.368 8.092C4.464 8.428 4.592 8.732 4.768 9.019C4.928 9.307 5.152 9.563 5.392 9.803C5.536 9.947 5.696 10.0747 5.872 10.186C5.5013 10.351 5.15206 10.5606 4.832 10.81C4.416 11.13 4.048 11.513 3.744 11.929C3.44227 12.3586 3.2101 12.8331 3.056 13.335C3.04 13.367 3.04 13.399 3.04 13.415C1.776 12.136 0.992 10.41 0.992 8.492C0.992 4.64 4.144 1.491 8 1.491C11.856 1.491 15.008 4.64 15.008 8.492C15.0059 10.332 14.2753 12.0962 12.976 13.399Z" fill="#E9EEF9"/>
+          </svg>
+          <span>Espace membre</span>
+        </button>
+      </div>
+
+      <!-- Bouton menu mobile -->
+      <div class="md:hidden flex items-center">
+        <button (click)="isMenuOpen = !isMenuOpen"
+          class="text-gray-700 hover:text-red-600 focus:outline-none focus:text-red-600">
+          <svg *ngIf="!isMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg *ngIf="isMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu mobile -->
+    <div *ngIf="isMenuOpen" class="md:hidden bg-gray-50 border-t animate-fadeIn">
+      <nav class="flex flex-col space-y-2 py-3">
+        <a (click)="navigateToAccueil(); isMenuOpen=false"
+          class="px-4 py-2 text-gray-700 hover:text-red-600 font-semibold">Accueil</a>
+        <a (click)="navigateToAnnonces(); isMenuOpen=false"
+          class="px-4 py-2 text-gray-700 hover:text-red-600 font-semibold">Annonces</a>
+        <a (click)="navigateToAnnuaires(); isMenuOpen=false"
+          class="px-4 py-2 text-gray-700 hover:text-red-600 font-semibold">Annuaires</a>
+        <a (click)="navigateToLogin(); isMenuOpen=false"
+          class="px-4 py-2 text-red-600 font-semibold">Espace membre</a>
+      </nav>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,113 @@
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <!-- État de chargement pour les cartes dynamiques -->
+  <div *ngIf="loading && type === 'members'" class="col-span-3">
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div class="flex items-center justify-center py-4">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mr-3"></div>
+              <p class="text-gray-600">{{ texts.loading }}</p>
+          </div>
+      </div>
+  </div>
+
+  <!-- Message d'erreur pour les cartes dynamiques -->
+  <div *ngIf="error && !loading && type === 'members'" class="col-span-3">
+      <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+          <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                  <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span class="text-red-700">{{ texts.error }}</span>
+              </div>
+              <button 
+                  (click)="reloadData()"
+                  class="text-sm text-red-700 hover:text-red-900 underline"
+              >
+                  {{ currentLang === 'fr' ? 'Réessayer' : 'Retry' }}
+              </button>
+          </div>
+      </div>
+  </div>
+
+  <!-- Carte 1 - Membres totaux (Dynamique) -->
+  <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+      <div class="flex items-center justify-between">
+          <div class="flex items-center">
+              <div class="flex-shrink-0">
+                  <div class="w-12 h-12 bg-[#1D365D] rounded-full flex items-center justify-center">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 8.25C11.0054 8.25 10.0516 8.64509 9.34835 9.34835C8.64509 10.0516 8.25 11.0054 8.25 12C8.25 12.9946 8.64509 13.9484 9.34835 14.6517C10.0516 15.3549 11.0054 15.75 12 15.75C12.9946 15.75 13.9484 15.3549 14.6517 14.6517C15.3549 13.9484 15.75 12.9946 15.75 12C15.75 11.0054 15.3549 10.0516 14.6517 9.34835C13.9484 8.64509 12.9946 8.25 12 8.25ZM9.75 12C9.75 11.4033 9.98705 10.831 10.409 10.409C10.831 9.98705 11.4033 9.75 12 9.75C12.5967 9.75 13.169 9.98705 13.591 10.409C14.0129 10.831 14.25 11.4033 14.25 12C14.25 12.5967 14.0129 13.169 13.591 13.591C13.169 14.0129 12.5967 14.25 12 14.25C11.4033 14.25 10.831 14.0129 10.409 13.591C9.98705 13.169 9.75 12.5967 9.75 12Z" fill="white"/>
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 3.25C7.486 3.25 4.445 5.954 2.68 8.247L2.649 8.288C2.249 8.807 1.882 9.284 1.633 9.848C1.366 10.453 1.25 11.112 1.25 12C1.25 12.888 1.366 13.547 1.633 14.152C1.883 14.716 2.25 15.194 2.649 15.712L2.681 15.753C4.445 18.046 7.486 20.75 12 20.75C16.514 20.75 19.555 18.046 21.32 15.753L21.351 15.712C21.751 15.194 22.118 14.716 22.367 14.152C22.634 13.547 22.75 12.888 22.75 12C22.75 11.112 22.634 10.453 22.367 9.848C22.117 9.284 21.75 8.807 21.351 8.288L21.319 8.247C19.555 5.954 16.514 3.25 12 3.25ZM3.87 9.162C5.498 7.045 8.15 4.75 12 4.75C15.85 4.75 18.501 7.045 20.13 9.162C20.57 9.732 20.826 10.072 20.995 10.454C21.153 10.812 21.25 11.249 21.25 12C21.25 12.751 21.153 13.188 20.995 13.546C20.826 13.928 20.569 14.268 20.131 14.838C18.5 16.955 15.85 19.25 12 19.25C8.15 19.25 5.499 16.955 3.87 14.838C3.43 14.268 3.174 13.928 3.005 13.546C2.847 13.188 2.75 12.751 2.75 12C2.75 11.249 2.847 10.812 3.005 10.454C3.174 10.072 3.432 9.732 3.87 9.162Z" fill="white"/>
+                      </svg>
+                  </div>
+              </div>
+              <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-500">{{texts.totalMembers}}</p>
+                  <p class="text-2xl font-bold text-gray-900">
+                      {{type === 'announcements' ? computedStats.totalAnnouncements : formatNumber(computedStats.totalMembers)}}
+                  </p>
+              </div>
+          </div>
+          <div class="text-right">
+              <span class="inline-flex items-center text-sm font-medium" 
+                    [class]="getGrowthClass(computedStats.memberGrowth)">
+                  {{formatGrowth(computedStats.memberGrowth)}} {{texts.sinceLastMonth}}
+              </span>
+          </div>
+      </div>
+  </div>
+
+  <!-- Carte 2 - Recherches (Dynamique) -->
+  <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+      <div class="flex items-center justify-between">
+          <div class="flex items-center">
+              <div class="flex-shrink-0">
+                  <div class="w-12 h-12 bg-[#1D365D] rounded-full flex items-center justify-center">
+                      <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M18.697 16.617L22.98 20.899L21.565 22.314L17.283 18.031C15.6898 19.3082 13.708 20.0029 11.666 20C6.69802 20 2.66602 15.968 2.66602 11C2.66602 6.032 6.69802 2 11.666 2C16.634 2 20.666 6.032 20.666 11C20.6689 13.042 19.9742 15.0237 18.697 16.617ZM16.691 15.875C17.9599 14.5697 18.6686 12.8204 18.666 11C18.666 7.133 15.533 4 11.666 4C7.79902 4 4.66602 7.133 4.66602 11C4.66602 14.867 7.79902 18 11.666 18C13.4864 18.0025 15.2357 17.2938 16.541 16.025L16.691 15.875Z" fill="white"/>
+                      </svg>
+                  </div>
+              </div>
+              <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-500">{{texts.searches}}</p>
+                  <p class="text-2xl font-bold text-gray-900">
+                      {{type === 'announcements' ? computedStats.publishedAnnouncements : formatNumber(computedStats.searches)}}
+                  </p>
+              </div>
+          </div>
+          <div class="text-right">
+              <span class="inline-flex items-center text-sm font-medium" 
+                    [class]="getGrowthClass(computedStats.searchGrowth)">
+                  {{formatGrowth(computedStats.searchGrowth)}} {{texts.sinceLastWeek}}
+              </span>
+          </div>
+      </div>
+  </div>
+
+  <!-- Carte 3 - Clics sur publicités (Statique pour l'instant) -->
+  <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+      <div class="flex items-center justify-between">
+          <div class="flex items-center">
+              <div class="flex-shrink-0">
+                  <div class="w-12 h-12 bg-[#1D365D] rounded-full flex items-center justify-center">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M21 3.6V20.4C21 20.5591 20.9368 20.7117 20.8243 20.8243C20.7117 20.9368 20.5591 21 20.4 21H3.6C3.44087 21 3.28826 20.9368 3.17574 20.8243C3.06321 20.7117 3 20.5591 3 20.4V3.6C3 3.44087 3.06321 3.28826 3.17574 3.17574C3.28826 3.06321 3.44087 3 3.6 3H20.4C20.5591 3 20.7117 3.06321 20.8243 3.17574C20.9368 3.28826 21 3.44087 21 3.6Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M3 16L10 13L21 18M16 10C15.4696 10 14.9609 9.78929 14.5858 9.41421C14.2107 9.03914 14 8.53043 14 8C14 7.46957 14.2107 6.96086 14.5858 6.58579C14.9609 6.21071 15.4696 6 16 6C16.5304 6 17.0391 6.21071 17.4142 6.58579C17.7893 6.96086 18 7.46957 18 8C18 8.53043 17.7893 9.03914 17.4142 9.41421C17.0391 9.78929 16.5304 10 16 10Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                  </div>
+              </div>
+              <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-500">{{texts.adClicks}}</p>
+                  <p class="text-2xl font-bold text-gray-900">
+                      {{type === 'announcements' ? computedStats.draftAnnouncements : formatNumber(computedStats.adClicks)}}
+                  </p>
+              </div>
+          </div>
+          <div class="text-right">
+              <span class="inline-flex items-center text-sm font-medium text-emerald-600">
+                  {{getGrowthText()}}
+              </span>
+          </div>
+      </div>
+  </div>
+</div>

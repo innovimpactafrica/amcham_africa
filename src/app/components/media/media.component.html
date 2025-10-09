@@ -1,0 +1,282 @@
+<app-header-membre></app-header-membre>
+
+<!-- Container principal -->
+<div class="min-h-screen bg-gray-50 ">
+  <!-- Contenu principal -->
+  <div class="w-[92%] mx-auto px-6 py-8">
+    
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="flex justify-center items-center py-12">
+      <div class="text-center">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <p class="mt-4 text-gray-600">{{ texts.loading }}</p>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="errorMessage && !isLoading" class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+      <div class="flex items-center text-red-700">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span class="font-medium">{{ errorMessage }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading && !errorMessage" class="flex gap-8">
+      <!-- Sidebar gauche -->
+      <div class="w-80 space-y-6">
+        <!-- Info company card -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-blue-900 rounded-[50%] flex items-center justify-center mr-4">
+              <img class="h-12 w-12 rounded-[50%]" src="../assets/logoW.png" alt="">
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900">{{ companyData?.name || 'Nom de l\'entreprise' }}</h3>
+              <p class="text-sm text-gray-500">{{ companyData?.sector || 'Secteur' }}</p>
+            </div>
+          </div>
+          
+          <div class="space-y-3 text-sm text-gray-600">
+            <div *ngIf="companyData?.address" class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+              </svg>
+              {{ companyData?.address }}
+            </div>
+            <div *ngIf="companyData?.telephone" class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+              </svg>
+              {{ companyData?.telephone }}
+            </div>
+            <div *ngIf="companyData?.videoLink" class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z"></path>
+              </svg>
+              {{ companyData?.videoLink }}
+            </div>
+          </div>
+
+          <!-- Profile visibility alert -->
+          <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start">
+            <svg class="w-5 h-5 text-red-400 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            <div>
+              <p class="text-sm text-red-800 font-medium">{{ texts.profilePreview }}</p>
+            </div>
+            <button class="ml-auto text-red-400 hover:text-red-600 transition-colors">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenu principal -->
+      <div class="flex-1 space-y-8">
+        <!-- Galerie photos -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <div class="flex items-start justify-between mb-6">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ texts.galleryTitle }}</h2>
+              <p class="text-sm text-gray-600">
+                {{ texts.galleryDescription }}
+              </p>
+            </div>
+            
+            <!-- Upload button dans le header -->
+            <div class="flex flex-col items-end">
+              <label class="cursor-pointer flex items-center px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors mb-1">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                {{ texts.addPhoto }}
+                <input
+                  type="file"
+                  (change)="onPhotoSelected($event)"
+                  accept="image/*"
+                  multiple
+                  class="hidden"
+                >
+              </label>
+              <p class="text-xs text-gray-500">{{ texts.fileFormat }}</p>
+            </div>
+          </div>
+          
+          <!-- Photos existantes avec layout adaptatif -->
+          <div *ngIf="photos.length > 0" class="mb-6">
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Photos existantes -->
+              <div *ngFor="let photo of photos; let i = index" class="relative group">
+                <div class="aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                  <img 
+                    [src]="'https://wakana.online/repertoire_amchams/'+ photo" 
+                    [alt]="'Photo entreprise ' + (i + 1)" 
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                  >
+                </div>
+                <!-- Overlay avec bouton de suppression -->
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 rounded-lg flex items-center justify-center">
+                  <button 
+                    (click)="removePhoto(i)"
+                    class="w-10 h-10 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center hover:bg-red-600 transform hover:scale-110 shadow-lg"
+                    [attr.aria-label]="texts.deletePhoto"
+                  >
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- État vide -->
+          <div *ngIf="photos.length === 0" class="text-center py-16 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+            <div class="max-w-sm mx-auto">
+              <svg class="w-20 h-20 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <h3 class="text-lg font-medium text-gray-900 mb-2">{{ texts.noPhotos }}</h3>
+              <p class="text-sm text-gray-500 mb-6">{{ texts.noPhotosDescription }}</p>
+              <label class="cursor-pointer inline-flex items-center px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors shadow-sm">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                {{ texts.addPhotos }}
+                <input
+                  type="file"
+                  (change)="onPhotoSelected($event)"
+                  accept="image/*"
+                  multiple
+                  class="hidden"
+                >
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vidéo de présentation -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <div class="mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ texts.videoTitle }}</h2>
+            <p class="text-sm text-gray-600">
+              {{ texts.videoDescription }}
+            </p>
+          </div>
+          
+          <!-- URL de la vidéo -->
+          <div class="mb-6">
+            <label for="videoUrl" class="block text-sm font-medium text-gray-700 mb-2">
+              {{ texts.videoUrlLabel }}
+            </label>
+            <div class="relative">
+              <input
+                type="url"
+                id="videoUrl"
+                (input)="onVideoUrlChange($event)"
+                [placeholder]="texts.videoUrlPlaceholder"
+                [value]="videoUrl"
+                class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                [class.border-red-300]="videoUrl && !isValidVideoUrl(videoUrl)"
+                [class.border-green-300]="videoUrl && isValidVideoUrl(videoUrl)"
+              >
+              <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z"></path>
+              </svg>
+              
+              <!-- Indicateur de validation -->
+              <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <svg *ngIf="videoUrl && isValidVideoUrl(videoUrl)" class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <svg *ngIf="videoUrl && !isValidVideoUrl(videoUrl)" class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">
+              {{ texts.videoUrlHelp }}
+            </p>
+            <div *ngIf="videoUrl && !isValidVideoUrl(videoUrl)" class="text-sm text-red-600 mt-2">
+              {{ texts.invalidUrl }}
+            </div>
+          </div>
+          
+          <!-- Aperçu de la vidéo -->
+          <div *ngIf="videoUrl && isValidVideoUrl(videoUrl)" class="relative">
+            <div class="aspect-video bg-gray-900 rounded-lg overflow-hidden shadow-lg ring-1 ring-gray-200">
+              <!-- Vidéo intégrée -->
+              <iframe 
+                [src]="getEmbedUrl(videoUrl)"
+                class="w-full h-full"
+                frameborder="0"
+                allowfullscreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                loading="lazy">
+              </iframe>
+              
+              <!-- Overlay avec contrôles -->
+              <div class="absolute top-4 right-4 flex space-x-2">
+                <button 
+                  (click)="videoUrl = ''"
+                  class="w-10 h-10 bg-white bg-opacity-90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-opacity-100 transition-all shadow-lg group"
+                  [attr.title]="texts.deleteVideo"
+                >
+                  <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Informations de la vidéo -->
+            <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+              <div class="flex items-center text-sm text-gray-600">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <span>{{ texts.videoEmbedded }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- État vide pour la vidéo ou URL invalide -->
+          <div *ngIf="!videoUrl || !isValidVideoUrl(videoUrl)" class="text-center py-16 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+            <div class="max-w-sm mx-auto">
+              <svg class="w-20 h-20 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+              </svg>
+              <h3 class="text-lg font-medium text-gray-900 mb-2">
+                {{ !videoUrl ? texts.noVideo : texts.invalidVideo }}
+              </h3>
+              <p class="text-sm text-gray-500">
+                {{ !videoUrl ? texts.noVideoDescription : texts.invalidVideoDescription }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bouton de sauvegarde -->
+        <div class="flex justify-end pt-4">
+          <button
+            (click)="saveChanges()"
+            class="px-6 py-3 text-white font-medium rounded-lg transition-all duration-200 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
+            style="background-color: #1D365D"
+          >
+            <span class="flex items-center">
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              {{ texts.saveButton }}
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

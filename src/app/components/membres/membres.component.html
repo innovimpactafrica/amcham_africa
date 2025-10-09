@@ -1,0 +1,466 @@
+<app-header-admin></app-header-admin>
+
+<div class="min-h-screen bg-gray-50 p-6">
+  <app-card-state [type]="'members'"></app-card-state>
+
+  <!-- Members Management Section -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 mt-6">
+    <!-- Header -->
+    <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="text-xl font-semibold text-gray-900">{{texts.membersManagement || 'Gestion des membres'}}</h2>
+      
+      <!-- Add Member Button -->
+      <button 
+        type="button" 
+        class="inline-flex items-center px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-800"
+        (click)="openAddMemberModal()">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        {{texts.addMember || 'Ajouter un membre'}}
+      </button>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="px-6 py-4 border-b border-gray-100">
+      <div class="flex flex-col md:flex-row md:items-center gap-4">
+        <!-- Search Input -->
+        <div class="relative flex-1">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" 
+            [placeholder]="texts.searchPlaceholder || 'Rechercher ici...'"
+            (input)="onSearch($event)">
+        </div>
+
+        <!-- Status Filter -->
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+          </svg>
+          <select 
+            class="block pl-4 pr-10 py-2.5 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-lg transition-colors min-w-[180px]"
+            (change)="onStatusFilter($event)">
+            <option value="all">{{texts.allStatuses || 'Tous les statuts'}}</option>
+            <option value="Actif">{{texts.active || 'Actif'}}</option>
+            <option value="Inactif">{{texts.inactive || 'Inactif'}}</option>
+            <option value="En attente">{{texts.pending || 'En attente'}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-16">
+      <div class="inline-block h-12 w-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      <p class="mt-4 text-gray-600">{{texts.loading || 'Chargement...'}}</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !isLoading" class="px-6 py-8">
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div class="flex">
+          <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+          </svg>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800">{{error}}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Members Table -->
+    <div *ngIf="!isLoading && !error" class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
+              {{texts.name || 'Nom'}}
+            </th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
+              {{texts.country || 'Pays'}}
+            </th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
+              {{texts.status || 'Statut'}}
+            </th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
+              {{texts.date || 'Date'}}
+            </th>
+            <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
+              {{texts.actions || 'Actions'}}
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y  divide-gray-100">
+          <tr *ngFor="let membre of filteredMembres" class="hover:bg-gray-50 transition-colors">
+            <!-- Nom avec logo -->
+          
+       
+            <td class="px-6 py-5">
+
+         
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-12 w-12 rounded-lg overflow-hidden">
+                  <img [src]=" 'https://wakana.online/repertoire_amchams/'+ membre.logo" [alt]="" class="h-full w-full object-cover">
+                </div>
+            
+                <div class="ml-4 right-12">
+                  <div class="text-sm font-semibold text-gray-900">{{membre.nom}}</div>
+                  <div class="text-sm text-gray-500">{{membre.secteur}}</div>
+                </div>
+              </div>
+            </td>
+            
+            <!-- Pays -->
+            <td class="px-6 py-5">
+              <div class="text-sm text-gray-900">{{membre.pays}}</div>
+            </td>
+            
+            <!-- Statut -->
+            <td class="px-6 py-5">
+              <span class="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full" 
+                    [ngClass]="{
+                      'bg-emerald-100 text-emerald-700': membre.statut === 'Actif' || membre.statut === 'Active',
+                      'bg-red-100 text-red-700': membre.statut === 'Inactif' || membre.statut === 'Inactive',
+                      'bg-amber-100 text-amber-700': membre.statut === 'En attente' || membre.statut === 'Pending'
+                    }">
+                <span class="w-1.5 h-1.5 rounded-full mr-2" 
+                      [ngClass]="{
+                        'bg-emerald-500': membre.statut === 'Actif' || membre.statut === 'Active',
+                        'bg-red-500': membre.statut === 'Inactif' || membre.statut === 'Inactive',
+                        'bg-amber-500': membre.statut === 'En attente' || membre.statut === 'Pending'
+                      }"></span>
+                {{membre.statut}}
+              </span>
+            </td>
+            
+            <!-- Date -->
+            <td class="px-6 py-5 text-sm text-gray-600">
+              {{membre.date}}
+            </td>
+            
+            <!-- Actions -->
+            <td class="px-6 py-5">
+              <div class="flex items-center space-x-3">
+                <!-- View Button -->
+                <button 
+                  class="text-gray-400 hover:text-blue-600 transition-colors p-1"
+                  (click)="viewMember(membre)"
+                  title="Voir">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                </button>
+                
+                <!-- Edit Button -->
+                <button 
+                  class="text-gray-400 hover:text-orange-500 transition-colors p-1"
+                  (click)="editMember(membre)"
+                  title="Modifier">
+                  <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4.16667 15.8333H5.35417L13.5 7.6875L12.3125 6.5L4.16667 14.6458V15.8333ZM2.5 17.5V13.9583L13.5 2.97917C13.6667 2.82639 13.8508 2.70833 14.0525 2.625C14.2542 2.54167 14.4658 2.5 14.6875 2.5C14.9092 2.5 15.1244 2.54167 15.3333 2.625C15.5422 2.70833 15.7228 2.83333 15.875 3L17.0208 4.16667C17.1875 4.31944 17.3092 4.5 17.3858 4.70833C17.4625 4.91667 17.5006 5.125 17.5 5.33333C17.5 5.55556 17.4619 5.7675 17.3858 5.96917C17.3097 6.17083 17.1881 6.35472 17.0208 6.52083L6.04167 17.5H2.5ZM12.8958 7.10417L12.3125 6.5L13.5 7.6875L12.8958 7.10417Z" fill="#F68647"/>
+                    </svg>
+                    
+                </button>
+
+                <!-- Status Toggle -->
+                <button 
+                  class="relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        [ngClass]="{
+                          'bg-blue-600': membre.statut === 'Actif' || membre.statut === 'Active',
+                          'bg-gray-200': membre.statut !== 'Actif' && membre.statut !== 'Active'
+                        }"
+                        (click)="toggleMemberStatus(membre)">
+                  <span class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                        [ngClass]="{
+                          'translate-x-5': membre.statut === 'Actif' || membre.statut === 'Active',
+                          'translate-x-0': membre.statut !== 'Actif' && membre.statut !== 'Active'
+                        }"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && !error && filteredMembres.length === 0" class="text-center py-16">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+      </svg>
+      <h3 class="mt-4 text-lg font-medium text-gray-900">Aucun membre trouvé</h3>
+      <p class="mt-2 text-sm text-gray-500">Essayez de modifier vos critères de recherche ou de filtre.</p>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!isLoading && !error && totalPages > 1" class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+      <div class="flex-1 flex justify-between sm:hidden">
+        <button 
+          [disabled]="currentPage === 0"
+          (click)="currentPage = currentPage - 1; loadMembres()"
+          class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+          Précédent
+        </button>
+        <button 
+          [disabled]="currentPage === totalPages - 1"
+          (click)="currentPage = currentPage + 1; loadMembres()"
+          class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+          Suivant
+        </button>
+      </div>
+      <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm text-gray-700">
+            Affichage de <span class="font-medium">{{currentPage * pageSize + 1}}</span> à 
+            <span class="font-medium">{{Math.min((currentPage + 1) * pageSize, totalElements)}}</span> sur 
+            <span class="font-medium">{{totalElements}}</span> résultats
+          </p>
+        </div>
+        <div>
+          <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <button 
+              [disabled]="currentPage === 0"
+              (click)="currentPage = currentPage - 1; loadMembres()"
+              class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              <span class="sr-only">Précédent</span>
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </button>
+            <button 
+              [disabled]="currentPage === totalPages - 1"
+              (click)="currentPage = currentPage + 1; loadMembres()"
+              class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              <span class="sr-only">Suivant</span>
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Member Modal -->
+<div *ngIf="showAddMemberModal" class="fixed inset-0 overflow-y-auto z-50">
+  <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <!-- Background overlay -->
+    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 transition-opacity" aria-hidden="true" (click)="closeAddMemberModal()"></div>
+
+    <!-- Modal panel -->
+    <div class="inline-block align-bottom bg-white rounded-xl px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
+      <div class="absolute top-0 right-0 pt-4 pr-4">
+        <button type="button" (click)="closeAddMemberModal()" class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none">
+          <span class="sr-only">Fermer</span>
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="sm:flex sm:items-start">
+        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+          <h3 class="text-xl leading-6 font-semibold text-gray-900 mb-6" id="modal-title">
+            {{texts.newMember || 'Nouveau membre'}}
+          </h3>
+          
+          <form [formGroup]="memberForm" (ngSubmit)="onSubmit()" class="space-y-5">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <!-- Nom de l'entreprise -->
+              <div class="sm:col-span-2">
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                  {{texts.companyName || 'Nom de l\'entreprise'}} <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="name" 
+                  formControlName="name" 
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  [placeholder]="texts.enter + ' ' + texts.companyName">
+              </div>
+
+              <!-- Description -->
+              <div class="sm:col-span-2">
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                  Description <span class="text-red-500">*</span>
+                </label>
+                <textarea 
+                  id="description" 
+                  formControlName="description" 
+                  rows="3" 
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                  placeholder="Description de l'entreprise"></textarea>
+              </div>
+
+              <!-- Secteur -->
+              <div>
+                <label for="sectorId" class="block text-sm font-medium text-gray-700 mb-2">
+                  {{texts.activitySector || 'Secteur d\'activité'}} <span class="text-red-500">*</span>
+                </label>
+                <select 
+                  id="sectorId" 
+                  formControlName="sectorId" 
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                  <option value="">{{texts.select || 'Sélectionner'}}</option>
+                  <option value="1">{{texts.technology || 'Technologie'}}</option>
+                  <option value="2">{{texts.finance || 'Finance'}}</option>
+                  <option value="3">{{texts.health || 'Santé'}}</option>
+                  <option value="4">{{texts.education || 'Éducation'}}</option>
+                </select>
+              </div>
+
+              <!-- Pays AMCHAM (caché, utilise la valeur par défaut) -->
+              <input type="hidden" formControlName="countryAmchamId">
+
+              <!-- Adresse -->
+              <div class="sm:col-span-2">
+                <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                  {{texts.companyAddress || 'Adresse de l\'entreprise'}} <span class="text-red-500">*</span>
+                </label>
+                <textarea 
+                  id="address" 
+                  formControlName="address" 
+                  rows="2" 
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"></textarea>
+              </div>
+
+              <!-- Téléphone -->
+              <div>
+                <label for="telephone" class="block text-sm font-medium text-gray-700 mb-2">
+                  {{texts.companyPhone || 'Téléphone'}} <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="tel" 
+                  id="telephone" 
+                  formControlName="telephone" 
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                  {{texts.companyEmail || 'Email'}} <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  formControlName="email" 
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+              </div>
+
+              <!-- Site Web -->
+              <div>
+                <label for="webLink" class="block text-sm font-medium text-gray-700 mb-2">
+                  {{texts.website || 'Site web'}}
+                </label>
+                <input 
+                  type="url" 
+                  id="webLink" 
+                  formControlName="webLink" 
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  placeholder="https://exemple.com">
+              </div>
+
+              <!-- Lien vidéo -->
+              <div>
+                <label for="videoLink" class="block text-sm font-medium text-gray-700 mb-2">
+                  {{texts.videoLink || 'Lien vidéo'}}
+                </label>
+                <input 
+                  type="url" 
+                  id="videoLink" 
+                  formControlName="videoLink" 
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  placeholder="https://youtube.com/...">
+              </div>
+
+              <!-- Latitude -->
+              <div>
+                <label for="lat" class="block text-sm font-medium text-gray-700 mb-2">
+                  {{texts.latitude || 'Latitude'}}
+                </label>
+                <input 
+                  type="number" 
+                  step="any"
+                  id="lat" 
+                  formControlName="lat" 
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  placeholder="0.0">
+              </div>
+
+              <!-- Longitude -->
+              <div>
+                <label for="lon" class="block text-sm font-medium text-gray-700 mb-2">
+                  {{texts.longitude || 'Longitude'}}
+                </label>
+                <input 
+                  type="number" 
+                  step="any"
+                  id="lon" 
+                  formControlName="lon" 
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  placeholder="0.0">
+              </div>
+
+              <!-- Logo -->
+              <div class="sm:col-span-2">
+                <label for="logoFile" class="block text-sm font-medium text-gray-700 mb-2">
+                  {{texts.logo || 'Logo'}}
+                </label>
+                <div class="mt-1 flex items-center gap-3">
+                  <input 
+                    type="file" 
+                    id="logoFile" 
+                    (change)="onFileSelected($event)" 
+                    class="sr-only" 
+                    accept="image/*">
+                  <label 
+                    for="logoFile" 
+                    class="inline-flex items-center px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none cursor-pointer transition-colors">
+                    <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    {{texts.chooseFile || 'Choisir un fichier'}}
+                  </label>
+                  <span class="text-sm text-gray-500">
+                    {{selectedFileName || (texts.noFileChosen || 'Aucun fichier choisi')}}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-8 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3 pt-5 border-t border-gray-200">
+              <button 
+                type="button" 
+                (click)="closeAddMemberModal()" 
+                class="mt-3 sm:mt-0 w-full sm:w-auto inline-flex justify-center items-center px-6 py-2.5 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                {{texts.cancel || 'Annuler'}}
+              </button>
+              <button 
+                type="submit" 
+                [disabled]="!memberForm.valid || isLoading" 
+                class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-slate-800 hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                <svg *ngIf="isLoading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {{texts.save || 'Enregistrer'}}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

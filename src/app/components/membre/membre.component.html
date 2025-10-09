@@ -1,0 +1,245 @@
+<app-header></app-header>
+
+<div class="min-h-screen bg-[#F4F6FA]">
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-r from-[#1C365B] via-[#0C1B31] to-[#132742] text-white pt-16 pb-32 md:pt-20 md:pb-44">
+    <div class="max-w-7xl mx-auto space-y-6 md:space-y-10 px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
+        {{ texts.heroTitle }}
+      </h1>
+      <p class="text-base md:text-lg lg:text-xl text-blue-100 mb-6 md:mb-8 max-w-2xl mx-auto font-medium">
+        {{ texts.heroSubtitle }}
+      </p>
+    </div>
+  </section>
+  
+  <!-- Search Section -->
+  <section class="relative -mt-24 md:-mt-32 px-4 sm:px-6 lg:px-8 mb-8">
+    <div class="w-[90%] mx-auto">
+      <div class="bg-white rounded-xl md:rounded-2xl shadow-xl p-6 md:p-8 lg:p-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <!-- Recherche par nom -->
+          <div class="relative">
+            <label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2 md:mb-3">{{ texts.memberName }}</label>
+            <input type="text" [(ngModel)]="searchTerm" [placeholder]="texts.memberPlaceholder"
+              (keyup.enter)="rechercher()"
+              class="w-full px-4 md:px-5 py-3 md:py-4 border-2 border-gray-200 rounded-lg md:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 text-sm md:text-base transition-all duration-300 hover:border-gray-300">
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pt-7 md:pt-8">
+              <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Sélection du pays -->
+          <div>
+            <label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2 md:mb-3">{{ texts.country }}</label>
+            <select [(ngModel)]="selectedCountryId"
+              class="w-full px-4 md:px-5 py-3 md:py-4 border-2 border-gray-200 rounded-lg md:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 text-sm md:text-base transition-all duration-300 hover:border-gray-300">
+              <option [value]="undefined">{{ texts.allCountries }}</option>
+              @for (country of countries; track country.id) {
+              <option [value]="country.id">{{ country.name }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Sélection du secteur -->
+          <div>
+            <label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2 md:mb-3">{{ texts.sector }}</label>
+            <select [(ngModel)]="selectedSectorId"
+              class="w-full px-4 md:px-5 py-3 md:py-4 border-2 border-gray-200 rounded-lg md:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 text-sm md:text-base transition-all duration-300 hover:border-gray-300">
+              <option [value]="undefined">{{ texts.allSectors }}</option>
+              @for (sector of sectors; track sector.id) {
+              <option [value]="sector.id">{{ getSectorName(sector) }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Bouton de recherche -->
+          <div class="flex items-end">
+            <button (click)="rechercher()" [disabled]="isSearching"
+              class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-full transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none disabled:hover:shadow-lg flex items-center justify-center space-x-2 disabled:cursor-not-allowed">
+              @if (isSearching) {
+              <svg class="animate-spin w-4 h-4 md:w-5 md:h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+              </svg>
+              <span class="hidden sm:inline">{{ currentLang === 'fr' ? 'Recherche...' : 'Searching...' }}</span>
+              } @else {
+              <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <span>{{ texts.search }}</span>
+              }
+            </button>
+          </div>
+        </div>
+
+        <!-- Message d'erreur -->
+        @if (error) {
+        <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+          <div class="flex items-center space-x-2 text-red-700">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-sm font-medium">{{ error }}</span>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Results Section -->
+  <section class="py-8 md:py-12 lg:py-16">
+    <div class="w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Results Header -->
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ texts.ourMembers }}</h2>
+        </div>
+        <div class="text-[#224185] bg-[#E5E7EB] px-4 py-3 rounded-full font-medium">
+          {{ totalElements }} {{ texts.membersDisplayed }}
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading && filteredMembres.length === 0" class="text-center py-12 md:py-16">
+        <div class="inline-block animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-b-2 border-blue-600 mb-4"></div>
+        <p class="text-gray-600 text-base md:text-lg">{{ texts.loading }}</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error && !isLoading" class="text-center py-12 md:py-16">
+        <svg class="w-12 h-12 md:w-16 md:h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="text-red-600 text-base md:text-lg">{{ error }}</p>
+        <button (click)="loadMembres()"
+          class="mt-4 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+          Réessayer
+        </button>
+      </div>
+
+      <!-- Members Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" *ngIf="filteredMembres.length > 0 && !error">
+        <div *ngFor="let membre of filteredMembres"
+          class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <!-- Member Header -->
+          <div class="p-5 md:p-6">
+            <div class="flex items-start gap-3 md:gap-4 mb-4">
+              <!-- Logo or Icon -->
+              <div class="w-12 h-12 md:w-14 md:h-14 bg-white rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-100">
+                <img class="w-full h-full object-contain p-1" [src]="getMemberImageUrl(membre.logo)" [alt]="membre.name">
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="text-base md:text-lg font-semibold text-gray-900 truncate mb-1">{{ membre.name }}</h3>
+                <p class="text-gray-500 text-xs md:text-sm font-medium">{{ getTranslatedProperty(membre, 'category') }}</p>
+              </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="space-y-2 mb-4">
+              <div class="flex items-start text-gray-600 text-xs md:text-sm">
+                <svg class="mr-2 w-4 h-4 flex-shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 18 18" fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M15.0001 7.5C15.0001 12.375 9.00012 16.5 9.00012 16.5C9.00012 16.5 3.00012 12.375 3.00012 7.5C3.00012 5.9087 3.63226 4.38258 4.75748 3.25736C5.8827 2.13214 7.40882 1.5 9.00012 1.5C10.5914 1.5 12.1175 2.13214 13.2428 3.25736C14.368 4.38258 15.0001 5.9087 15.0001 7.5Z"
+                    stroke="#D11E2B" stroke-width="1.5" />
+                  <path
+                    d="M11.2501 7.5C11.2501 8.09674 11.0131 8.66903 10.5911 9.09099C10.1692 9.51295 9.59686 9.75 9.00012 9.75C8.40338 9.75 7.83109 9.51295 7.40913 9.09099C6.98717 8.66903 6.75012 8.09674 6.75012 7.5C6.75012 6.90326 6.98717 6.33097 7.40913 5.90901C7.83109 5.48705 8.40338 5.25 9.00012 5.25C9.59686 5.25 10.1692 5.48705 10.5911 5.90901C11.0131 6.33097 11.2501 6.90326 11.2501 7.5Z"
+                    stroke="#D11E2B" stroke-width="1.5" />
+                </svg>
+                <span class="break-words">{{ membre.address }}</span>
+              </div>
+              <div class="flex items-start text-gray-600 text-xs md:text-sm">
+                <svg class="mr-2 w-4 h-4 flex-shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 18 18" fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M4.29977 1.53247C5.21252 0.624972 6.71552 0.786223 7.47977 1.80772L8.42627 3.07072C9.04877 3.90172 8.99327 5.06272 8.25452 5.79697L8.07602 5.97547C8.05578 6.0504 8.05372 6.12909 8.07002 6.20497C8.11727 6.51097 8.37302 7.15897 9.44402 8.22397C10.515 9.28897 11.1675 9.54397 11.478 9.59197C11.5563 9.60771 11.6371 9.6054 11.7143 9.58522L12.0203 9.28072C12.6773 8.62822 13.6853 8.50597 14.4983 8.94772L15.9308 9.72772C17.1585 10.3937 17.4683 12.0617 16.4633 13.0615L15.3975 14.1205C15.0615 14.4542 14.61 14.7325 14.0595 14.7842C12.702 14.911 9.53927 14.749 6.21452 11.4437C3.11177 8.35822 2.51627 5.66722 2.44052 4.34122C2.40302 3.67072 2.71952 3.10372 3.12302 2.70322L4.29977 1.53247ZM6.57977 2.48197C6.19952 1.97422 5.49152 1.93372 5.09252 2.33047L3.91502 3.50047C3.66752 3.74647 3.54902 4.01797 3.56402 4.27747C3.62402 5.33122 4.10402 7.75897 7.00802 10.6465C10.0545 13.675 12.8678 13.7657 13.9553 13.6637C14.1773 13.6435 14.3978 13.528 14.604 13.3232L15.669 12.2635C16.1025 11.833 16.0073 11.0485 15.3938 10.7155L13.9613 9.93622C13.5653 9.72172 13.1018 9.79222 12.8138 10.0787L12.4725 10.4185L12.075 10.0195C12.4725 10.4185 12.4718 10.4192 12.471 10.4192L12.4703 10.4207L12.468 10.423L12.4628 10.4275L12.4515 10.438C12.4199 10.4674 12.3857 10.494 12.3495 10.5175C12.2895 10.5572 12.21 10.6015 12.1103 10.6382C11.9078 10.714 11.6393 10.7545 11.3078 10.7035C10.6575 10.6037 9.79577 10.1605 8.65052 9.02197C7.50602 7.88347 7.05902 7.02697 6.95852 6.37747C6.90677 6.04597 6.94802 5.77747 7.02452 5.57497C7.06662 5.46102 7.1269 5.35465 7.20302 5.25997L7.22702 5.23372L7.23752 5.22247L7.24202 5.21797L7.24427 5.21572L7.24577 5.21422L7.46177 4.99972C7.78277 4.67947 7.82777 4.14922 7.52552 3.74497L6.57977 2.48197Z"
+                    fill="#D11E2B" />
+                </svg>
+                <span class="break-words">{{ membre.phone }}</span>
+              </div>
+              <div class="flex items-start text-gray-600 text-xs md:text-sm">
+                <svg class="mr-2 w-4 h-4 flex-shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 18 18" fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <g clip-path="url(#clip0_1_542)">
+                    <path
+                      d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z"
+                      stroke="#D11E2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <path
+                      d="M1.5 9H16.5M9 1.5C7.07418 3.52212 6 6.20756 6 9C6 11.7924 7.07418 14.4779 9 16.5C10.9258 14.4779 12 11.7924 12 9C12 6.20756 10.9258 3.52212 9 1.5Z"
+                      stroke="#D11E2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_1_542">
+                      <rect width="18" height="18" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg>
+                <span class="break-words">{{ membre.email }}</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button
+                class="flex-1 gap-1.5 flex items-center justify-center text-[#B3343D] bg-gray-50 hover:bg-gray-100 py-3 md:py-3.5 px-4 rounded-lg text-xs md:text-sm font-medium transition-colors duration-300">
+                <svg class="w-4 h-4" width="17" height="16" viewBox="0 0 17 16" fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M3.16671 13.3332C2.80004 13.3332 2.48626 13.2027 2.22537 12.9418C1.96449 12.6809 1.83382 12.3669 1.83337 11.9998V3.99984C1.83337 3.63317 1.96404 3.31939 2.22537 3.0585C2.48671 2.79761 2.80049 2.66695 3.16671 2.6665H13.8334C14.2 2.6665 14.514 2.79717 14.7754 3.0585C15.0367 3.31984 15.1672 3.63362 15.1667 3.99984V11.9998C15.1667 12.3665 15.0363 12.6805 14.7754 12.9418C14.5145 13.2032 14.2005 13.3336 13.8334 13.3332H3.16671ZM8.50004 8.6665L3.16671 5.33317V11.9998H13.8334V5.33317L8.50004 8.6665ZM8.50004 7.33317L13.8334 3.99984H3.16671L8.50004 7.33317ZM3.16671 5.33317V3.99984V11.9998V5.33317Z"
+                    fill="#A91520" />
+                </svg>
+                <span>{{ texts.contact }}</span>
+              </button>
+              <button (click)="navigateToMembreDetails(membre.id)"
+                class="flex-1 gap-1.5 flex items-center justify-center bg-[#132742] hover:bg-[#1C365B] text-white py-3 md:py-3.5 px-4 rounded-lg text-xs md:text-sm font-medium transition-colors duration-300">
+                <svg class="w-4 h-4" width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M13.7687 5.72416C13.7371 5.65183 13.6929 5.58569 13.6381 5.52883L9.63808 1.52883C9.58122 1.47405 9.51508 1.42981 9.44275 1.39816C9.42275 1.38883 9.40141 1.3835 9.38008 1.37616C9.32428 1.35725 9.26622 1.34582 9.20741 1.34216C9.19341 1.34083 9.18075 1.3335 9.16675 1.3335H4.50008C3.76475 1.3335 3.16675 1.9315 3.16675 2.66683V13.3335C3.16675 14.0688 3.76475 14.6668 4.50008 14.6668H12.5001C13.2354 14.6668 13.8334 14.0688 13.8334 13.3335V6.00016C13.8334 5.98616 13.8261 5.9735 13.8247 5.95883C13.8211 5.90002 13.8097 5.84196 13.7907 5.78616C13.7845 5.76483 13.7772 5.74416 13.7687 5.72416ZM11.5574 5.3335H9.83341V3.6095L11.5574 5.3335ZM4.50008 13.3335V2.66683H8.50008V6.00016C8.50008 6.17697 8.57032 6.34654 8.69534 6.47157C8.82037 6.59659 8.98994 6.66683 9.16675 6.66683H12.5001L12.5014 13.3335H4.50008Z"
+                    fill="white" />
+                  <path
+                    d="M5.83325 8.00016H11.1666V9.3335H5.83325V8.00016ZM5.83325 10.6668H11.1666V12.0002H5.83325V10.6668ZM5.83325 5.3335H7.16659V6.66683H5.83325V5.3335Z"
+                    fill="white" />
+                </svg>
+                <span>{{ texts.viewProfile }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Results -->
+      <div *ngIf="filteredMembres.length === 0 && !isLoading && !error" class="text-center py-12 md:py-16">
+        <svg class="w-12 h-12 md:w-16 md:h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <h3 class="text-lg md:text-xl font-semibold text-gray-900 mb-2">{{ texts.noMembersFound }}</h3>
+        <p class="text-sm md:text-base text-gray-600 mb-6">{{ texts.noMembersDesc }}</p>
+        <button (click)="resetFilters()"
+          class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+          {{ texts.resetFilters }}
+        </button>
+      </div>
+
+      <!-- Load More Button -->
+      <div class="text-center mt-8 md:mt-12" *ngIf="hasMore && filteredMembres.length > 0 && !error">
+        <button (click)="loadMore()" [disabled]="isLoading"
+          class="bg-red-600 hover:bg-red-700 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center mx-auto space-x-2">
+          <div *ngIf="isLoading" class="inline-block animate-spin rounded-full h-4 w-4 md:h-5 md:w-5 border-b-2 border-white"></div>
+          <span class="text-sm md:text-base">{{ texts.seeMore }}</span>
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
