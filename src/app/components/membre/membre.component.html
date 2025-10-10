@@ -18,10 +18,13 @@
     <div class="w-[90%] mx-auto">
       <div class="bg-white rounded-xl md:rounded-2xl shadow-xl p-6 md:p-8 lg:p-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <!-- Recherche par nom -->
+          <!-- Recherche par nom - UTILISER searchKeyword -->
           <div class="relative">
             <label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2 md:mb-3">{{ texts.memberName }}</label>
-            <input type="text" [(ngModel)]="searchTerm" [placeholder]="texts.memberPlaceholder"
+            <input 
+              type="text" 
+              [(ngModel)]="searchKeyword" 
+              [placeholder]="texts.memberPlaceholder"
               (keyup.enter)="rechercher()"
               class="w-full px-4 md:px-5 py-3 md:py-4 border-2 border-gray-200 rounded-lg md:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 text-sm md:text-base transition-all duration-300 hover:border-gray-300">
             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pt-7 md:pt-8">
@@ -59,7 +62,7 @@
           <!-- Bouton de recherche -->
           <div class="flex items-end">
             <button (click)="rechercher()" [disabled]="isSearching"
-              class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-full transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none disabled:hover:shadow-lg flex items-center justify-center space-x-2 disabled:cursor-not-allowed">
+              class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-full transition-all duration-300 text-sm md:text-base shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none disabled:hover:shadow-lg flex items-center justify-center space-x-2 disabled:cursor-not-allowed">
               @if (isSearching) {
               <svg class="animate-spin w-4 h-4 md:w-5 md:h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
                 viewBox="0 0 24 24">
@@ -68,7 +71,7 @@
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                 </path>
               </svg>
-              <span class="hidden sm:inline">{{ currentLang === 'fr' ? 'Recherche...' : 'Searching...' }}</span>
+              <span class="hidden sm:inline">{{ texts.searching }}</span>
               } @else {
               <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -79,6 +82,25 @@
             </button>
           </div>
         </div>
+
+        <!-- Indicateur de filtres actifs -->
+        @if (hasFiltersActive) {
+        <div class="mt-4 flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div class="flex items-center space-x-2 text-blue-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            <span class="text-sm font-medium">
+              {{ currentLang === 'fr' ? 'Filtres actifs' : 'Active filters' }}
+            </span>
+          </div>
+          <button (click)="resetFilters()"
+            class="text-sm text-blue-700 hover:text-blue-800 font-medium underline">
+            {{ texts.resetFilters }}
+          </button>
+        </div>
+        }
 
         <!-- Message d'erreur -->
         @if (error) {
@@ -97,7 +119,7 @@
   </section>
 
   <!-- Results Section -->
-  <section class="py-8 md:py-12 lg:py-16">
+  <section class="py-8 md:py-12 lg:py-16 membres-list">
     <div class="w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Results Header -->
       <div class="flex justify-between items-center mb-4">
@@ -116,20 +138,20 @@
       </div>
 
       <!-- Error State -->
-      <div *ngIf="error && !isLoading" class="text-center py-12 md:py-16">
+      <div *ngIf="error && !isLoading && filteredMembres.length === 0" class="text-center py-12 md:py-16">
         <svg class="w-12 h-12 md:w-16 md:h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <p class="text-red-600 text-base md:text-lg">{{ error }}</p>
+        <p class="text-red-600 text-base md:text-lg mb-4">{{ error }}</p>
         <button (click)="loadMembres()"
-          class="mt-4 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-          Réessayer
+          class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+          {{ currentLang === 'fr' ? 'Réessayer' : 'Retry' }}
         </button>
       </div>
 
       <!-- Members Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" *ngIf="filteredMembres.length > 0 && !error">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" *ngIf="filteredMembres.length > 0">
         <div *ngFor="let membre of filteredMembres"
           class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <!-- Member Header -->
@@ -157,7 +179,7 @@
                     d="M11.2501 7.5C11.2501 8.09674 11.0131 8.66903 10.5911 9.09099C10.1692 9.51295 9.59686 9.75 9.00012 9.75C8.40338 9.75 7.83109 9.51295 7.40913 9.09099C6.98717 8.66903 6.75012 8.09674 6.75012 7.5C6.75012 6.90326 6.98717 6.33097 7.40913 5.90901C7.83109 5.48705 8.40338 5.25 9.00012 5.25C9.59686 5.25 10.1692 5.48705 10.5911 5.90901C11.0131 6.33097 11.2501 6.90326 11.2501 7.5Z"
                     stroke="#D11E2B" stroke-width="1.5" />
                 </svg>
-                <span class="break-words">{{ membre.address }}</span>
+                <span class="break-words">{{ membre.address || 'N/A' }}</span>
               </div>
               <div class="flex items-start text-gray-600 text-xs md:text-sm">
                 <svg class="mr-2 w-4 h-4 flex-shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 18 18" fill="none"
@@ -185,13 +207,13 @@
                     </clipPath>
                   </defs>
                 </svg>
-                <span class="break-words">{{ membre.email }}</span>
+                <span class="break-words">{{ membre.email || 'N/A' }}</span>
               </div>
             </div>
 
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row gap-3">
-              <button
+              <button (click)="contactMembre(membre)"
                 class="flex-1 gap-1.5 flex items-center justify-center text-[#B3343D] bg-gray-50 hover:bg-gray-100 py-3 md:py-3.5 px-4 rounded-lg text-xs md:text-sm font-medium transition-colors duration-300">
                 <svg class="w-4 h-4" width="17" height="16" viewBox="0 0 17 16" fill="none"
                   xmlns="http://www.w3.org/2000/svg">

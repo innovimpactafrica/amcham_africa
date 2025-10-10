@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, NgModule } from '@angular/core';
 import { LanguageService } from '../../../services/language.service';
 import { CompanyService, SearchStats, TotalCompany } from '../../../services/company.service';
 import { Subscription } from 'rxjs';

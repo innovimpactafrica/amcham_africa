@@ -6,7 +6,7 @@ import { LanguageService } from '../../../services/language.service';
 import { CompanySectorService, SectorKPI } from '../../../services/company-sector.service';
 import { Subscription } from 'rxjs';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
-import { CardStateComponent } from "../card-state/card-state.component";
+import { CardStateComponent } from '../card-state/card-state.component';
 
 // Register Chart.js components
 Chart.register(...registerables);

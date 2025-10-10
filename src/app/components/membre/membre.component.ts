@@ -38,8 +38,8 @@ export class MembreComponent implements OnInit, OnDestroy {
   private langSubscription!: Subscription;
   currentLang = 'fr';
 
-  // Filtres de recherche
-  searchTerm: string = '';
+  // Filtres de recherche - Utiliser UNIQUEMENT searchKeyword
+  searchKeyword: string = '';
   selectedCountryId: number | undefined;
   selectedSectorId: number | undefined;
   isSearchActive = false;
@@ -49,8 +49,8 @@ export class MembreComponent implements OnInit, OnDestroy {
   isSearching = false;
   error: string | null = null;
 
-
   hasActiveFilters = false;
+  
   // Données
   allMembres: MembreDisplay[] = [];
   filteredMembres: MembreDisplay[] = [];
@@ -67,14 +67,14 @@ export class MembreComponent implements OnInit, OnDestroy {
 
   // ID du pays AMCHAM
   countryAmchamId = 1;
-  searchKeyword: string = '';
+
   // Textes dynamiques
   get texts() {
     return this.currentLang === 'fr' ? {
       heroTitle: 'Trouvez des partenaires commerciaux',
       heroSubtitle: 'Utilisez notre outil de recherche avancée pour trouver des membres par nom, secteur d\'activité ou localisation',
       memberName: 'Nom du membre',
-      memberPlaceholder: 'E.S. Amcham SN',
+      memberPlaceholder: 'Rechercher ...',
       country: 'Pays',
       sector: 'Secteur d\'activité',
       search: 'Rechercher',
@@ -93,12 +93,13 @@ export class MembreComponent implements OnInit, OnDestroy {
       allSectors: 'Tous les secteurs',
       loading: 'Chargement...',
       errorLoading: 'Erreur lors du chargement des membres',
-      searchError: 'Une erreur est survenue lors de la recherche. Veuillez réessayer.'
+      searchError: 'Une erreur est survenue lors de la recherche. Veuillez réessayer.',
+      searching: 'Recherche...'
     } : {
       heroTitle: 'Find business partners',
       heroSubtitle: 'Use our advanced search tool to find members by name, business sector or location',
       memberName: 'Member name',
-      memberPlaceholder: 'E.S. Amcham SN',
+      memberPlaceholder: 'Search ...',
       country: 'Country',
       sector: 'Business sector',
       search: 'Search',
@@ -117,7 +118,8 @@ export class MembreComponent implements OnInit, OnDestroy {
       allSectors: 'All sectors',
       loading: 'Loading...',
       errorLoading: 'Error loading members',
-      searchError: 'An error occurred during the search. Please try again.'
+      searchError: 'An error occurred during the search. Please try again.',
+      searching: 'Searching...'
     };
   }
 
@@ -184,8 +186,8 @@ export class MembreComponent implements OnInit, OnDestroy {
     };
 
     // Appliquer les filtres de recherche si présents
-    if (this.searchTerm && this.searchTerm.trim()) {
-      params.keyword = this.searchTerm.trim();
+    if (this.searchKeyword && this.searchKeyword.trim()) {
+      params.keyword = this.searchKeyword.trim();
     }
 
     if (this.selectedSectorId) {
@@ -195,6 +197,8 @@ export class MembreComponent implements OnInit, OnDestroy {
     if (this.selectedCountryId) {
       params.countryId = this.selectedCountryId;
     }
+
+    console.log('Paramètres de recherche:', params);
 
     this.homeService.getMembres(params).subscribe({
       next: (response) => {
@@ -212,10 +216,25 @@ export class MembreComponent implements OnInit, OnDestroy {
         this.hasMore = !response.last;
         this.isLoading = false;
         this.isSearching = false;
+
+        console.log('Membres chargés:', this.filteredMembres.length);
+
+        // Scroll vers les résultats si c'est une recherche
+        if (this.isSearchActive && this.filteredMembres.length > 0 && !append) {
+          setTimeout(() => {
+            const membresSection = document.querySelector('.membres-list');
+            if (membresSection) {
+              membresSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+              });
+            }
+          }, 100);
+        }
       },
       error: (error) => {
         console.error('Erreur lors du chargement des membres:', error);
-        this.error = this.texts.errorLoading;
+        this.error = this.texts.searchError;
         this.isLoading = false;
         this.isSearching = false;
         
@@ -251,33 +270,43 @@ export class MembreComponent implements OnInit, OnDestroy {
       countryAmcham: company.countryAmcham
     };
   }
-  resetSearch(): void {
-    this.searchKeyword = '';
-    this.selectedCountryId = undefined;
-    this.selectedSectorId = undefined;
-    this.isSearchActive = false;
-    this.loadMembres();
-  }
 
   /**
    * Rechercher avec filtres
    */
   rechercher(): void {
+    console.log('Recherche lancée avec:', {
+      keyword: this.searchKeyword,
+      countryId: this.selectedCountryId,
+      sectorId: this.selectedSectorId
+    });
+
     this.isSearching = true;
+    this.isSearchActive = true;
     this.currentPage = 0; // Réinitialiser à la première page
+    this.error = null;
+    
     this.loadMembres();
   }
 
   /**
    * Réinitialiser les filtres
    */
-  resetFilters(): void {
-    this.searchTerm = '';
+  resetSearch(): void {
+    this.searchKeyword = '';
     this.selectedCountryId = undefined;
     this.selectedSectorId = undefined;
+    this.isSearchActive = false;
     this.currentPage = 0;
     this.error = null;
     this.loadMembres();
+  }
+
+  /**
+   * Alias pour resetSearch (pour compatibilité)
+   */
+  resetFilters(): void {
+    this.resetSearch();
   }
 
   /**
@@ -346,5 +375,12 @@ export class MembreComponent implements OnInit, OnDestroy {
       return this.homeService.getCompanyImageUrl(pictures[0]);
     }
     return '/assets/default-company-logo.png';
+  }
+
+  /**
+   * Vérifier si des filtres sont actifs
+   */
+  get hasFiltersActive(): boolean {
+    return !!(this.searchKeyword?.trim() || this.selectedCountryId || this.selectedSectorId);
   }
 }

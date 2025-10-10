@@ -5,8 +5,8 @@ import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { LanguageService } from '../../../services/language.service';
 import { AuthService } from '../../../services/auth.service';
-import { CompanyService } from '../../../services/company.service';
 import { Subscription } from 'rxjs';
+import { CompanyService } from '../../../services/company.service';
 
 interface Language {
   code: string;

@@ -3,8 +3,8 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { LanguageService } from '../../../services/language.service';
 import { AuthService } from '../../../services/auth.service';
-import { CompanyService, Company } from '../../../services/company.service';
 import { Subscription } from 'rxjs';
+import { Company, CompanyService } from '../../../services/company.service';
 
 interface Language {
   code: string;

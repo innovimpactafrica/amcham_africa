@@ -15,7 +15,7 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-statistique',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, HeaderMembreComponent],
+  imports: [ReactiveFormsModule, RouterOutlet, CommonModule, HeaderMembreComponent],
   templateUrl: './statistique.component.html'
 })
 export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {

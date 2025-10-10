@@ -5,8 +5,9 @@ import { Router, RouterOutlet } from '@angular/router';
 import { HeaderMembreComponent } from "../header-membre/header-membre.component";
 import { LanguageService } from '../../../services/language.service';
 import { AuthService } from '../../../services/auth.service';
-import { CompanyService, Company } from '../../../services/company.service';
-import { Subscription } from 'rxjs';
+import { CompanyService, Company, CompanyFormData } from '../../../services/company.service';
+import { SecteurService, SecteurResponse, Country } from '../../../services/secteur.service';
+import { Subscription, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-apropos',
@@ -17,17 +18,22 @@ import { Subscription } from 'rxjs';
 })
 export class AproposComponent implements OnInit, OnDestroy {
   companyForm!: FormGroup;
-  selectedCountry = 'États-Unis';
   logoFile: File | null = null;
   logoPreview: string | null = null;
   currentRoute: string = '/apropos';
   private langSubscription!: Subscription;
   currentLang = 'fr';
   isLoading = true;
+  isSaving = false;
   errorMessage = '';
+  successMessage = '';
   
   // Données dynamiques de l'entreprise
   companyData: Company | null = null;
+  
+  // Listes pour les selects
+  sectors: SecteurResponse[] = [];
+  countries: Country[] = [];
 
   // Textes dynamiques
   get texts() {
@@ -50,6 +56,7 @@ export class AproposComponent implements OnInit, OnDestroy {
       phone: 'Téléphone',
       website: 'Site web',
       save: 'Enregistrer les modifications',
+      saving: 'Enregistrement en cours...',
       preview: 'Aperçu du profil public',
       requiredField: 'Ce champ est obligatoire.',
       invalidEmail: 'Veuillez saisir une adresse email valide.',
@@ -66,7 +73,10 @@ export class AproposComponent implements OnInit, OnDestroy {
       fileSizeError: 'La taille du fichier ne doit pas dépasser 2MB.',
       fileReadError: 'Erreur lors de la lecture du fichier.',
       loading: 'Chargement des informations...',
-      errorLoading: 'Erreur lors du chargement des informations de l\'entreprise'
+      errorLoading: 'Erreur lors du chargement des informations de l\'entreprise',
+      errorSaving: 'Erreur lors de l\'enregistrement des modifications',
+      selectSector: 'Sélectionner un secteur',
+      selectCountry: 'Sélectionner un pays'
     } : {
       companyLogo: 'Company Logo',
       changeLogo: 'Change logo',
@@ -86,6 +96,7 @@ export class AproposComponent implements OnInit, OnDestroy {
       phone: 'Phone',
       website: 'Website',
       save: 'Save Changes',
+      saving: 'Saving...',
       preview: 'Public Profile Preview',
       requiredField: 'This field is required.',
       invalidEmail: 'Please enter a valid email address.',
@@ -102,62 +113,11 @@ export class AproposComponent implements OnInit, OnDestroy {
       fileSizeError: 'File size must not exceed 2MB.',
       fileReadError: 'Error reading file.',
       loading: 'Loading company information...',
-      errorLoading: 'Error loading company information'
+      errorLoading: 'Error loading company information',
+      errorSaving: 'Error saving changes',
+      selectSector: 'Select a sector',
+      selectCountry: 'Select a country'
     };
-  }
-
-  // Pays avec traductions
-  get countries() {
-    return this.currentLang === 'fr' ? [
-      { name: 'États-Unis', flag: '🇺🇸', code: 'US' },
-      { name: 'France', flag: '🇫🇷', code: 'FR' },
-      { name: 'Canada', flag: '🇨🇦', code: 'CA' },
-      { name: 'Allemagne', flag: '🇩🇪', code: 'DE' },
-      { name: 'Royaume-Uni', flag: '🇬🇧', code: 'GB' },
-      { name: 'Espagne', flag: '🇪🇸', code: 'ES' },
-      { name: 'Italie', flag: '🇮🇹', code: 'IT' },
-      { name: 'Brésil', flag: '🇧🇷', code: 'BR' }
-    ] : [
-      { name: 'United States', flag: '🇺🇸', code: 'US' },
-      { name: 'France', flag: '🇫🇷', code: 'FR' },
-      { name: 'Canada', flag: '🇨🇦', code: 'CA' },
-      { name: 'Germany', flag: '🇩🇪', code: 'DE' },
-      { name: 'United Kingdom', flag: '🇬🇧', code: 'GB' },
-      { name: 'Spain', flag: '🇪🇸', code: 'ES' },
-      { name: 'Italy', flag: '🇮🇹', code: 'IT' },
-      { name: 'Brazil', flag: '🇧🇷', code: 'BR' }
-    ];
-  }
-
-  // Secteurs avec traductions
-  get sectors() {
-    return this.currentLang === 'fr' ? [
-      'Technologie',
-      'Finance',
-      'Santé',
-      'Éducation',
-      'Commerce',
-      'Industrie',
-      'Services',
-      'Agriculture',
-      'Transport',
-      'Énergie',
-      'Immobilier',
-      'Tourisme'
-    ] : [
-      'Technology',
-      'Finance',
-      'Health',
-      'Education',
-      'Commerce',
-      'Industry',
-      'Services',
-      'Agriculture',
-      'Transport',
-      'Energy',
-      'Real Estate',
-      'Tourism'
-    ];
   }
 
   constructor(
@@ -165,7 +125,8 @@ export class AproposComponent implements OnInit, OnDestroy {
     private router: Router,
     private languageService: LanguageService,
     private authService: AuthService,
-    private companyService: CompanyService
+    private companyService: CompanyService,
+    private secteurService: SecteurService
   ) {
     this.initializeForm();
     this.currentRoute = this.router.url;
@@ -175,14 +136,13 @@ export class AproposComponent implements OnInit, OnDestroy {
     // S'abonner aux changements de langue
     this.langSubscription = this.languageService.currentLang$.subscribe(lang => {
       this.currentLang = lang;
-      this.updateFormWithCompanyData();
     });
     
     // Initialiser la langue
     this.currentLang = this.languageService.getCurrentLanguage();
     
-    // Charger les données de l'entreprise
-    this.loadCompanyData();
+    // Charger les données
+    this.loadInitialData();
   }
 
   ngOnDestroy(): void {
@@ -191,113 +151,103 @@ export class AproposComponent implements OnInit, OnDestroy {
     }
   }
 
-/**
- * Charger les données de l'entreprise depuis l'API
- * Utilise getCurrentUserFromAPI() pour récupérer les données utilisateur fraîches
- */
-private loadCompanyData(): void {
-  this.isLoading = true;
-  this.errorMessage = '';
-  
-  // Vérifier d'abord qu'on a un token valide
-  if (!this.authService.isAuthenticated()) {
-    this.errorMessage = this.currentLang === 'fr'
-      ? 'Session expirée. Veuillez vous reconnecter.'
-      : 'Session expired. Please log in again.';
-    this.isLoading = false;
-    this.router.navigate(['/login']);
-    return;
-  }
-  
-  // Récupérer d'abord les informations utilisateur depuis l'API
-  this.authService.getCurrentUserFromAPI().subscribe({
-    next: (currentUser) => {
-      console.log('Utilisateur récupéré avec succès:', currentUser);
-      
-      // Vérifier si l'utilisateur a une entreprise associée
-      if (!currentUser.companyId) {
-        this.errorMessage = this.currentLang === 'fr' 
-          ? 'Aucune entreprise associée à votre compte'
-          : 'No company associated with your account';
-        this.isLoading = false;
-        return;
-      }
-
-      // Charger les données de l'entreprise avec le companyId récupéré
-      this.companyService.getCompanyById(currentUser.companyId).subscribe({
-        next: (company) => {
-          console.log('Entreprise chargée avec succès:', company);
-          this.companyData = company;
-          this.updateFormWithCompanyData();
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.error('Erreur lors du chargement de l\'entreprise:', error);
-          this.errorMessage = this.texts.errorLoading;
-          this.isLoading = false;
-        }
-      });
-    },
-    error: (error) => {
-      console.error('Erreur lors de la récupération des informations utilisateur:', error);
-      
-      // Gestion spécifique des erreurs d'authentification
-      if (error.status === 401 || error.status === 403) {
-        this.errorMessage = this.currentLang === 'fr'
-          ? 'Session expirée. Redirection vers la page de connexion...'
-          : 'Session expired. Redirecting to login page...';
+  /**
+   * Charger toutes les données initiales en parallèle
+   */
+  private loadInitialData(): void {
+    this.isLoading = true;
+    
+    // Charger secteurs et pays en parallèle avec forkJoin
+    forkJoin({
+      sectors: this.secteurService.getAllSecteurs(),
+      countries: this.secteurService.getCountries()
+    }).subscribe({
+      next: (data) => {
+        this.sectors = data.sectors;
+        this.countries = data.countries;
+        console.log('Secteurs chargés:', this.sectors);
+        console.log('Pays chargés:', this.countries);
         
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
-      } else {
+        // Une fois les secteurs et pays chargés, charger les données de l'entreprise
+        this.loadCompanyData();
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des données de référence:', error);
         this.errorMessage = this.currentLang === 'fr'
-          ? 'Erreur lors de la récupération de vos informations utilisateur'
-          : 'Error retrieving your user information';
+          ? 'Erreur lors du chargement des données de référence'
+          : 'Error loading reference data';
+        this.isLoading = false;
       }
-      
-      this.isLoading = false;
-      
-      // En cas d'erreur non-authentification, on peut essayer de fallback sur les données locales
-      if (error.status !== 401 && error.status !== 403) {
-        const localUser = this.authService.getCurrentUser();
-        if (localUser?.companyId) {
-          console.log('Tentative avec les données locales...');
-          this.loadCompanyFromLocalUser(localUser.companyId);
-        }
-      }
-    }
-  });
-}
+    });
+  }
 
-/**
- * Méthode de fallback pour charger l'entreprise depuis les données locales
- */
-private loadCompanyFromLocalUser(companyId: number): void {
-  this.companyService.getCompanyById(companyId).subscribe({
-    next: (company) => {
-      this.companyData = company;
-      this.updateFormWithCompanyData();
+  /**
+   * Charger les données de l'entreprise depuis l'API
+   */
+  private loadCompanyData(): void {
+    this.errorMessage = '';
+    
+    if (!this.authService.isAuthenticated()) {
+      this.errorMessage = this.currentLang === 'fr'
+        ? 'Session expirée. Veuillez vous reconnecter.'
+        : 'Session expired. Please log in again.';
       this.isLoading = false;
-    },
-    error: (error) => {
-      console.error('Erreur lors du chargement de l\'entreprise (fallback):', error);
-      this.errorMessage = this.texts.errorLoading;
-      this.isLoading = false;
+      this.router.navigate(['/login']);
+      return;
     }
-  });
-}
+    
+    this.authService.getCurrentUserFromAPI().subscribe({
+      next: (currentUser) => {
+        console.log('Utilisateur récupéré:', currentUser);
+        
+        if (!currentUser.companyId) {
+          this.errorMessage = this.currentLang === 'fr' 
+            ? 'Aucune entreprise associée à votre compte'
+            : 'No company associated with your account';
+          this.isLoading = false;
+          return;
+        }
+
+        this.companyService.getCompanyById(currentUser.companyId).subscribe({
+          next: (company) => {
+            console.log('Entreprise chargée:', company);
+            this.companyData = company;
+            this.updateFormWithCompanyData();
+            this.isLoading = false;
+          },
+          error: (error) => {
+            console.error('Erreur lors du chargement de l\'entreprise:', error);
+            this.errorMessage = this.texts.errorLoading;
+            this.isLoading = false;
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Erreur lors de la récupération de l\'utilisateur:', error);
+        
+        if (error.status === 401 || error.status === 403) {
+          this.errorMessage = this.currentLang === 'fr'
+            ? 'Session expirée. Redirection vers la page de connexion...'
+            : 'Session expired. Redirecting to login page...';
+          
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
+        } else {
+          this.errorMessage = this.texts.errorLoading;
+        }
+        
+        this.isLoading = false;
+      }
+    });
+  }
 
   private initializeForm(): void {
     this.companyForm = this.fb.group({
       companyName: ['', [Validators.required, Validators.minLength(2)]],
-      sector: ['', [Validators.required]],
-      description: [
-        '',
-        [Validators.required, Validators.minLength(50), Validators.maxLength(500)]
-      ],
-      country: ['', [Validators.required]],
-      city: ['', [Validators.required, Validators.minLength(2)]],
+      sectorId: ['', [Validators.required]],
+      description: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(500)]],
+      countryId: ['', [Validators.required]],
       address: ['', [Validators.required, Validators.minLength(10)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern(/^[\+]?[0-9\s\-\(\)]{10,}$/)]],
@@ -307,40 +257,42 @@ private loadCompanyFromLocalUser(companyId: number): void {
 
   private updateFormWithCompanyData(): void {
     if (this.companyForm && this.companyData) {
+      console.log('Mise à jour du formulaire avec les données:', this.companyData);
+      
+      // Trouver l'ID du secteur correspondant au nom du secteur de l'entreprise
+      const secteurTrouve = this.sectors.find(s => 
+        s.nameFr === this.companyData?.sector || s.nameEn === this.companyData?.sector
+      );
+  
+      // Trouver l'ID du pays correspondant au nom du pays de l'entreprise
+      const paysTrouve = this.countries.find(c => 
+        c.name === this.companyData?.country
+      );
+  
+      console.log('Secteur trouvé:', secteurTrouve);
+      console.log('Pays trouvé:', paysTrouve);
+  
       this.companyForm.patchValue({
         companyName: this.companyData.name || '',
-        sector: this.companyData.sector || '',
+        sectorId: secteurTrouve?.id || '',
         description: this.companyData.description || '',
-        country: this.companyData.country || '',
-        city: this.extractCityFromAddress(this.companyData.address) || '',
+        countryId: paysTrouve?.id || '',
         address: this.companyData.address || '',
         email: this.companyData.email || '',
         phone: this.companyData.telephone || '',
         website: this.companyData.webLink || ''
       });
-
-      // Mettre à jour le pays sélectionné
-      this.selectedCountry = this.companyData.country || 'États-Unis';
-
+  
       // Charger l'aperçu du logo si disponible
-      if (this.companyData.pictures && this.companyData.pictures.length > 0) {
+      if (this.companyData.logo) {
+        this.logoPreview = this.companyData.logo;
+      } else if (this.companyData.pictures && this.companyData.pictures.length > 0) {
         this.logoPreview = this.companyData.pictures[0];
       }
+  
+      // Marquer le formulaire comme "pristine" après le chargement initial
+      this.companyForm.markAsPristine();
     }
-  }
-
-  /**
-   * Extraire la ville de l'adresse complète
-   */
-  private extractCityFromAddress(address: string): string {
-    if (!address) return '';
-    
-    // Logique simple pour extraire la ville
-    const parts = address.split(',');
-    if (parts.length > 1) {
-      return parts[parts.length - 2]?.trim() || '';
-    }
-    return '';
   }
 
   // Validateur personnalisé pour les URLs
@@ -411,17 +363,6 @@ private loadCompanyFromLocalUser(companyId: number): void {
     }
   }
 
-  onCountryChange(event: any): void {
-    const selectedCountryName = event.target.value;
-    this.selectedCountry = selectedCountryName;
-    console.log('Pays sélectionné:', selectedCountryName);
-  }
-
-  getSelectedCountryFlag(): string {
-    const country = this.countries.find(c => c.name === this.selectedCountry);
-    return country ? country.flag : '🌍';
-  }
-
   // Getter pour faciliter l'accès aux contrôles du formulaire
   get formControls() {
     return this.companyForm.controls;
@@ -464,38 +405,87 @@ private loadCompanyFromLocalUser(companyId: number): void {
     return this.texts.invalidField;
   }
 
+  /**
+   * Soumettre le formulaire et enregistrer les modifications
+   */
   onSubmit(): void {
+    // Empêcher la soumission multiple
+    if (this.isSaving) {
+      return;
+    }
+
+    // Réinitialiser les messages
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    // Valider le formulaire
     if (this.companyForm.invalid) {
       Object.keys(this.companyForm.controls).forEach(key => {
         this.companyForm.get(key)?.markAsTouched();
       });
       
-      alert(this.texts.formErrors);
+      this.errorMessage = this.texts.formErrors;
       return;
     }
 
-    if (this.companyForm.valid) {
-      const formData = new FormData();
-      
-      Object.keys(this.companyForm.value).forEach(key => {
-        formData.append(key, this.companyForm.value[key]);
-      });
-      
-      if (this.logoFile) {
-        formData.append('logo', this.logoFile);
-      }
-      
-      console.log('Company data:', this.companyForm.value);
-      console.log('Logo file:', this.logoFile);
-      
-      alert(this.texts.saveSuccess);
+    if (!this.companyData?.id) {
+      this.errorMessage = this.currentLang === 'fr'
+        ? 'Impossible de sauvegarder : ID de l\'entreprise manquant'
+        : 'Cannot save: Company ID missing';
+      return;
     }
+
+    this.isSaving = true;
+
+    // Préparer les données du formulaire en préservant les valeurs existantes
+    const companyFormData: CompanyFormData = {
+      name: this.companyForm.value.companyName,
+      sectorId: this.companyForm.value.sectorId,
+      description: this.companyForm.value.description,
+      country: this.companyForm.value.countryId,
+      address: this.companyForm.value.address,
+      email: this.companyForm.value.email,
+      telephone: this.companyForm.value.phone,
+      webLink: this.companyForm.value.website,
+      logoFile: this.logoFile || undefined,
+      
+      // Préserver les valeurs existantes pour les champs non modifiables
+      countryAmchamId: this.companyData.countryAmchamId || 0,
+      videoLink: this.companyData.videoLink || '',
+      lat: this.companyData.lat || 0,
+      lon: this.companyData.lon || 0
+    };
+
+    console.log('Données à envoyer:', companyFormData);
+
+    // Appeler le service pour mettre à jour l'entreprise
+    this.companyService.updateCompany(this.companyData.id, companyFormData).subscribe({
+      next: (response) => {
+        console.log('Entreprise mise à jour avec succès:', response);
+        this.successMessage = this.texts.saveSuccess;
+        this.isSaving = false;
+        
+        // Réinitialiser le fichier logo après l'envoi
+        this.logoFile = null;
+        
+        // Recharger les données de l'entreprise après 3 secondes
+        setTimeout(() => {
+          this.successMessage = '';
+          this.loadCompanyData();
+        }, 3000);
+      },
+      error: (error) => {
+        console.error('Erreur lors de la mise à jour:', error);
+        this.errorMessage = error.message || this.texts.errorSaving;
+        this.isSaving = false;
+      }
+    });
   }
 
   resetForm(): void {
-    this.companyForm.reset();
-    this.onLogoDelete();
     this.updateFormWithCompanyData();
+    this.successMessage = '';
+    this.errorMessage = '';
   }
 
   previewChanges(): void {
@@ -509,5 +499,46 @@ private loadCompanyFromLocalUser(companyId: number): void {
     } else {
       alert(this.texts.fillRequired);
     }
+  }
+
+  /**
+   * Obtenir le nom du secteur à partir de l'ID (avec support multilingue)
+   */
+  getSectorName(sectorId: number): string {
+    if (!sectorId || !this.sectors || this.sectors.length === 0) {
+      return '';
+    }
+    
+    const sector = this.sectors.find(s => s.id === sectorId);
+    if (!sector) {
+      return '';
+    }
+    
+    // Retourner le nom selon la langue actuelle
+    return this.currentLang === 'fr' ? sector.nameFr : sector.nameEn;
+  }
+
+  /**
+   * Obtenir le nom du pays à partir de l'ID
+   */
+  getCountryName(countryId: number): string {
+    if (!countryId || !this.countries || this.countries.length === 0) {
+      return '';
+    }
+    
+    const country = this.countries.find(c => c.id === countryId);
+    return country ? country.name : '';
+  }
+
+  /**
+   * Obtenir l'icône du pays à partir de l'ID
+   */
+  getCountryIcon(countryId: number): string {
+    if (!countryId || !this.countries || this.countries.length === 0) {
+      return '🌍';
+    }
+    
+    const country = this.countries.find(c => c.id === countryId);
+    return country?.icon || '🌍';
   }
 }

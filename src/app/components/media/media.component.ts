@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { HeaderMembreComponent } from "../header-membre/header-membre.component";
 import { LanguageService } from '../../../services/language.service';
 import { AuthService } from '../../../services/auth.service';
-import { CompanyService, Company } from '../../../services/company.service';
+import { CompanyService, Company, CompanyFormData } from '../../../services/company.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -20,15 +20,19 @@ export class MediaComponent implements OnInit, OnDestroy {
   // Données dynamiques de l'entreprise
   companyData: Company | null = null;
   isLoading = true;
+  isSaving = false;
   errorMessage = '';
+  successMessage = '';
   
   // Photos et vidéo chargées depuis l'API
   photos: string[] = [];
+  photoFiles: File[] = []; // Nouveaux fichiers à uploader
   videoUrl: string = '';
   
   currentRoute: string;
   private langSubscription!: Subscription;
   currentLang = 'fr';
+  logoFile: undefined;
 
   // Textes dynamiques
   get texts() {
@@ -54,7 +58,8 @@ export class MediaComponent implements OnInit, OnDestroy {
       invalidVideoDescription: 'Vérifiez que l\'URL de la vidéo est correcte et provient d\'une plateforme supportée.',
       deleteVideo: 'Supprimer la vidéo',
       saveButton: 'Enregistrer les modifications',
-      saveSuccess: 'Les modifications ont été enregistrées avec succès !',
+      saving: 'Enregistrement en cours...',
+      saveSuccess: 'Les médias ont été enregistrés avec succès !',
       fileTypeError: 'Seuls les fichiers image (PNG, JPG) sont acceptés',
       fileSizeError: 'La taille de l\'image ne doit pas dépasser 2MB',
       companyName: 'Global Tech Solutions',
@@ -64,7 +69,8 @@ export class MediaComponent implements OnInit, OnDestroy {
       companyWebsite: 'www.exemple.us',
       profilePreview: 'Aperçu du profil public',
       loading: 'Chargement des médias...',
-      errorLoading: 'Erreur lors du chargement des médias'
+      errorLoading: 'Erreur lors du chargement des médias',
+      errorSaving: 'Erreur lors de l\'enregistrement des modifications'
     } : {
       galleryTitle: 'Photo Gallery',
       galleryDescription: 'Add photos of your company, products or services to showcase them on your profile.',
@@ -87,7 +93,8 @@ export class MediaComponent implements OnInit, OnDestroy {
       invalidVideoDescription: 'Check that the video URL is correct and comes from a supported platform.',
       deleteVideo: 'Delete video',
       saveButton: 'Save changes',
-      saveSuccess: 'Changes have been saved successfully!',
+      saving: 'Saving...',
+      saveSuccess: 'Media has been saved successfully!',
       fileTypeError: 'Only image files (PNG, JPG) are accepted',
       fileSizeError: 'Image size must not exceed 2MB',
       companyName: 'Global Tech Solutions',
@@ -97,7 +104,8 @@ export class MediaComponent implements OnInit, OnDestroy {
       companyWebsite: 'www.example.us',
       profilePreview: 'Public profile preview',
       loading: 'Loading media...',
-      errorLoading: 'Error loading media'
+      errorLoading: 'Error loading media',
+      errorSaving: 'Error saving changes'
     };
   }
 
@@ -173,7 +181,7 @@ export class MediaComponent implements OnInit, OnDestroy {
             
             // Charger les photos depuis les pictures de l'entreprise
             if (company.pictures && company.pictures.length > 0) {
-              this.photos = company.pictures;
+              this.photos = [...company.pictures]; // Copie pour éviter les mutations
               console.log(`📸 [Media] ${this.photos.length} photos chargées`);
             }
             
@@ -234,7 +242,7 @@ export class MediaComponent implements OnInit, OnDestroy {
         
         // Charger les photos depuis les pictures de l'entreprise
         if (company.pictures && company.pictures.length > 0) {
-          this.photos = company.pictures;
+          this.photos = [...company.pictures];
         }
         
         // Charger l'URL de la vidéo
@@ -260,6 +268,10 @@ export class MediaComponent implements OnInit, OnDestroy {
         if (file.type.startsWith('image/')) {
           // Vérifier la taille (max 2MB)
           if (file.size <= 2 * 1024 * 1024) {
+            // Ajouter le fichier à la liste des nouveaux fichiers
+            this.photoFiles.push(file);
+            
+            // Créer un aperçu local
             const reader = new FileReader();
             reader.onload = (e) => {
               if (e.target?.result) {
@@ -282,33 +294,101 @@ export class MediaComponent implements OnInit, OnDestroy {
 
   removePhoto(index: number) {
     this.photos.splice(index, 1);
+    // Si c'est une nouvelle photo (pas encore enregistrée), supprimer aussi le fichier
+    if (index >= (this.companyData?.pictures?.length || 0)) {
+      const fileIndex = index - (this.companyData?.pictures?.length || 0);
+      if (fileIndex >= 0 && fileIndex < this.photoFiles.length) {
+        this.photoFiles.splice(fileIndex, 1);
+      }
+    }
   }
 
   onVideoUrlChange(event: any) {
     this.videoUrl = event.target.value;
   }
 
-  saveChanges() {
-    const mediaData = {
-      photos: this.photos,
-      videoUrl: this.videoUrl
-    };
-    
-    console.log('💾 [Media] Sauvegarde des données:', mediaData);
-    
-    // Simuler une sauvegarde réussie
-    alert(this.texts.saveSuccess);
-    
-    // Ici vous pouvez ajouter la logique de sauvegarde
-    // this.mediaService.updateMedia(mediaData).subscribe(
-    //   response => {
-    //     console.log('Media saved successfully', response);
-    //   },
-    //   error => {
-    //     console.error('Error saving media', error);
-    //   }
-    // );
+/**
+   * Sauvegarder les modifications des médias
+   */
+saveChanges() {
+  // Empêcher la soumission multiple
+  if (this.isSaving) {
+    return;
   }
+
+  // Réinitialiser les messages
+  this.successMessage = '';
+  this.errorMessage = '';
+
+  if (!this.companyData?.id) {
+    this.errorMessage = this.currentLang === 'fr'
+      ? 'Impossible de sauvegarder : ID de l\'entreprise manquant'
+      : 'Cannot save: Company ID missing';
+    return;
+  }
+
+  this.isSaving = true;
+
+  console.log('💾 [Media] Sauvegarde des données médias...');
+  console.log('📸 [Media] Nombre de photos affichées:', this.photos.length);
+  console.log('📁 [Media] Nombre de nouveaux fichiers à uploader:', this.photoFiles.length);
+  console.log('🎬 [Media] URL vidéo:', this.videoUrl);
+
+  // Préparer les données en préservant TOUTES les valeurs existantes
+  // et en ne modifiant QUE les médias (photos et vidéo)
+  const companyFormData: CompanyFormData = {
+    // Préserver toutes les valeurs existantes de l'entreprise
+    name: this.companyData.name,
+    sectorId: this.companyData.sectorId,
+    description: this.companyData.description,
+    country: this.companyData.countryId?.toString() || '',
+    address: this.companyData.address,
+    email: this.companyData.email,
+    telephone: this.companyData.telephone,
+    webLink: this.companyData.webLink,
+    
+    // Logo existant (pas de modification depuis cette page)
+    logoFile: this.logoFile,
+    
+    // Préserver les autres champs
+    countryAmchamId: this.companyData.countryAmchamId || 0,
+    lat: this.companyData.lat || 0,
+    lon: this.companyData.lon || 0,
+    
+    // MODIFIER UNIQUEMENT la vidéo (c'est ce qu'on veut mettre à jour)
+    videoLink: this.videoUrl || '',
+    
+    // Ajouter UNIQUEMENT les nouveaux fichiers photos (pas les URLs existantes)
+    // Les photos existantes restent sur le serveur, on ajoute seulement les nouvelles
+    pictures: this.photoFiles.length > 0 ? this.photoFiles : undefined
+  };
+
+  console.log('📦 [Media] Données à envoyer:', companyFormData);
+  console.log('📤 [Media] Fichiers photos à uploader:', this.photoFiles.length);
+
+  // Appeler le service pour mettre à jour l'entreprise
+  this.companyService.updateCompany(this.companyData.id, companyFormData).subscribe({
+    next: (response) => {
+      console.log('✅ [Media] Médias mis à jour avec succès:', response);
+      this.successMessage = this.texts.saveSuccess;
+      this.isSaving = false;
+      
+      // Réinitialiser les fichiers après l'envoi
+      this.photoFiles = [];
+      
+      // Recharger les données de l'entreprise après 3 secondes
+      setTimeout(() => {
+        this.successMessage = '';
+        this.loadCompanyData();
+      }, 3000);
+    },
+    error: (error) => {
+      console.error('❌ [Media] Erreur lors de la mise à jour:', error);
+      this.errorMessage = error.message || this.texts.errorSaving;
+      this.isSaving = false;
+    }
+  });
+}
 
   getEmbedUrl(url: string): SafeResourceUrl {
     if (!url) {

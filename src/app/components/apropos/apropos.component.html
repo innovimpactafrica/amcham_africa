@@ -15,6 +15,16 @@
       </div>
     </div>
 
+    <!-- Success Message -->
+    <div *ngIf="successMessage && !isLoading" class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+      <div class="flex items-center text-green-700">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span class="font-medium">{{ successMessage }}</span>
+      </div>
+    </div>
+
     <!-- Error State -->
     <div *ngIf="errorMessage && !isLoading" class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
       <div class="flex items-center text-red-700">
@@ -32,12 +42,22 @@
         <div class="bg-white rounded-lg shadow-sm p-6">
           <div class="flex items-center mb-4">
             <div class="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center mr-4">
-              <img *ngIf="logoPreview" [src]=" 'https://wakana.online/repertoire_amchams/' + logoPreview" alt="Logo" class="w-full h-full object-cover rounded-full">
-              <img *ngIf="!logoPreview" class="h-12 w-12 rounded-[50%]" src="../assets/logoW.png" alt="">
+              <img *ngIf="logoPreview && !logoPreview.startsWith('data:')" 
+                   [src]="'https://wakana.online/repertoire_amchams/' + logoPreview" 
+                   alt="Logo" 
+                   class="w-full h-full object-cover rounded-full">
+              <img *ngIf="logoPreview && logoPreview.startsWith('data:')" 
+                   [src]="logoPreview" 
+                   alt="Logo" 
+                   class="w-full h-full object-cover rounded-full">
+              <img *ngIf="!logoPreview" 
+                   class="h-12 w-12 rounded-[50%]" 
+                   src="../assets/logoW.png" 
+                   alt="">
             </div>
             <div>
               <h3 class="font-semibold text-gray-900">{{ companyData?.name || 'Nom de l\'entreprise' }}</h3>
-              <p class="text-sm text-gray-500">{{ companyData?.sector || 'Secteur' }}</p>
+              <p class="text-sm text-gray-500">{{ companyData?.sector }}</p>
             </div>
           </div>
           
@@ -61,30 +81,28 @@
               {{ companyData?.webLink }}
             </div>
           </div>
-
-       
         </div>
-                    <!-- Aperçu du profil public - Section séparée -->
-                    <div class="flex gap-4">
-                      <!-- Carte aperçu (plus large) -->
-                      <div class="bg-[#f8eced] rounded-lg p-4 flex-1">
-                        <div class="flex items-center space-x-3">
-                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M10 6.875C9.1712 6.875 8.37634 7.20424 7.79029 7.79029C7.20424 8.37634 6.875 9.1712 6.875 10C6.875 10.8288 7.20424 11.6237 7.79029 12.2097C8.37634 12.7958 9.1712 13.125 10 13.125C10.8288 13.125 11.6237 12.7958 12.2097 12.2097C12.7958 11.6237 13.125 10.8288 13.125 10C13.125 9.1712 12.7958 8.37634 12.2097 7.79029C11.6237 7.20424 10.8288 6.875 10 6.875ZM8.125 10C8.125 9.50272 8.32254 9.02581 8.67417 8.67417C9.02581 8.32254 9.50272 8.125 10 8.125C10.4973 8.125 10.9742 8.32254 11.3258 8.67417C11.6775 9.02581 11.875 9.50272 11.875 10C11.875 10.4973 11.6775 10.9742 11.3258 11.3258C10.9742 11.6775 10.4973 11.875 10 11.875C9.50272 11.875 9.02581 11.6775 8.67417 11.3258C8.32254 10.9742 8.125 10.4973 8.125 10Z" fill="#A91520"/>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0003 2.70825C6.23866 2.70825 3.70449 4.96159 2.23366 6.87242L2.20783 6.90659C1.87449 7.33909 1.56866 7.73658 1.36116 8.20658C1.13866 8.71075 1.04199 9.25992 1.04199 9.99992C1.04199 10.7399 1.13866 11.2891 1.36116 11.7933C1.56949 12.2633 1.87533 12.6616 2.20783 13.0933L2.23449 13.1274C3.70449 15.0383 6.23866 17.2916 10.0003 17.2916C13.762 17.2916 16.2962 15.0383 17.767 13.1274L17.7928 13.0933C18.1262 12.6616 18.432 12.2633 18.6395 11.7933C18.862 11.2891 18.9587 10.7399 18.9587 9.99992C18.9587 9.25992 18.862 8.71075 18.6395 8.20658C18.4312 7.73658 18.1253 7.33909 17.7928 6.90659L17.7662 6.87242C16.2962 4.96159 13.762 2.70825 10.0003 2.70825ZM3.22533 7.63492C4.58199 5.87075 6.79199 3.95825 10.0003 3.95825C13.2087 3.95825 15.4178 5.87075 16.7753 7.63492C17.142 8.10992 17.3553 8.39325 17.4962 8.71159C17.6278 9.00992 17.7087 9.37408 17.7087 9.99992C17.7087 10.6258 17.6278 10.9899 17.4962 11.2883C17.3553 11.6066 17.1412 11.8899 16.7762 12.3649C15.417 14.1291 13.2087 16.0416 10.0003 16.0416C6.79199 16.0416 4.58283 14.1291 3.22533 12.3649C2.85866 11.8899 2.64533 11.6066 2.50449 11.2883C2.37283 10.9899 2.29199 10.6258 2.29199 9.99992C2.29199 9.37408 2.37283 9.00992 2.50449 8.71159C2.64533 8.39325 2.86033 8.10992 3.22533 7.63492Z" fill="#A91520"/>
-                            </svg>
-                            
-                          <span class="text-[#A91520] font-semibold text-base">Aperçu du profil public</span>
-                        </div>
-                      </div>
-                      
-                      <!-- Bouton éditer (petit et carré) -->
-                      <button type="button" class="w-14 h-14 bg-white border border-[#f2dcde] rounded-lg hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center flex-shrink-0">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M4.16667 15.8333H5.35417L13.5 7.6875L12.3125 6.5L4.16667 14.6458V15.8333ZM2.5 17.5V13.9583L13.5 2.97917C13.6667 2.82639 13.8508 2.70833 14.0525 2.625C14.2542 2.54167 14.4658 2.5 14.6875 2.5C14.9092 2.5 15.1244 2.54167 15.3333 2.625C15.5422 2.70833 15.7228 2.83333 15.875 3L17.0208 4.16667C17.1875 4.31944 17.3092 4.5 17.3858 4.70833C17.4625 4.91667 17.5006 5.125 17.5 5.33333C17.5 5.55556 17.4619 5.7675 17.3858 5.96917C17.3097 6.17083 17.1881 6.35472 17.0208 6.52083L6.04167 17.5H2.5ZM12.8958 7.10417L12.3125 6.5L13.5 7.6875L12.8958 7.10417Z" fill="#A91520"/>
-                        </svg>
-                      </button>
-                    </div>
+
+        <!-- Aperçu du profil public -->
+        <div class="flex gap-4">
+          <div class="bg-[#f8eced] rounded-lg p-4 flex-1">
+            <div class="flex items-center space-x-3">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M10 6.875C9.1712 6.875 8.37634 7.20424 7.79029 7.79029C7.20424 8.37634 6.875 9.1712 6.875 10C6.875 10.8288 7.20424 11.6237 7.79029 12.2097C8.37634 12.7958 9.1712 13.125 10 13.125C10.8288 13.125 11.6237 12.7958 12.2097 12.2097C12.7958 11.6237 13.125 10.8288 13.125 10C13.125 9.1712 12.7958 8.37634 12.2097 7.79029C11.6237 7.20424 10.8288 6.875 10 6.875ZM8.125 10C8.125 9.50272 8.32254 9.02581 8.67417 8.67417C9.02581 8.32254 9.50272 8.125 10 8.125C10.4973 8.125 10.9742 8.32254 11.3258 8.67417C11.6775 9.02581 11.875 9.50272 11.875 10C11.875 10.4973 11.6775 10.9742 11.3258 11.3258C10.9742 11.6775 10.4973 11.875 10 11.875C9.50272 11.875 9.02581 11.6775 8.67417 11.3258C8.32254 10.9742 8.125 10.4973 8.125 10Z" fill="#A91520"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0003 2.70825C6.23866 2.70825 3.70449 4.96159 2.23366 6.87242L2.20783 6.90659C1.87449 7.33909 1.56866 7.73658 1.36116 8.20658C1.13866 8.71075 1.04199 9.25992 1.04199 9.99992C1.04199 10.7399 1.13866 11.2891 1.36116 11.7933C1.56949 12.2633 1.87533 12.6616 2.20783 13.0933L2.23449 13.1274C3.70449 15.0383 6.23866 17.2916 10.0003 17.2916C13.762 17.2916 16.2962 15.0383 17.767 13.1274L17.7928 13.0933C18.1262 12.6616 18.432 12.2633 18.6395 11.7933C18.862 11.2891 18.9587 10.7399 18.9587 9.99992C18.9587 9.25992 18.862 8.71075 18.6395 8.20658C18.4312 7.73658 18.1253 7.33909 17.7928 6.90659L17.7662 6.87242C16.2962 4.96159 13.762 2.70825 10.0003 2.70825ZM3.22533 7.63492C4.58199 5.87075 6.79199 3.95825 10.0003 3.95825C13.2087 3.95825 15.4178 5.87075 16.7753 7.63492C17.142 8.10992 17.3553 8.39325 17.4962 8.71159C17.6278 9.00992 17.7087 9.37408 17.7087 9.99992C17.7087 10.6258 17.6278 10.9899 17.4962 11.2883C17.3553 11.6066 17.1412 11.8899 16.7762 12.3649C15.417 14.1291 13.2087 16.0416 10.0003 16.0416C6.79199 16.0416 4.58283 14.1291 3.22533 12.3649C2.85866 11.8899 2.64533 11.6066 2.50449 11.2883C2.37283 10.9899 2.29199 10.6258 2.29199 9.99992C2.29199 9.37408 2.37283 9.00992 2.50449 8.71159C2.64533 8.39325 2.86033 8.10992 3.22533 7.63492Z" fill="#A91520"/>
+              </svg>
+              <span class="text-[#A91520] font-semibold text-base">{{ texts.preview }}</span>
+            </div>
+          </div>
+          
+          <button type="button" 
+                  (click)="previewChanges()"
+                  class="w-14 h-14 bg-white border border-[#f2dcde] rounded-lg hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center flex-shrink-0">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.16667 15.8333H5.35417L13.5 7.6875L12.3125 6.5L4.16667 14.6458V15.8333ZM2.5 17.5V13.9583L13.5 2.97917C13.6667 2.82639 13.8508 2.70833 14.0525 2.625C14.2542 2.54167 14.4658 2.5 14.6875 2.5C14.9092 2.5 15.1244 2.54167 15.3333 2.625C15.5422 2.70833 15.7228 2.83333 15.875 3L17.0208 4.16667C17.1875 4.31944 17.3092 4.5 17.3858 4.70833C17.4625 4.91667 17.5006 5.125 17.5 5.33333C17.5 5.55556 17.4619 5.7675 17.3858 5.96917C17.3097 6.17083 17.1881 6.35472 17.0208 6.52083L6.04167 17.5H2.5ZM12.8958 7.10417L12.3125 6.5L13.5 7.6875L12.8958 7.10417Z" fill="#A91520"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <!-- Contenu principal -->
@@ -98,8 +116,18 @@
               <!-- Logo display -->
               <div class="flex-shrink-0">
                 <div class="w-24 h-24 bg-blue-900 rounded-full flex items-center justify-center">
-                  <img *ngIf="logoPreview" [src]="'https://wakana.online/repertoire_amchams/' +  logoPreview" alt="Logo" class="w-full h-full object-cover rounded-full">
-                  <img *ngIf="!logoPreview" class="h-24 w-24 rounded-[50%]" src="../assets/logoW.png" alt="Logo">
+                  <img *ngIf="logoPreview && !logoPreview.startsWith('data:')" 
+                       [src]="'https://wakana.online/repertoire_amchams/' + logoPreview" 
+                       alt="Logo" 
+                       class="w-full h-full object-cover rounded-full">
+                  <img *ngIf="logoPreview && logoPreview.startsWith('data:')" 
+                       [src]="logoPreview" 
+                       alt="Logo" 
+                       class="w-full h-full object-cover rounded-full">
+                  <img *ngIf="!logoPreview" 
+                       class="h-24 w-24 rounded-[50%]" 
+                       src="../assets/logoW.png" 
+                       alt="Logo">
                 </div>
               </div>
               
@@ -163,13 +191,16 @@
                 </label>
                 <select
                   id="sector"
-                  formControlName="sector"
+                  formControlName="sectorId"
                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 >
-                  <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
+                  <option value="">{{ texts.selectSector }}</option>
+                  <option *ngFor="let sector of sectors" [value]="sector.id">
+                    {{ currentLang === 'fr' ? sector.nameFr : sector.nameEn }}
+                  </option>
                 </select>
-                <div *ngIf="isFieldInvalid('sector')" class="text-red-500 text-xs mt-1">
-                  {{ getFieldError('sector') }}
+                <div *ngIf="isFieldInvalid('sectorId')" class="text-red-500 text-xs mt-1">
+                  {{ getFieldError('sectorId') }}
                 </div>
               </div>
             </div>
@@ -206,54 +237,38 @@
                 </label>
                 <select
                   id="country"
-                  formControlName="country"
-                  (change)="onCountryChange($event)"
+                  formControlName="countryId"
                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 >
-                  <option *ngFor="let country of countries" [value]="country.name">
-                    {{ country.flag }} {{ country.name }}
+                  <option value="">{{ texts.selectCountry }}</option>
+                  <option *ngFor="let country of countries" [value]="country.id">
+                   {{ country.name }}
                   </option>
                 </select>
-                <div *ngIf="isFieldInvalid('country')" class="text-red-500 text-xs mt-1">
-                  {{ getFieldError('country') }}
+                <div *ngIf="isFieldInvalid('countryId')" class="text-red-500 text-xs mt-1">
+                  {{ getFieldError('countryId') }}
                 </div>
               </div>
               
-              <!-- Ville -->
+              <!-- Adresse complète -->
               <div>
-                <label for="city" class="block text-sm font-medium text-gray-700 mb-2">
-                  {{ texts.city }}
+                <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                  {{ texts.address }}
                 </label>
-                <input
-                  type="text"
-                  id="city"
-                  formControlName="city"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                >
-                <div *ngIf="isFieldInvalid('city')" class="text-red-500 text-xs mt-1">
-                  {{ getFieldError('city') }}
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="address"
+                    formControlName="address"
+                    class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  >
+                  <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                  </svg>
                 </div>
-              </div>
-            </div>
-            
-            <!-- Adresse complète -->
-            <div class="mt-6">
-              <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
-                {{ texts.address }}
-              </label>
-              <div class="relative">
-                <input
-                  type="text"
-                  id="address"
-                  formControlName="address"
-                  class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                >
-                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-              <div *ngIf="isFieldInvalid('address')" class="text-red-500 text-xs mt-1">
-                {{ getFieldError('address') }}
+                <div *ngIf="isFieldInvalid('address')" class="text-red-500 text-xs mt-1">
+                  {{ getFieldError('address') }}
+                </div>
               </div>
             </div>
           </div>
@@ -328,19 +343,30 @@
               </div>
             </div>
           </div>
-
-          <!-- Bouton de sauvegarde -->
-          <div class="flex justify-end">
-            <button
-              type="submit"
-              [disabled]="companyForm!.invalid"
-              class="px-6 py-3 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              style="background-color: #1D365D"
-              [class.hover:opacity-90]="!companyForm!.invalid"
-            >
-              {{ texts.save }}
-            </button>
-          </div>
+        <!-- Boutons d'action -->
+        <div class="flex justify-end space-x-4">
+          <button
+            type="button"
+            (click)="resetForm()"
+            class="px-6 py-3 text-gray-700 font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            {{ currentLang === 'fr' ? 'Annuler' : 'Cancel' }}
+          </button>
+          
+          <button
+            type="submit"
+            [disabled]="isSaving"
+            class="px-6 py-3 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+            style="background-color: #1D365D"
+            [class.hover:opacity-90]="!companyForm.invalid && !isSaving"
+          >
+            <svg *ngIf="isSaving" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ isSaving ? texts.saving : texts.save }}
+          </button>
+        </div>
         </form>
       </div>
     </div>

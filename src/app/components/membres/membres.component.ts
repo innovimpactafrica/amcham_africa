@@ -4,9 +4,9 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { HeaderAdminComponent } from "../header-admin/header-admin.component";
 import { LanguageService } from '../../../services/language.service';
-import { CompanyService, Company, CompanyFormData } from '../../../services/company.service';
 import { Subscription } from 'rxjs';
 import { CardStateComponent } from "../card-state/card-state.component";
+import { Company, CompanyFormData, CompanyService } from '../../../services/company.service';
 
 interface Membre {
   id: number;
@@ -398,7 +398,8 @@ Math: any;
         videoLink: this.memberForm.get('videoLink')?.value || '',
         lat: this.memberForm.get('lat')?.value || 0,
         lon: this.memberForm.get('lon')?.value || 0,
-        logoFile: this.memberForm.get('logoFile')?.value
+        logoFile: this.memberForm.get('logoFile')?.value,
+        country: ''
       };
 
       this.companyService.saveCompany(formData).subscribe({

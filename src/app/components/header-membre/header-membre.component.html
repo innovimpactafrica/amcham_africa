@@ -1,95 +1,88 @@
-<!-- Header -->
-<header class="bg-[#1D365D] text-white px-6 py-2">
-    <div class="flex items-center justify-between">
-      <h1 class="text-lg font-medium relative left-16">Plateforme AmCham - Réseau des Chambres de Commerce Américaines</h1>
-      <div class="flex items-center">
-        
-        <!-- Sélecteur de langue -->
-        <div class="language-selector relative relative right-16">
-          <button 
-            (click)="toggleLanguagePopup()"
-            class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-[#2a4a7a] transition-colors duration-200 cursor-pointer"
-          >
-            <img [src]="currentLanguage.flag" [alt]="currentLanguage.code" class="w-5 h-4">
-            <span class="text-sm">{{ currentLanguage.code }}</span>
-            <svg class="w-4 h-4 transition-transform duration-200" 
-                 [class.rotate-180]="showLanguagePopup"
-                 fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-            </svg>
-          </button>
-          
-          <!-- Popup de sélection de langue -->
-          <div 
-          *ngIf="showLanguagePopup" 
-          class="absolute top-full right-0 mt-1 w-64 bg-gradient-to-b from-[#4a5a7a] to-[#2a3a5a] rounded-lg shadow-lg overflow-hidden z-50">
-          <div class="p-4">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-white font-medium">Changer la langue</h3>
-              <button 
-                (click)="toggleLanguagePopup()" 
-                class="text-gray-300 hover:text-white">
+<!-- HEADER PRINCIPAL RELOOKÉ (même style que header admin) -->
+<header class="bg-white">
+  <!-- Bande supérieure -->
+  <div class="bg-[#1D365D] text-white px-6 py-2">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <h1 class="text-sm sm:text-base font-medium text-center sm:text-left">
+        Plateforme AmCham - Réseau des Chambres de Commerce Américaines
+      </h1>
+
+      <!-- Sélecteur de langue -->
+      <div class="relative">
+        <button (click)="toggleLanguagePopup()"
+          class="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-[#2A4A7A] transition-colors duration-200">
+          <img [src]="currentLanguage.flag" [alt]="currentLanguage.code" class="w-5 h-4">
+          <span class="text-sm uppercase">{{ currentLanguage.code }}</span>
+          <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="showLanguagePopup"
+            fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 
+              111.414 1.414l-4 4a1 1 0 01-1.414 
+              0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd">
+            </path>
+          </svg>
+        </button>
+
+        <!-- Popup de sélection de langue -->
+        <div *ngIf="showLanguagePopup"
+          class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-50">
+          <div class="p-3">
+            <div class="flex justify-between items-center mb-3 border-b pb-2">
+              <h3 class="text-gray-800 text-sm font-medium">Changer la langue</h3>
+              <button (click)="toggleLanguagePopup()" class="text-gray-400 hover:text-gray-600">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            
-            <!-- Option Français -->
-            <div 
-              (click)="selectLanguage('fr')" 
-              class="flex items-center justify-between p-3 rounded-lg mb-2 cursor-pointer hover:bg-black/20 transition-colors"
-              [class.border-2]="currentLanguage.code === 'FR'"
-              [class.border-red-500]="currentLanguage.code === 'FR'">
+
+            <!-- Français -->
+            <div (click)="selectLanguage('fr')"
+              class="flex items-center justify-between p-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+              [class.border-2]="currentLanguage.code === 'FR'" [class.border-[#B3343D]]="currentLanguage.code === 'FR'">
               <div class="flex items-center space-x-3">
                 <img src="https://flagcdn.com/w20/fr.png" alt="Français" class="w-5 h-5 rounded-sm">
-                <span class="text-white">Français</span>
+                <span class="text-gray-700 text-sm">Français</span>
               </div>
-              <div 
-                *ngIf="currentLanguage.code === 'FR'" 
-                class="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+              <div *ngIf="currentLanguage.code === 'FR'"
+                class="w-5 h-5 bg-[#B3343D] rounded-full flex items-center justify-center">
                 <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 
+                    8a1 1 0 01-1.414 0l-4-4a1 1 
+                    0 011.414-1.414L8 12.586l7.293-7.293a1 
+                    1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
               </div>
             </div>
-            
-            <!-- Option Anglais -->
-            <div 
-              (click)="selectLanguage('en')" 
-              class="flex items-center justify-between p-3 rounded-lg cursor-pointer hover:bg-black/20 transition-colors"
-              [class.border-2]="currentLanguage.code === 'EN'"
-              [class.border-red-500]="currentLanguage.code === 'EN'">
+
+            <!-- Anglais -->
+            <div (click)="selectLanguage('en')"
+              class="flex items-center justify-between p-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+              [class.border-2]="currentLanguage.code === 'EN'" [class.border-[#B3343D]]="currentLanguage.code === 'EN'">
               <div class="flex items-center space-x-3">
                 <img src="https://flagcdn.com/w20/gb.png" alt="English" class="w-5 h-5 rounded-sm">
-                <span class="text-white">Anglais</span>
+                <span class="text-gray-700 text-sm">Anglais</span>
               </div>
-              <div 
-                *ngIf="currentLanguage.code === 'EN'" 
-                class="w-5 h-5 border-2 border-gray-400 rounded-full">
-              </div>
+              <div *ngIf="currentLanguage.code === 'EN'" class="w-5 h-5 border-2 border-[#B3343D] rounded-full"></div>
             </div>
           </div>
         </div>
-        </div>
       </div>
     </div>
-    
-    <!-- Overlay pour fermer la popup en cliquant à l'extérieur -->
-    <div *ngIf="showLanguagePopup" 
-         (click)="showLanguagePopup = false"
-         class="fixed inset-0 z-40 bg-transparent"></div>
-  </header>
-  
-  <!-- Navigation et header company -->
-  <div class="bg-white shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 ">
-      <!-- Logo et navigation -->
-      <div class="flex items-center justify-between py-4 ">
-        <div class="flex items-center">
-          <img src="/assets/logo.png" alt="AMCHAM" class="h-12 mr-8 relative right-48">
-          
-          <!-- Navigation tabs -->
+
+    <!-- Overlay clic extérieur -->
+    <div *ngIf="showLanguagePopup" (click)="showLanguagePopup = false" class="fixed inset-0 z-40 bg-transparent">
+    </div>
+  </div>
+
+  <!-- Navigation principale -->
+  <div class="bg-white">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row sm:items-center sm:justify-center py-4">
+
+      <!-- Logo -->
+      <div class="flex items-center mb-4 sm:mb-0 ">
+        <img src="/assets/logoAmcham.png" alt="AMCHAM" class=" relative right-[20%] h-10 sm:h-12 mr-4">
+
+        <!-- Navigation tabs -->
           <nav class="flex space-x-8">
             <a (click)="navigateToPropos()" 
                [class]="isActiveTab('/apropos') ? 
@@ -138,25 +131,19 @@
               Statistiques
             </a>
           </nav>
-        </div>
-        
-            <!-- Company info in header -->
-<div class="flex items-center relative left-[14%]">
-  <div class="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center mr-3">
-    <!-- Logo dynamique de l'entreprise -->
-    <img 
-      class="h-10 w-10 rounded-[50%]" 
-      [src]=" 'https://wakana.online/repertoire_amchams/' + companyLogo" 
-      [alt]="companyName + ' logo'"
-    >
-  </div>
-  <div>
-    <!-- Nom dynamique de l'entreprise -->
-    <h2 class="font-semibold text-gray-900">{{ companyName }}</h2>
-    <!-- Secteur d'activité dynamique -->
-    <p class="text-sm text-gray-500">{{ companySector }}</p>
-  </div>
-</div>
       </div>
-    </div>  
+
+      <!-- Entreprise -->
+      <div class="flex items-center relative left-[15%]">
+        <div class="w-10 h-10  rounded-full overflow-hidden bg-gray-100 flex items-center justify-center mr-3">
+          <img [src]="'https://wakana.online/repertoire_amchams/' + companyLogo" [alt]="companyName + ' logo'"
+            class="w-full h-full object-cover">
+        </div>
+        <div>
+          <h2 class="font-semibold text-gray-900 text-sm sm:text-base">{{ companyName }}</h2>
+          <p class="text-xs text-gray-500">{{ companySector }}</p>
+        </div>
+      </div>
+    </div>
   </div>
+</header>

@@ -1,12 +1,27 @@
+import { Country } from './country-amcham.service';
 // company.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
+// Ajoutez cette interface dans la section des interfaces
+export interface CompanyScheduleRequest {
+  dayOfWeek: string;
+  openingTime: string | null;
+  closingTime: string | null;
+  closed: boolean;
+}
+
+export interface CompanySchedulesRequest {
+  schedules: CompanyScheduleRequest[];
+}
 // Interfaces
 export interface Company {
-  updatedAt: string;
+  value: any;
+  countryId: number;
+  sectorId: number;
+  countryAmchamId: number;
   id: number;
   name: string;
   city:string,
@@ -21,6 +36,8 @@ export interface Company {
   webLink: string;
   logo: string;
   pictures: string[];
+  updatedAt: string | null;
+
   lat: number;
   lon: number;
 }
@@ -105,6 +122,9 @@ export interface CompanyFormData {
   webLink: string;
   countryAmchamId: number;
   sectorId: number;
+  pictures?: File[]; // Nouvelles photos à ajouter
+  deletedPictures?: string[]; // URLs des photos à supprimer
+  country: string;
   videoLink: string;
   logoFile?: File;
   lat: number;
@@ -159,6 +179,8 @@ export class CompanyService {
       );
   }
 
+  
+
   /**
    * Rechercher des entreprises - GET /api/companies/search
    */
@@ -189,6 +211,23 @@ export class CompanyService {
         catchError(this.handleError)
       );
   }
+
+  /**
+ * Mettre à jour les horaires d'une entreprise - PUT /api/companies/{id}/schedules
+ */
+updateHoraire(companyId: number, schedules: CompanyScheduleRequest[]): Observable<any> {
+  const requestBody: CompanySchedulesRequest = { schedules };
+  
+  const headers = this.getAuthHeaders();
+  
+  return this.http.put(
+    `${this.baseUrl}/api/companies/${companyId}/schedules`, 
+    requestBody,
+    { headers }
+  ).pipe(
+    catchError(this.handleError)
+  );
+}
   
     /**
    * Récupération du token
@@ -277,6 +316,8 @@ getSearchStats(): Observable<SearchStats> {
         catchError(this.handleError)
       );
   }
+
+
  
   /**
    * Mettre à jour une entreprise
