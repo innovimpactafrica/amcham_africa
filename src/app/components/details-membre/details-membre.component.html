@@ -2,102 +2,221 @@
 
 <div class="min-h-screen bg-[#F4F6FA]" *ngIf="membre && !isLoading">
   <!-- Header Section avec fond #141E34 -->
-  <div class="bg-gradient-to-r from-[#1C365B] via-[#0C1B31] to-[#132742] text-white py-6 md:py-12">
+  <div
+    class="bg-gradient-to-r from-[#1C365B] via-[#0C1B31] to-[#132742] text-white py-6 md:py-12"
+  >
     <div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <!-- Breadcrumb - Hidden on mobile -->
-      <div class="hidden sm:flex items-center space-x-2 text-sm md:text-base font-medium text-gray-400 mb-6 md:mb-8">
-        <a href="/accueil" class="text-gray-300 hover:text-white transition-colors">Accueil</a>
+      <div
+        class="hidden sm:flex items-center space-x-2 text-sm md:text-base font-medium text-gray-400 mb-6 md:mb-8"
+      >
+        <a
+          href="/accueil"
+          class="text-gray-300 hover:text-white transition-colors"
+          >Accueil</a
+        >
         <span>/</span>
-        <a href="/membres" class="text-gray-300 hover:text-white transition-colors">Membres</a>
+        <a
+          href="/membres"
+          class="text-gray-300 hover:text-white transition-colors"
+          >Membres</a
+        >
         <span>/</span>
         <span class="text-white truncate">{{ membre.name }}</span>
       </div>
 
       <!-- Header Content - Stacked on mobile -->
-      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
+      <div
+        class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6"
+      >
         <!-- Left side: Logo and Info -->
         <div class="flex items-start gap-3 sm:gap-6">
           <!-- Logo -->
           <div
-            class="w-16 h-16 sm:w-24 sm:h-24 bg-white rounded-full border-4 border-[#E9EEF9] flex items-center justify-center flex-shrink-0 shadow-md">
-            <img *ngIf="membre.logo" [src]="'https://wakana.online/repertoire_amchams/' + membre.logo"
-              [alt]="membre.name" class="w-14 h-14 sm:w-24 sm:h-24 object-contain rounded-full">
-            <span *ngIf="!membre.logo" class="text-[#141E34] font-bold text-xl sm:text-3xl">{{ getInitial(membre.name)
-              }}</span>
+            class="w-16 h-16 sm:w-24 sm:h-24 bg-white rounded-full border-4 border-[#E9EEF9] flex items-center justify-center flex-shrink-0 shadow-md"
+          >
+            <img
+              *ngIf="membre.logo"
+              [src]="'https://wakana.online/repertoire_amchams/' + membre.logo"
+              [alt]="membre.name"
+              class="w-14 h-14 sm:w-24 sm:h-24 object-contain rounded-full"
+            />
+            <span
+              *ngIf="!membre.logo"
+              class="text-[#141E34] font-bold text-xl sm:text-3xl"
+              >{{ getInitial(membre.name) }}</span
+            >
           </div>
 
           <!-- Member Info -->
           <div class="flex-1">
-            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3 break-words">{{ membre.name }}</h1>
+            <h1
+              class="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3 break-words"
+            >
+              {{ membre.name }}
+            </h1>
 
             <!-- Contact Info - Vertical on mobile, horizontal on sm+ -->
             <div
-              class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-4 lg:gap-6 text-xs sm:text-sm">
+              class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-4 lg:gap-6 text-xs sm:text-sm"
+            >
               <!-- Sector -->
               <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 flex-shrink-0" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  class="w-4 h-4 flex-shrink-0"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M13.5 1.5H4.5C3.67157 1.5 3 2.17157 3 3V15C3 15.8284 3.67157 16.5 4.5 16.5H13.5C14.3284 16.5 15 15.8284 15 15V3C15 2.17157 14.3284 1.5 13.5 1.5Z"
-                    stroke="#D11E2B" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M6.75 16.5V13.5H11.25V16.5" stroke="#D11E2B" stroke-width="1.125" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                  <path d="M6 4.5H6.0075" stroke="#D11E2B" stroke-width="1.125" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                  <path d="M12 4.5H12.0075" stroke="#D11E2B" stroke-width="1.125" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                  <path d="M9 4.5H9.0075" stroke="#D11E2B" stroke-width="1.125" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                  <path d="M9 7.5H9.0075" stroke="#D11E2B" stroke-width="1.125" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                  <path d="M9 10.5H9.0075" stroke="#D11E2B" stroke-width="1.125" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                  <path d="M12 7.5H12.0075" stroke="#D11E2B" stroke-width="1.125" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                  <path d="M12 10.5H12.0075" stroke="#D11E2B" stroke-width="1.125" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                  <path d="M6 7.5H6.0075" stroke="#D11E2B" stroke-width="1.125" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                  <path d="M6 10.5H6.0075" stroke="#D11E2B" stroke-width="1.125" stroke-linecap="round"
-                    stroke-linejoin="round" />
+                    stroke="#D11E2B"
+                    stroke-width="1.125"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M6.75 16.5V13.5H11.25V16.5"
+                    stroke="#D11E2B"
+                    stroke-width="1.125"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M6 4.5H6.0075"
+                    stroke="#D11E2B"
+                    stroke-width="1.125"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M12 4.5H12.0075"
+                    stroke="#D11E2B"
+                    stroke-width="1.125"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M9 4.5H9.0075"
+                    stroke="#D11E2B"
+                    stroke-width="1.125"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M9 7.5H9.0075"
+                    stroke="#D11E2B"
+                    stroke-width="1.125"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M9 10.5H9.0075"
+                    stroke="#D11E2B"
+                    stroke-width="1.125"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M12 7.5H12.0075"
+                    stroke="#D11E2B"
+                    stroke-width="1.125"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M12 10.5H12.0075"
+                    stroke="#D11E2B"
+                    stroke-width="1.125"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M6 7.5H6.0075"
+                    stroke="#D11E2B"
+                    stroke-width="1.125"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M6 10.5H6.0075"
+                    stroke="#D11E2B"
+                    stroke-width="1.125"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 <span class="text-gray-300">{{ membre.sector }}</span>
               </div>
 
               <!-- Country -->
               <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 flex-shrink-0" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  class="w-4 h-4 flex-shrink-0"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M15 7.5C15 12.375 9 16.5 9 16.5C9 16.5 3 12.375 3 7.5C3 5.9087 3.63214 4.38258 4.75736 3.25736C5.88258 2.13214 7.4087 1.5 9 1.5C10.5913 1.5 12.1174 2.13214 13.2426 3.25736C14.3679 4.38258 15 5.9087 15 7.5Z"
-                    stroke="#D11E2B" stroke-width="1.5" />
+                    stroke="#D11E2B"
+                    stroke-width="1.5"
+                  />
                   <path
                     d="M11.25 7.5C11.25 8.09674 11.0129 8.66903 10.591 9.09099C10.169 9.51295 9.59674 9.75 9 9.75C8.40326 9.75 7.83097 9.51295 7.40901 9.09099C6.98705 8.66903 6.75 8.09674 6.75 7.5C6.75 6.90326 6.98705 6.33097 7.40901 5.90901C7.83097 5.48705 8.40326 5.25 9 5.25C9.59674 5.25 10.169 5.48705 10.591 5.90901C11.0129 6.33097 11.25 6.90326 11.25 7.5Z"
-                    stroke="#D11E2B" stroke-width="1.5" />
+                    stroke="#D11E2B"
+                    stroke-width="1.5"
+                  />
                 </svg>
                 <span class="text-gray-300">{{ membre.country }}</span>
               </div>
 
               <!-- Rating -->
-              <div class="flex items-center gap-1" *ngIf="ratings && ratings.length > 0">
-                <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              <div
+                class="flex items-center gap-1"
+                *ngIf="ratings && ratings.length > 0"
+              >
+                <svg
+                  class="w-4 h-4 text-yellow-400"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                  />
                 </svg>
-                <span class="text-white font-medium">{{ getAverageRating() }}</span>
-                <span class="text-gray-400 text-xs">({{ getTotalReviews() }})</span>Avis
+                <span class="text-white font-medium">{{
+                  getAverageRating()
+                }}</span>
+                <span class="text-gray-400 text-xs"
+                  >({{ getTotalReviews() }} Avis)</span
+                >
               </div>
             </div>
           </div>
         </div>
 
         <!-- Review Button - Full width on mobile -->
-        <button (click)="laisserAvis()"
-          class="w-full sm:w-auto flex gap-2 bg-white hover:bg-gray-100 text-[#D11E2B] px-4 sm:px-5 py-3 rounded-full font-medium transition-colors justify-center sm:justify-start">
-          <svg class="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" width="17" height="16" viewBox="0 0 17 16" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
+        <button
+          (click)="laisserAvis()"
+          class="w-full sm:w-auto flex gap-2 bg-white hover:bg-gray-100 text-[#D11E2B] px-4 sm:px-5 py-3 rounded-full font-medium transition-colors justify-center sm:justify-start"
+        >
+          <svg
+            class="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0"
+            width="17"
+            height="16"
+            viewBox="0 0 17 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M3.49983 13.4999C3.41912 13.5013 3.33927 13.4831 3.2671 13.4469C3.19494 13.4108 3.13261 13.3576 3.08544 13.2921C3.03828 13.2266 3.00767 13.1507 2.99624 13.0708C2.98482 12.9908 2.99291 12.9093 3.01983 12.8332L4.0865 9.33325C3.85494 8.7313 3.73739 8.09152 3.73983 7.44658C3.73877 6.73705 3.87929 6.03445 4.15317 5.37991C4.42154 4.75341 4.80609 4.18337 5.2865 3.69991C5.76872 3.21489 6.34188 2.82976 6.97317 2.56658C7.62578 2.28952 8.32751 2.14673 9.0365 2.14673C9.74549 2.14673 10.4472 2.28952 11.0998 2.56658C12.0559 2.97611 12.8714 3.65626 13.4459 4.52332C14.0204 5.39037 14.3288 6.40649 14.3332 7.44658C14.329 8.8513 13.7708 10.1977 12.7798 11.1932C12.2964 11.6737 11.7263 12.0582 11.0998 12.3266C9.83927 12.8545 8.42415 12.8784 7.1465 12.3932L3.6465 13.4599C3.59977 13.4802 3.55038 13.4937 3.49983 13.4999ZM9.03317 3.16658C8.1888 3.17023 7.36395 3.42087 6.66029 3.88761C5.95663 4.35434 5.40492 5.01677 5.07317 5.79325C4.63239 6.86064 4.63239 8.05918 5.07317 9.12658C5.11288 9.23643 5.11288 9.35672 5.07317 9.46658L4.25317 12.2466L7.01983 11.4066C7.12969 11.3669 7.24998 11.3669 7.35983 11.4066C7.88812 11.6259 8.4545 11.7388 9.0265 11.7388C9.5985 11.7388 10.1649 11.6259 10.6932 11.4066C11.2137 11.1874 11.6859 10.8678 12.0826 10.4658C12.4794 10.0639 12.793 9.58768 13.0054 9.06439C13.2178 8.54109 13.3249 7.98102 13.3205 7.41627C13.3161 6.85152 13.2003 6.29318 12.9798 5.77325C12.6488 5.00054 12.0985 4.34182 11.3971 3.87853C10.6956 3.41525 9.87379 3.16773 9.03317 3.16658Z"
-              fill="#D11E2B" />
+              fill="#D11E2B"
+            />
           </svg>
           <span>{{ texts.giveReview }}</span>
         </button>
@@ -108,48 +227,87 @@
   <!-- Main Content -->
   <div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-6 md:py-8">
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
-
       <!-- Left Sidebar -->
       <div class="lg:col-span-1">
         <!-- Contact Card -->
         <div class="bg-white rounded-lg p-4 md:p-6 sticky top-4">
           <!-- Coordonnées -->
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ texts.coordinates }}</h2>
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">
+            {{ texts.coordinates }}
+          </h2>
           <div class="space-y-4 mb-6 md:mb-8">
             <!-- Phone -->
             <div class="flex gap-3">
-              <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              <svg
+                class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                />
               </svg>
               <div>
                 <p class="text-xs text-gray-500 mb-1">Téléphone</p>
-                <p class="cursor-pointer text-sm break-all" (click)="callPhone()">{{ membre.telephone }}</p>
+                <p
+                  class="cursor-pointer text-sm break-all"
+                  (click)="callPhone()"
+                >
+                  {{ membre.telephone }}
+                </p>
               </div>
             </div>
 
             <!-- Email -->
             <div class="flex gap-3">
-              <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              <svg
+                class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
               </svg>
               <div>
                 <p class="text-xs text-gray-500 mb-1">Email</p>
-                <p class="cursor-pointer text-sm break-all" (click)="sendEmail()">{{ membre.email }}</p>
+                <p
+                  class="cursor-pointer text-sm break-all"
+                  (click)="sendEmail()"
+                >
+                  {{ membre.email }}
+                </p>
               </div>
             </div>
 
             <!-- Address -->
             <div class="flex gap-3">
-              <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              <svg
+                class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
               </svg>
               <div>
                 <p class="text-xs text-gray-500 mb-1">Adresse</p>
@@ -159,32 +317,61 @@
 
             <!-- Website -->
             <div class="flex gap-3">
-              <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 18 18"
-                fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <g clip-path="url(#clip0_1_1294)">
                   <path
                     d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z"
-                    stroke="#D11E2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    stroke="#D11E2B"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                   <path
                     d="M1.5 9H16.5M9 1.5C7.07418 3.52212 6 6.20756 6 9C6 11.7924 7.07418 14.4779 9 16.5C10.9258 14.4779 12 11.7924 12 9C12 6.20756 10.9258 3.52212 9 1.5Z"
-                    stroke="#D11E2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    stroke="#D11E2B"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </g>
               </svg>
               <div>
                 <p class="text-xs text-gray-500 mb-1">Site web</p>
-                <p class="cursor-pointer text-sm break-all" (click)="visitWebsite()">{{ membre.webLink }}</p>
+                <p
+                  class="cursor-pointer text-sm break-all"
+                  (click)="visitWebsite()"
+                >
+                  {{ membre.webLink }}
+                </p>
               </div>
             </div>
           </div>
 
           <!-- Opening Hours -->
           <div *ngIf="horaires && horaires.length > 0">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ texts.openingHours }}</h2>
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">
+              {{ texts.openingHours }}
+            </h2>
             <div class="space-y-2">
-              <div *ngFor="let jour of getTranslatedDays()" class="flex justify-between items-center py-1 text-sm">
+              <div
+                *ngFor="let jour of getTranslatedDays()"
+                class="flex justify-between items-center py-1 text-sm"
+              >
                 <span class="text-gray-600 font-semibold">{{ jour }}</span>
                 <span
-                  [ngClass]="getFormattedHoraires()[jour] === texts.closed ? 'text-red-600 font-medium' : 'text-gray-900'">
+                  [ngClass]="
+                    getFormattedHoraires()[jour] === texts.closed
+                      ? 'text-red-600 font-medium'
+                      : 'text-gray-900'
+                  "
+                >
                   {{ getFormattedHoraires()[jour] }}
                 </span>
               </div>
@@ -195,21 +382,39 @@
 
       <!-- Main Content -->
       <div class="lg:col-span-3 space-y-6 md:space-y-8">
-
         <!-- Présentation -->
         <div class="bg-white rounded-lg p-4 md:p-6">
-          <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-4">{{ texts.presentation }}</h2>
-          <p class="text-gray-600 leading-relaxed text-sm md:text-base mb-6">{{ membre.description }}</p>
+          <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-4">
+            {{ texts.presentation }}
+          </h2>
+          <p class="text-gray-600 leading-relaxed text-sm md:text-base mb-6">
+            {{ membre.description }}
+          </p>
         </div>
 
         <!-- Photo Gallery -->
-        <div class="bg-white rounded-lg p-4 md:p-6" *ngIf="membre && membre.pictures && membre.pictures.length > 0">
-          <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-4">{{ texts.photoGallery }}</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-            <div *ngFor="let photo of membre.pictures" class="bg-gray-200 rounded-xl shadow-sm overflow-hidden">
-              <div class="w-full h-40 sm:h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                <img [src]="'https://wakana.online/repertoire_amchams/' + photo" [alt]="membre.name"
-                  class="w-full h-full object-cover rounded-lg">
+        <div
+          class="bg-white rounded-lg p-4 md:p-6"
+          *ngIf="membre && membre.pictures && membre.pictures.length > 0"
+        >
+          <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-4">
+            {{ texts.photoGallery }}
+          </h2>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4"
+          >
+            <div
+              *ngFor="let photo of membre.pictures"
+              class="bg-gray-200 rounded-xl shadow-sm overflow-hidden"
+            >
+              <div
+                class="w-full h-40 sm:h-48 bg-gray-200 rounded-lg flex items-center justify-center"
+              >
+                <img
+                  [src]="'https://wakana.online/repertoire_amchams/' + photo"
+                  [alt]="membre.name"
+                  class="w-full h-full object-cover rounded-lg"
+                />
               </div>
             </div>
           </div>
@@ -217,19 +422,33 @@
 
         <!-- Video -->
         <div class="bg-white rounded-lg p-4 md:p-6" *ngIf="membre?.videoLink">
-          <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-4">{{ texts.presentationVideo }}</h2>
+          <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-4">
+            {{ texts.presentationVideo }}
+          </h2>
           <div class="rounded-lg overflow-hidden">
-            <iframe class="w-full h-48 sm:h-64 md:h-96 lg:h-[400px] rounded-lg" [src]="getSafeVideoUrl()"
-              frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <iframe
+              class="w-full h-48 sm:h-64 md:h-96 lg:h-[400px] rounded-lg"
+              [src]="getSafeVideoUrl()"
+              frameborder="0"
+              allow="autoplay; encrypted-media"
+              allowfullscreen
+            ></iframe>
           </div>
         </div>
 
         <!-- Map -->
         <div class="bg-white rounded-lg p-4 md:p-6">
-          <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-4">{{ texts.location }}</h2>
+          <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-4">
+            {{ texts.location }}
+          </h2>
           <div class="rounded-lg overflow-hidden">
-            <iframe class="w-full h-48 sm:h-64 md:h-80 rounded-lg border-0" [src]="mapUrl" allowfullscreen
-              loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <iframe
+              class="w-full h-48 sm:h-64 md:h-80 rounded-lg border-0"
+              [src]="mapUrl"
+              allowfullscreen
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
           <p *ngIf="membre" class="mt-2 text-xs md:text-sm text-gray-700">
             Lat: {{ membre.lat }} | Lon: {{ membre.lon }}
@@ -243,58 +462,103 @@
   <!-- Reviews Section -->
   <div class="w-full bg-white py-6 md:py-8">
     <div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-900">{{ texts.reviews }}</h2>
-        <button (click)="laisserAvis()"
+      <div
+        class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6"
+      >
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900">
+          {{ texts.reviews }}
+        </h2>
+        <button
+          (click)="laisserAvis()"
           class="w-full sm:w-auto px-4 py-3 rounded-full text-sm font-medium transition-colors text-white flex items-center gap-2 justify-center"
-          style="background-color: #AA1520;" onmouseover="this.style.backgroundColor='#8B1018'"
-          onmouseout="this.style.backgroundColor='#AA1520'">
-          <svg class="w-4 h-4 flex-shrink-0" width="17" height="16" viewBox="0 0 17 16" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
+          style="background-color: #aa1520"
+          onmouseover="this.style.backgroundColor='#8B1018'"
+          onmouseout="this.style.backgroundColor='#AA1520'"
+        >
+          <svg
+            class="w-4 h-4 flex-shrink-0"
+            width="17"
+            height="16"
+            viewBox="0 0 17 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M3.49983 13.4999C3.41912 13.5013 3.33927 13.4831 3.2671 13.4469C3.19494 13.4108 3.13261 13.3576 3.08544 13.2921C3.03828 13.2266 3.00767 13.1507 2.99624 13.0708C2.98482 12.9908 2.99291 12.9093 3.01983 12.8332L4.0865 9.33325C3.85494 8.7313 3.73739 8.09152 3.73983 7.44658C3.73877 6.73705 3.87929 6.03445 4.15317 5.37991C4.42154 4.75341 4.80609 4.18337 5.2865 3.69991C5.76872 3.21489 6.34188 2.82976 6.97317 2.56658C7.62578 2.28952 8.32751 2.14673 9.0365 2.14673C9.74549 2.14673 10.4472 2.28952 11.0998 2.56658C12.0559 2.97611 12.8714 3.65626 13.4459 4.52332C14.0204 5.39037 14.3288 6.40649 14.3332 7.44658C14.329 8.8513 13.7708 10.1977 12.7798 11.1932C12.2964 11.6737 11.7263 12.0582 11.0998 12.3266C9.83927 12.8545 8.42415 12.8784 7.1465 12.3932L3.6465 13.4599C3.59977 13.4802 3.55038 13.4937 3.49983 13.4999ZM9.03317 3.16658C8.1888 3.17023 7.36395 3.42087 6.66029 3.88761C5.95663 4.35434 5.40492 5.01677 5.07317 5.79325C4.63239 6.86064 4.63239 8.05918 5.07317 9.12658C5.11288 9.23643 5.11288 9.35672 5.07317 9.46658L4.25317 12.2466L7.01983 11.4066C7.12969 11.3669 7.24998 11.3669 7.35983 11.4066C7.88812 11.6259 8.4545 11.7388 9.0265 11.7388C9.5985 11.7388 10.1649 11.6259 10.6932 11.4066C11.2137 11.1874 11.6859 10.8678 12.0826 10.4658C12.4794 10.0639 12.793 9.58768 13.0054 9.06439C13.2178 8.54109 13.3249 7.98102 13.3205 7.41627C13.3161 6.85152 13.2003 6.29318 12.9798 5.77325C12.6488 5.00054 12.0985 4.34182 11.3971 3.87853C10.6956 3.41525 9.87379 3.16773 9.03317 3.16658Z"
-              fill="white" />
+              fill="white"
+            />
           </svg>
           <span>{{ texts.giveReview }}</span>
         </button>
       </div>
 
       <!-- No reviews message -->
-      <div *ngIf="!ratings || ratings.length === 0" class="text-center py-8 md:py-12 text-gray-500">
-        <p>{{ currentLang === 'fr' ? 'Aucun avis pour le moment' : 'No reviews yet' }}</p>
+      <div
+        *ngIf="!ratings || ratings.length === 0"
+        class="text-center py-8 md:py-12 text-gray-500"
+      >
+        <p>
+          {{
+            currentLang === "fr"
+              ? "Aucun avis pour le moment"
+              : "No reviews yet"
+          }}
+        </p>
       </div>
 
       <!-- Reviews Carousel -->
+
       <div *ngIf="ratings && ratings.length > 0" class="relative">
         <div class="overflow-hidden">
-          <div class="flex w-full gap-4 md:gap-6 py-6 md:py-10"
-            [ngClass]="{'transition-transform duration-500 ease-in-out': !noTransition, 'transition-none': noTransition}"
-            [style.transform]="'translateX(-' + (currentRatingIndex * 100) + '%)'">
+          <div
+            class="flex w-full gap-4 md:gap-6 py-6 md:py-10 transition-transform duration-500 ease-in-out"
+            [style.transform]="'translateX(-' + currentRatinIndex * 100 + '%)'"
+          >
             @for (rating of displayedRatings; track $index) {
             <div class="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3">
-              <div class="bg-white rounded-2xl p-6 md:p-8 shadow-xl border transition-shadow h-full flex flex-col">
+              <div
+                class="bg-white rounded-2xl p-6 md:p-8 shadow-xl border transition-shadow h-full flex flex-col"
+              >
                 <div class="text-center">
                   <div
-                    class="w-16 h-16 md:w-24 md:h-24 bg-gray-100 rounded-full mx-auto mb-3 md:mb-4 flex items-center justify-center overflow-hidden">
-                    <span class="text-lg md:text-2xl font-semibold text-gray-700">{{ getInitial(rating.firstName)
-                      }}</span>
+                    class="w-16 h-16 md:w-24 md:h-24 bg-gray-100 rounded-full mx-auto mb-3 md:mb-4 flex items-center justify-center overflow-hidden"
+                  >
+                    <span
+                      class="text-lg md:text-2xl font-semibold text-gray-700"
+                    >
+                      {{ getInitial(rating.firstName) }}
+                    </span>
                   </div>
                   <div class="mb-2 md:mb-4">
-                    <h4 class="font-bold text-base md:text-lg text-gray-900">{{ rating.firstName }} {{ rating.lastName
-                      }}</h4>
-                    <p class="text-xs md:text-sm text-gray-400">{{ rating.companyName }}</p>
+                    <h4 class="font-bold text-base md:text-lg text-gray-900">
+                      {{ rating.firstName }} {{ rating.lastName }}
+                    </h4>
+                    <p class="text-xs md:text-sm text-gray-400">
+                      {{ rating.companyName }}
+                    </p>
                   </div>
-                  <div class="flex justify-center items-center gap-1 md:gap-2 my-3 md:my-4">
-                    <svg *ngFor="let star of getStarsArray(rating.score)" class="w-6 h-6 md:w-8 md:h-8"
-                      viewBox="0 0 24 24">
+
+                  <div
+                    class="flex justify-center items-center gap-1 md:gap-2 my-3 md:my-4"
+                  >
+                    <svg
+                      *ngFor="let star of getStarsArray(rating.score)"
+                      class="w-6 h-6 md:w-8 md:h-8"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         d="M8.30844 0.629081C8.52619 -0.0410623 9.47426 -0.0410627 9.692 0.629081L11.1232 5.0339C11.2206 5.3336 11.4999 5.53651 11.815 5.53651H16.4465C17.1511 5.53651 17.4441 6.43818 16.874 6.85235L13.1271 9.57468C12.8721 9.7599 12.7655 10.0882 12.8628 10.3879L14.2941 14.7927C14.5118 15.4629 13.7448 16.0201 13.1747 15.606L9.42777 12.8836C9.17283 12.6984 8.82762 12.6984 8.57268 12.8836L4.82572 15.606C4.25566 16.0201 3.48865 15.4629 3.70639 14.7927L5.13761 10.3879C5.23498 10.0882 5.12831 9.7599 4.87337 9.57468L1.12641 6.85235C0.556348 6.43818 0.849319 5.53651 1.55395 5.53651H6.18545C6.50057 5.53651 6.77985 5.3336 6.87723 5.0339L8.30844 0.629081Z"
-                        [attr.fill]="star === 1 ? '#F39C12' : 'none'" [attr.stroke]="star === 0 ? '#F39C12' : 'none'"
-                        stroke-width="1.5" />
+                        [attr.fill]="star === 1 ? '#F39C12' : 'none'"
+                        [attr.stroke]="star === 0 ? '#F39C12' : 'none'"
+                        stroke-width="1.5"
+                      />
                     </svg>
                   </div>
                 </div>
-                <p class="text-gray-600 text-xs md:text-sm text-center leading-relaxed flex-grow">{{ rating.comment }}
+                <p
+                  class="text-gray-600 text-xs md:text-sm text-center leading-relaxed flex-grow"
+                >
+                  {{ rating.comment }}
                 </p>
               </div>
             </div>
@@ -303,292 +567,505 @@
         </div>
 
         <!-- Review Dots -->
-        <div class="flex justify-center mt-4 md:mt-6 gap-2 flex-wrap">
-          @for (rating of ratings; track $index) {
-          <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-colors"
-            [class.bg-red-600]="$index === getActiveDot()" [class.bg-gray-300]="$index !== getActiveDot()"></div>
+      <!--- <div class="flex justify-center mt-4 md:mt-6 gap-2 flex-wrap">
+        
+          @for (dot of getDots(); track $index) {
+          <div
+            class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-colors duration-300"
+            [class.bg-red-600]="$index === getActiveDot()"
+            [class.bg-gray-300]="$index !== getActiveDot()"
+          ></div>
           }
-        </div>
+        </div>-->
+        
+        
+        
       </div>
+      
+      
     </div>
-  </div>
 
-  <!-- Similar Members Section -->
-  <div class="w-full bg-[#F4F6FA] py-6 md:py-8">
-    <div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
-        <div>
-          <h2 class="text-2xl md:text-3xl font-bold text-gray-900">{{ texts.similarMembers }}</h2>
-          <p class="text-gray-600 text-sm md:text-base">{{ texts.discoverMembers }}</p>
+    <!-- Similar Members Section -->
+    <div class="w-full bg-[#F4F6FA] py-6 md:py-8">
+      <div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div
+          class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6"
+        >
+          <div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900">
+              {{ texts.similarMembers }}
+            </h2>
+            <p class="text-gray-600 text-sm md:text-base">
+              {{ texts.discoverMembers }}
+            </p>
+          </div>
+          <button
+            (click)="voirTousLesMembres()"
+            class="text-red-600 hover:text-red-700 font-medium flex items-center gap-1 whitespace-nowrap text-sm md:text-base"
+          >
+            <span>{{ texts.seeAllMembers }}</span>
+            <svg
+              width="24"
+              height="15"
+              viewBox="0 0 24 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18.75 8.25H5.25C4.83 8.25 4.5 7.92 4.5 7.5C4.5 7.08 4.83 6.75 5.25 6.75H18.75C19.17 6.75 19.5 7.08 19.5 7.5C19.5 7.92 19.17 8.25 18.75 8.25Z"
+                fill="#D11E2B"
+              />
+              <path
+                d="M15 13.4997C14.9016 13.5009 14.8041 13.4815 14.7137 13.4428C14.6233 13.404 14.542 13.3468 14.475 13.2747C14.175 12.9747 14.175 12.5097 14.475 12.2097L19.2 7.48473L14.475 2.75973C14.175 2.45973 14.175 1.99473 14.475 1.69473C14.775 1.39473 15.24 1.39473 15.54 1.69473L20.79 6.94473C21.09 7.24473 21.09 7.70973 20.79 8.00973L15.54 13.2597C15.39 13.4097 15.195 13.4847 15.015 13.4847L15 13.4997Z"
+                fill="#D11E2B"
+              />
+            </svg>
+          </button>
         </div>
-        <button (click)="voirTousLesMembres()"
-          class="text-red-600 hover:text-red-700 font-medium flex items-center gap-1 whitespace-nowrap text-sm md:text-base">
-          <span>{{ texts.seeAllMembers }}</span>
-          <svg width="24" height="15" viewBox="0 0 24 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M18.75 8.25H5.25C4.83 8.25 4.5 7.92 4.5 7.5C4.5 7.08 4.83 6.75 5.25 6.75H18.75C19.17 6.75 19.5 7.08 19.5 7.5C19.5 7.92 19.17 8.25 18.75 8.25Z"
-              fill="#D11E2B" />
-            <path
-              d="M15 13.4997C14.9016 13.5009 14.8041 13.4815 14.7137 13.4428C14.6233 13.404 14.542 13.3468 14.475 13.2747C14.175 12.9747 14.175 12.5097 14.475 12.2097L19.2 7.48473L14.475 2.75973C14.175 2.45973 14.175 1.99473 14.475 1.69473C14.775 1.39473 15.24 1.39473 15.54 1.69473L20.79 6.94473C21.09 7.24473 21.09 7.70973 20.79 8.00973L15.54 13.2597C15.39 13.4097 15.195 13.4847 15.015 13.4847L15 13.4997Z"
-              fill="#D11E2B" />
-          </svg>
-        </button>
-      </div>
 
-      <!-- Members Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        <div *ngFor="let membreSimilaire of membresSimilaires"
-          class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-          <div class="p-4 md:p-6">
-            <!-- Member Header -->
-            <div class="flex gap-3 mb-4">
-              <div
-                class="w-12 h-12 md:w-14 md:h-14 bg-white rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-100">
-                <img class="w-full h-full object-contain p-1" [src]="getMemberImageUrl(membreSimilaire.logo)"
-                  [alt]="membreSimilaire.name">
+        <!-- Members Grid -->
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
+        >
+          <div
+            *ngFor="let membreSimilaire of membresSimilaires"
+            class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+          >
+            <div class="p-4 md:p-6">
+              <!-- Member Header -->
+              <div class="flex gap-3 mb-4">
+                <div
+                  class="w-12 h-12 md:w-14 md:h-14 bg-white rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-100"
+                >
+                  <img
+                    class="w-full h-full object-contain p-1"
+                    [src]="getMemberImageUrl(membreSimilaire.logo)"
+                    [alt]="membreSimilaire.name"
+                  />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3
+                    class="text-base md:text-lg font-semibold text-gray-900 truncate mb-1"
+                  >
+                    {{ membreSimilaire.name }}
+                  </h3>
+                  <p
+                    class="text-gray-500 text-xs md:text-sm font-medium truncate"
+                  >
+                    {{ getTranslatedProperty(membreSimilaire, "category") }}
+                  </p>
+                </div>
               </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="text-base md:text-lg font-semibold text-gray-900 truncate mb-1">{{ membreSimilaire.name }}
-                </h3>
-                <p class="text-gray-500 text-xs md:text-sm font-medium truncate">{{
-                  getTranslatedProperty(membreSimilaire, 'category') }}</p>
-              </div>
-            </div>
 
-            <!-- Contact Info -->
-            <div class="space-y-2 mb-4">
-              <div class="flex gap-2 text-gray-600 text-xs md:text-sm">
-                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M15.0001 7.5C15.0001 12.375 9.00012 16.5 9.00012 16.5C9.00012 16.5 3.00012 12.375 3.00012 7.5C3.00012 5.9087 3.63226 4.38258 4.75748 3.25736C5.8827 2.13214 7.40882 1.5 9.00012 1.5C10.5914 1.5 12.1175 2.13214 13.2428 3.25736C14.368 4.38258 15.0001 5.9087 15.0001 7.5Z"
-                    stroke="#D11E2B" stroke-width="1.5" />
-                  <path
-                    d="M11.2501 7.5C11.2501 8.09674 11.0131 8.66903 10.5911 9.09099C10.1692 9.51295 9.59686 9.75 9.00012 9.75C8.40338 9.75 7.83109 9.51295 7.40913 9.09099C6.98717 8.66903 6.75012 8.09674 6.75012 7.5C6.75012 6.90326 6.98717 6.33097 7.40913 5.90901C7.83109 5.48705 8.40338 5.25 9.00012 5.25C9.59686 5.25 10.1692 5.48705 10.5911 5.90901C11.0131 6.33097 11.2501 6.90326 11.2501 7.5Z"
-                    stroke="#D11E2B" stroke-width="1.5" />
-                </svg>
-                <span class="break-words">{{ membreSimilaire.address }}</span>
-              </div>
-              <div class="flex gap-2 text-gray-600 text-xs md:text-sm">
-                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd"
-                    d="M4.29977 1.53247C5.21252 0.624972 6.71552 0.786223 7.47977 1.80772L8.42627 3.07072C9.04877 3.90172 8.99327 5.06272 8.25452 5.79697L8.07602 5.97547C8.05578 6.0504 8.05372 6.12909 8.07002 6.20497C8.11727 6.51097 8.37302 7.15897 9.44402 8.22397C10.515 9.28897 11.1675 9.54397 11.478 9.59197C11.5563 9.60771 11.6371 9.6054 11.7143 9.58522L12.0203 9.28072C12.6773 8.62822 13.6853 8.50597 14.4983 8.94772L15.9308 9.72772C17.1585 10.3937 17.4683 12.0617 16.4633 13.0615L15.3975 14.1205C15.0615 14.4542 14.61 14.7325 14.0595 14.7842C12.702 14.911 9.53927 14.749 6.21452 11.4437C3.11177 8.35822 2.51627 5.66722 2.44052 4.34122C2.40302 3.67072 2.71952 3.10372 3.12302 2.70322L4.29977 1.53247Z"
-                    fill="#D11E2B" />
-                </svg>
-                <span class="break-words">{{ membreSimilaire.phone }}</span>
-              </div>
-              <div class="flex gap-2 text-gray-600 text-xs md:text-sm">
-                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <g clip-path="url(#clip0_1_542)">
+              <!-- Contact Info -->
+              <div class="space-y-2 mb-4">
+                <div class="flex gap-2 text-gray-600 text-xs md:text-sm">
+                  <svg
+                    class="w-4 h-4 flex-shrink-0 mt-0.5"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 18 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
-                      d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z"
-                      stroke="#D11E2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      d="M15.0001 7.5C15.0001 12.375 9.00012 16.5 9.00012 16.5C9.00012 16.5 3.00012 12.375 3.00012 7.5C3.00012 5.9087 3.63226 4.38258 4.75748 3.25736C5.8827 2.13214 7.40882 1.5 9.00012 1.5C10.5914 1.5 12.1175 2.13214 13.2428 3.25736C14.368 4.38258 15.0001 5.9087 15.0001 7.5Z"
+                      stroke="#D11E2B"
+                      stroke-width="1.5"
+                    />
                     <path
-                      d="M1.5 9H16.5M9 1.5C7.07418 3.52212 6 6.20756 6 9C6 11.7924 7.07418 14.4779 9 16.5C10.9258 14.4779 12 11.7924 12 9C12 6.20756 10.9258 3.52212 9 1.5Z"
-                      stroke="#D11E2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                  </g>
-                </svg>
-                <span class="break-words">{{ membreSimilaire.email }}</span>
+                      d="M11.2501 7.5C11.2501 8.09674 11.0131 8.66903 10.5911 9.09099C10.1692 9.51295 9.59686 9.75 9.00012 9.75C8.40338 9.75 7.83109 9.51295 7.40913 9.09099C6.98717 8.66903 6.75012 8.09674 6.75012 7.5C6.75012 6.90326 6.98717 6.33097 7.40913 5.90901C7.83109 5.48705 8.40338 5.25 9.00012 5.25C9.59686 5.25 10.1692 5.48705 10.5911 5.90901C11.0131 6.33097 11.2501 6.90326 11.2501 7.5Z"
+                      stroke="#D11E2B"
+                      stroke-width="1.5"
+                    />
+                  </svg>
+                  <span class="break-words">{{ membreSimilaire.address }}</span>
+                </div>
+                <div class="flex gap-2 text-gray-600 text-xs md:text-sm">
+                  <svg
+                    class="w-4 h-4 flex-shrink-0 mt-0.5"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 18 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M4.29977 1.53247C5.21252 0.624972 6.71552 0.786223 7.47977 1.80772L8.42627 3.07072C9.04877 3.90172 8.99327 5.06272 8.25452 5.79697L8.07602 5.97547C8.05578 6.0504 8.05372 6.12909 8.07002 6.20497C8.11727 6.51097 8.37302 7.15897 9.44402 8.22397C10.515 9.28897 11.1675 9.54397 11.478 9.59197C11.5563 9.60771 11.6371 9.6054 11.7143 9.58522L12.0203 9.28072C12.6773 8.62822 13.6853 8.50597 14.4983 8.94772L15.9308 9.72772C17.1585 10.3937 17.4683 12.0617 16.4633 13.0615L15.3975 14.1205C15.0615 14.4542 14.61 14.7325 14.0595 14.7842C12.702 14.911 9.53927 14.749 6.21452 11.4437C3.11177 8.35822 2.51627 5.66722 2.44052 4.34122C2.40302 3.67072 2.71952 3.10372 3.12302 2.70322L4.29977 1.53247Z"
+                      fill="#D11E2B"
+                    />
+                  </svg>
+                  <span class="break-words">{{ membreSimilaire.phone }}</span>
+                </div>
+                <div class="flex gap-2 text-gray-600 text-xs md:text-sm">
+                  <svg
+                    class="w-4 h-4 flex-shrink-0 mt-0.5"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 18 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g clip-path="url(#clip0_1_542)">
+                      <path
+                        d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z"
+                        stroke="#D11E2B"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M1.5 9H16.5M9 1.5C7.07418 3.52212 6 6.20756 6 9C6 11.7924 7.07418 14.4779 9 16.5C10.9258 14.4779 12 11.7924 12 9C12 6.20756 10.9258 3.52212 9 1.5Z"
+                        stroke="#D11E2B"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </g>
+                  </svg>
+                  <span class="break-words">{{ membreSimilaire.email }}</span>
+                </div>
               </div>
-            </div>
 
-            <!-- Action Buttons -->
-            <div class="flex flex-col sm:flex-row gap-2 md:gap-3">
-              <button (click)="contactMembre(membreSimilaire)"
-                class="flex-1 flex items-center justify-center gap-1.5 text-[#B3343D] bg-gray-50 hover:bg-gray-100 py-2 md:py-3 px-3 md:px-4 rounded-lg text-xs md:text-sm font-medium transition-colors duration-300">
-                <svg class="w-4 h-4" width="17" height="16" viewBox="0 0 17 16" fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M3.16671 13.3332C2.80004 13.3332 2.48626 13.2027 2.22537 12.9418C1.96449 12.6809 1.83382 12.3669 1.83337 11.9998V3.99984C1.83337 3.63317 1.96404 3.31939 2.22537 3.0585C2.48671 2.79761 2.80049 2.66695 3.16671 2.6665H13.8334C14.2 2.6665 14.514 2.79717 14.7754 3.0585C15.0367 3.31984 15.1672 3.63362 15.1667 3.99984V11.9998C15.1667 12.3665 15.0363 12.6805 14.7754 12.9418C14.5145 13.2032 14.2005 13.3336 13.8334 13.3332H3.16671ZM8.50004 8.6665L3.16671 5.33317V11.9998H13.8334V5.33317L8.50004 8.6665ZM8.50004 7.33317L13.8334 3.99984H3.16671L8.50004 7.33317ZM3.16671 5.33317V3.99984V11.9998V5.33317Z"
-                    fill="#A91520" />
-                </svg>
-                <span class="hidden sm:inline">{{ texts.contact }}</span>
-              </button>
-              <button (click)="voirFiche(membreSimilaire.id)"
-                class="flex-1 flex items-center justify-center gap-1.5 bg-[#132742] hover:bg-[#1C365B] text-white py-2 md:py-3 px-3 md:px-4 rounded-lg text-xs md:text-sm font-medium transition-colors duration-300">
-                <svg class="w-4 h-4" width="17" height="16" viewBox="0 0 17 16" fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M13.7687 5.72416C13.7371 5.65183 13.6929 5.58569 13.6381 5.52883L9.63808 1.52883C9.58122 1.47405 9.51508 1.42981 9.44275 1.39816C9.42275 1.38883 9.40141 1.3835 9.38008 1.37616C9.32428 1.35725 9.26622 1.34582 9.20741 1.34216C9.19341 1.34083 9.18075 1.3335 9.16675 1.3335H4.50008C3.76475 1.3335 3.16675 1.9315 3.16675 2.66683V13.3335C3.16675 14.0688 3.76475 14.6668 4.50008 14.6668H12.5001C13.2354 14.6668 13.8334 14.0688 13.8334 13.3335V6.00016C13.8334 5.98616 13.8261 5.9735 13.8247 5.95883C13.8211 5.90002 13.8097 5.84196 13.7907 5.78616C13.7845 5.76483 13.7772 5.74416 13.7687 5.72416ZM11.5574 5.3335H9.83341V3.6095L11.5574 5.3335ZM4.50008 13.3335V2.66683H8.50008V6.00016C8.50008 6.17697 8.57032 6.34654 8.69534 6.47157C8.82037 6.59659 8.98994 6.66683 9.16675 6.66683H12.5001L12.5014 13.3335H4.50008Z"
-                    fill="white" />
-                  <path
-                    d="M5.83325 8.00016H11.1666V9.3335H5.83325V8.00016ZM5.83325 10.6668H11.1666V12.0002H5.83325V10.6668ZM5.83325 5.3335H7.16659V6.66683H5.83325V5.3335Z"
-                    fill="white" />
-                </svg>
-                <span class="hidden sm:inline">{{ texts.viewProfile }}</span>
-              </button>
+              <!-- Action Buttons -->
+              <div class="flex flex-col sm:flex-row gap-2 md:gap-3">
+                <button
+                  (click)="contactMembre(membreSimilaire)"
+                  class="flex-1 flex items-center justify-center gap-1.5 text-[#B3343D] bg-gray-50 hover:bg-gray-100 py-2 md:py-3 px-3 md:px-4 rounded-lg text-xs md:text-sm font-medium transition-colors duration-300"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    width="17"
+                    height="16"
+                    viewBox="0 0 17 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M3.16671 13.3332C2.80004 13.3332 2.48626 13.2027 2.22537 12.9418C1.96449 12.6809 1.83382 12.3669 1.83337 11.9998V3.99984C1.83337 3.63317 1.96404 3.31939 2.22537 3.0585C2.48671 2.79761 2.80049 2.66695 3.16671 2.6665H13.8334C14.2 2.6665 14.514 2.79717 14.7754 3.0585C15.0367 3.31984 15.1672 3.63362 15.1667 3.99984V11.9998C15.1667 12.3665 15.0363 12.6805 14.7754 12.9418C14.5145 13.2032 14.2005 13.3336 13.8334 13.3332H3.16671ZM8.50004 8.6665L3.16671 5.33317V11.9998H13.8334V5.33317L8.50004 8.6665ZM8.50004 7.33317L13.8334 3.99984H3.16671L8.50004 7.33317ZM3.16671 5.33317V3.99984V11.9998V5.33317Z"
+                      fill="#A91520"
+                    />
+                  </svg>
+                  <span class="hidden sm:inline">{{ texts.contact }}</span>
+                </button>
+                <button
+                  (click)="voirFiche(membreSimilaire.id)"
+                  class="flex-1 flex items-center justify-center gap-1.5 bg-[#132742] hover:bg-[#1C365B] text-white py-2 md:py-3 px-3 md:px-4 rounded-lg text-xs md:text-sm font-medium transition-colors duration-300"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    width="17"
+                    height="16"
+                    viewBox="0 0 17 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M13.7687 5.72416C13.7371 5.65183 13.6929 5.58569 13.6381 5.52883L9.63808 1.52883C9.58122 1.47405 9.51508 1.42981 9.44275 1.39816C9.42275 1.38883 9.40141 1.3835 9.38008 1.37616C9.32428 1.35725 9.26622 1.34582 9.20741 1.34216C9.19341 1.34083 9.18075 1.3335 9.16675 1.3335H4.50008C3.76475 1.3335 3.16675 1.9315 3.16675 2.66683V13.3335C3.16675 14.0688 3.76475 14.6668 4.50008 14.6668H12.5001C13.2354 14.6668 13.8334 14.0688 13.8334 13.3335V6.00016C13.8334 5.98616 13.8261 5.9735 13.8247 5.95883C13.8211 5.90002 13.8097 5.84196 13.7907 5.78616C13.7845 5.76483 13.7772 5.74416 13.7687 5.72416ZM11.5574 5.3335H9.83341V3.6095L11.5574 5.3335ZM4.50008 13.3335V2.66683H8.50008V6.00016C8.50008 6.17697 8.57032 6.34654 8.69534 6.47157C8.82037 6.59659 8.98994 6.66683 9.16675 6.66683H12.5001L12.5014 13.3335H4.50008Z"
+                      fill="white"
+                    />
+                    <path
+                      d="M5.83325 8.00016H11.1666V9.3335H5.83325V8.00016ZM5.83325 10.6668H11.1666V12.0002H5.83325V10.6668ZM5.83325 5.3335H7.16659V6.66683H5.83325V5.3335Z"
+                      fill="white"
+                    />
+                  </svg>
+                  <span class="hidden sm:inline">{{ texts.viewProfile }}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Loading State -->
-<div class="min-h-screen bg-gray-50 flex items-center justify-center" *ngIf="isLoading">
-  <div class="text-center px-4">
-    <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-red-600 mx-auto mb-4"></div>
-    <h2 class="text-lg md:text-xl font-semibold text-gray-900">{{ currentLang === 'fr' ? 'Chargement...' : 'Loading...'
-      }}</h2>
-    <p class="text-gray-600 text-sm md:text-base">{{ currentLang === 'fr' ? 'Récupération des informations du membre' :
-      'Fetching member information' }}</p>
-  </div>
-</div>
-
-<!-- Member Not Found -->
-<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4" *ngIf="!membre && !isLoading">
-  <div class="text-center">
-    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-    </svg>
-    <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">{{ texts.memberNotFound }}</h2>
-    <p class="text-gray-600 mb-6 text-sm md:text-base">{{ texts.memberNotFoundDesc }}</p>
-    <button (click)="voirTousLesMembres()"
-      class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-      {{ texts.seeAllMembersBtn }}
-    </button>
-  </div>
-</div>
-
-<!-- Footer -->
-<footer class="bg-[#132742] text-white py-4 md:py-6">
-  <div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <p class="text-blue-200 text-sm">&copy; 2025 AmCham. Tous droits réservés.</p>
-      <div class="flex gap-4 sm:gap-6">
-        <a href="#" class="text-blue-200 hover:text-white transition-colors">
-          <svg class="w-5 h-5 md:w-6 md:h-6" width="9" height="17" viewBox="0 0 9 17" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M6.18656 6.17318V4.58568C6.18656 3.86901 6.35123 3.50651 7.50823 3.50651H8.95989V0.839844H6.53756C3.56923 0.839844 2.58989 2.14818 2.58989 4.39401V6.17318H0.639893V8.83984H2.58989V16.8398H6.18656V8.83984H8.63056L8.95989 6.17318H6.18656Z"
-              fill="white" />
-          </svg>
-        </a>
-        <a href="#" class="text-blue-200 hover:text-white transition-colors">
-          <svg class="w-5 h-5 md:w-6 md:h-6" width="13" height="12" viewBox="0 0 13 12" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M11.4786 0.399902H1.86414C1.339 0.399902 0.879883 0.778001 0.879883 1.29714V10.9326C0.879883 11.4548 1.339 11.9199 1.86414 11.9199H11.4756C12.0038 11.9199 12.3999 11.4518 12.3999 10.9326V1.29714C12.4029 0.778001 12.0038 0.399902 11.4786 0.399902ZM4.45091 10.0024H2.80048V4.87111H4.45091V10.0024ZM3.68271 4.09088H3.67071C3.14257 4.09088 2.80048 3.69778 2.80048 3.20565C2.80048 2.70452 3.15157 2.32042 3.69171 2.32042C4.23185 2.32042 4.56194 2.70152 4.57394 3.20565C4.57394 3.69778 4.23185 4.09088 3.68271 4.09088ZM10.4823 10.0025H8.83192V7.19675C8.83192 6.52457 8.59186 6.06545 7.9947 6.06545C7.53858 6.06545 7.26851 6.37453 7.14848 6.67461C7.10347 6.78264 7.09147 6.92968 7.09147 7.07972V10.0025H5.44104V4.87114H7.09147V5.58533C7.33153 5.24324 7.70663 4.75111 8.57985 4.75111C9.66313 4.75111 10.4823 5.4653 10.4823 7.0047V10.0025Z"
-              fill="white" />
-          </svg>
-        </a>
-        <a href="#" class="text-blue-200 hover:text-white transition-colors">
-          <svg class="w-5 h-5 md:w-6 md:h-6" width="14" height="11" viewBox="0 0 14 11" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M13.56 1.25337C13.088 1.45871 12.5835 1.59737 12.0519 1.66137C12.5944 1.34137 13.0121 0.834706 13.2074 0.232039C12.7002 0.528039 12.1387 0.744039 11.5392 0.858706C11.0591 0.354706 10.3756 0.0400391 9.62155 0.0400391C8.17039 0.0400391 6.99591 1.19737 6.99591 2.62404C6.99591 2.82671 7.01761 3.02404 7.06372 3.21337C4.8802 3.10671 2.94352 2.07737 1.64969 0.512039C1.42456 0.893372 1.29436 1.33871 1.29436 1.81071C1.29436 2.70671 1.7609 3.49871 2.46613 3.96271C2.03214 3.95204 1.62528 3.83471 1.27266 3.64004C1.27266 3.65071 1.27266 3.66137 1.27266 3.67204C1.27266 4.92537 2.17862 5.96804 3.38023 6.20537C3.16052 6.26404 2.92725 6.29604 2.68855 6.29604C2.52038 6.29604 2.35492 6.28004 2.19489 6.24804C2.52852 7.27471 3.49957 8.02137 4.64965 8.04271C3.75183 8.73604 2.61803 9.14937 1.38658 9.14937C1.17501 9.14937 0.966155 9.13604 0.76001 9.11204C1.91822 9.85337 3.29885 10.28 4.77984 10.28C9.61612 10.28 12.258 6.34137 12.258 2.92537C12.258 2.81337 12.2553 2.70137 12.2499 2.59204C12.7626 2.22671 13.2074 1.77337 13.56 1.25337Z"
-              fill="white" />
-          </svg>
-        </a>
-      </div>
+  <!-- Loading State -->
+  <div
+    class="min-h-screen bg-gray-50 flex items-center justify-center"
+    *ngIf="isLoading"
+  >
+    <div class="text-center px-4">
+      <div
+        class="animate-spin rounded-full h-16 w-16 border-b-2 border-red-600 mx-auto mb-4"
+      ></div>
+      <h2 class="text-lg md:text-xl font-semibold text-gray-900">
+        {{ currentLang === "fr" ? "Chargement..." : "Loading..." }}
+      </h2>
+      <p class="text-gray-600 text-sm md:text-base">
+        {{
+          currentLang === "fr"
+            ? "Récupération des informations du membre"
+            : "Fetching member information"
+        }}
+      </p>
     </div>
   </div>
-</footer>
-<!-- Modal Backdrop -->
-<div *ngIf="showReviewModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-  (click)="closeReviewModal()">
 
-  <!-- Modal Content -->
-  <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-    (click)="$event.stopPropagation()">
-
-    <!-- Header -->
-    <div class=" text-black px-6 py-5 flex items-center justify-between">
-      <h2 class="text-xl font-semibold">{{ currentLang === 'fr' ? 'Donnez votre avis' : 'Leave Your Review' }}</h2>
-      <button (click)="closeReviewModal()"
-        class="text-black hover:bg-white hover:bg-opacity-20 p-1 rounded-full transition-colors">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+  <!-- Member Not Found -->
+  <div
+    class="min-h-screen bg-gray-50 flex items-center justify-center px-4"
+    *ngIf="!membre && !isLoading"
+  >
+    <div class="text-center">
+      <svg
+        class="w-16 h-16 text-gray-400 mx-auto mb-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+        />
+      </svg>
+      <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+        {{ texts.memberNotFound }}
+      </h2>
+      <p class="text-gray-600 mb-6 text-sm md:text-base">
+        {{ texts.memberNotFoundDesc }}
+      </p>
+      <button
+        (click)="voirTousLesMembres()"
+        class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+      >
+        {{ texts.seeAllMembersBtn }}
       </button>
     </div>
+  </div>
 
-    <!-- Form Content -->
-    <div class="p-6 space-y-5">
-
-      <!-- Rating Stars -->
-      <div>
-        <label class="block text-base font-normal text-gray-900 mb-3">
-          {{ currentLang === 'fr' ? 'Votre note' : 'Your Rating' }}
-        </label>
-        <div class="flex gap-1">
-          <button *ngFor="let i of [1,2,3,4,5]" (click)="reviewForm.score = i"
-            class="transition-transform duration-150 hover:scale-110 focus:outline-none p-0.5">
-            <svg class="w-9 h-9 transition-colors" [ngClass]="{
-                'text-yellow-400': i <= reviewForm.score,
-                'text-gray-300': i > reviewForm.score
-              }" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0.5">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+  <!-- Footer -->
+  <footer class="bg-[#132742] text-white py-4 md:py-6">
+    <div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      >
+        <p class="text-blue-200 text-sm">
+          &copy; 2025 AmCham. Tous droits réservés.
+        </p>
+        <div class="flex gap-4 sm:gap-6">
+          <a href="#" class="text-blue-200 hover:text-white transition-colors">
+            <svg
+              class="w-5 h-5 md:w-6 md:h-6"
+              width="9"
+              height="17"
+              viewBox="0 0 9 17"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M6.18656 6.17318V4.58568C6.18656 3.86901 6.35123 3.50651 7.50823 3.50651H8.95989V0.839844H6.53756C3.56923 0.839844 2.58989 2.14818 2.58989 4.39401V6.17318H0.639893V8.83984H2.58989V16.8398H6.18656V8.83984H8.63056L8.95989 6.17318H6.18656Z"
+                fill="white"
+              />
             </svg>
-          </button>
+          </a>
+          <a href="#" class="text-blue-200 hover:text-white transition-colors">
+            <svg
+              class="w-5 h-5 md:w-6 md:h-6"
+              width="13"
+              height="12"
+              viewBox="0 0 13 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M11.4786 0.399902H1.86414C1.339 0.399902 0.879883 0.778001 0.879883 1.29714V10.9326C0.879883 11.4548 1.339 11.9199 1.86414 11.9199H11.4756C12.0038 11.9199 12.3999 11.4518 12.3999 10.9326V1.29714C12.4029 0.778001 12.0038 0.399902 11.4786 0.399902ZM4.45091 10.0024H2.80048V4.87111H4.45091V10.0024ZM3.68271 4.09088H3.67071C3.14257 4.09088 2.80048 3.69778 2.80048 3.20565C2.80048 2.70452 3.15157 2.32042 3.69171 2.32042C4.23185 2.32042 4.56194 2.70152 4.57394 3.20565C4.57394 3.69778 4.23185 4.09088 3.68271 4.09088ZM10.4823 10.0025H8.83192V7.19675C8.83192 6.52457 8.59186 6.06545 7.9947 6.06545C7.53858 6.06545 7.26851 6.37453 7.14848 6.67461C7.10347 6.78264 7.09147 6.92968 7.09147 7.07972V10.0025H5.44104V4.87114H7.09147V5.58533C7.33153 5.24324 7.70663 4.75111 8.57985 4.75111C9.66313 4.75111 10.4823 5.4653 10.4823 7.0047V10.0025Z"
+                fill="white"
+              />
+            </svg>
+          </a>
+          <a href="#" class="text-blue-200 hover:text-white transition-colors">
+            <svg
+              class="w-5 h-5 md:w-6 md:h-6"
+              width="14"
+              height="11"
+              viewBox="0 0 14 11"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M13.56 1.25337C13.088 1.45871 12.5835 1.59737 12.0519 1.66137C12.5944 1.34137 13.0121 0.834706 13.2074 0.232039C12.7002 0.528039 12.1387 0.744039 11.5392 0.858706C11.0591 0.354706 10.3756 0.0400391 9.62155 0.0400391C8.17039 0.0400391 6.99591 1.19737 6.99591 2.62404C6.99591 2.82671 7.01761 3.02404 7.06372 3.21337C4.8802 3.10671 2.94352 2.07737 1.64969 0.512039C1.42456 0.893372 1.29436 1.33871 1.29436 1.81071C1.29436 2.70671 1.7609 3.49871 2.46613 3.96271C2.03214 3.95204 1.62528 3.83471 1.27266 3.64004C1.27266 3.65071 1.27266 3.66137 1.27266 3.67204C1.27266 4.92537 2.17862 5.96804 3.38023 6.20537C3.16052 6.26404 2.92725 6.29604 2.68855 6.29604C2.52038 6.29604 2.35492 6.28004 2.19489 6.24804C2.52852 7.27471 3.49957 8.02137 4.64965 8.04271C3.75183 8.73604 2.61803 9.14937 1.38658 9.14937C1.17501 9.14937 0.966155 9.13604 0.76001 9.11204C1.91822 9.85337 3.29885 10.28 4.77984 10.28C9.61612 10.28 12.258 6.34137 12.258 2.92537C12.258 2.81337 12.2553 2.70137 12.2499 2.59204C12.7626 2.22671 13.2074 1.77337 13.56 1.25337Z"
+                fill="white"
+              />
+            </svg>
+          </a>
         </div>
-      </div>
-
-      <!-- Comment -->
-      <div>
-        <label class="block text-base font-normal text-gray-900 mb-2">
-          {{ currentLang === 'fr' ? 'Votre commentaire' : 'Your Comment' }}
-        </label>
-        <textarea [(ngModel)]="reviewForm.comment"
-          class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#1C365B] focus:border-[#1C365B] transition resize-none"
-          rows="4"
-          [placeholder]="currentLang === 'fr' ? 'Écrivez votre avis (minimum 10 caractères)' : 'Write your review (minimum 10 characters)'"></textarea>
-      </div>
-
-      <!-- Name and Email Row -->
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Name -->
-        <div>
-          <label class="block text-base font-normal text-gray-900 mb-2">
-            {{ currentLang === 'fr' ? 'Votre nom' : 'Your Name' }}
-           
-          </label>
-          <input [(ngModel)]="reviewForm.lastName" type="text"
-            class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#1C365B] focus:border-[#1C365B] transition"
-            placeholder="Ex: Gueye">
-        </div>
-
-        <!-- Email -->
-        <div>
-          <label class="block text-base font-normal text-gray-900 mb-2">
-            {{ currentLang === 'fr' ? 'Votre Prénom' : 'Your First Name' }}
-           
-          </label>
-          <input [(ngModel)]="reviewForm.firstName" type="text"
-            class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#1C365B] focus:border-[#1C365B] transition"
-            placeholder= 'Ex: Assane' >
-        </div>
-      </div>
-
-      <!-- Error Message -->
-      <div *ngIf="reviewError" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-        {{ reviewError }}
-      </div>
-
-      <!-- Success Message -->
-      <div *ngIf="reviewSuccess"
-        class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md text-sm">
-        {{ currentLang === 'fr' ? 'Avis envoyé avec succès!' : 'Review submitted successfully!' }}
       </div>
     </div>
+  </footer>
+  <!-- Modal Backdrop -->
+  <div
+    *ngIf="showReviewModal"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+    (click)="closeReviewModal()"
+  >
+    <!-- Modal Content -->
+    <div
+      class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Header -->
+      <div class="text-black px-6 py-5 flex items-center justify-between">
+        <h2 class="text-xl font-semibold">
+          {{ currentLang === "fr" ? "Donnez votre avis" : "Leave Your Review" }}
+        </h2>
+        <button
+          (click)="closeReviewModal()"
+          class="text-black hover:bg-white hover:bg-opacity-20 p-1 rounded-full transition-colors"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
 
-    <!-- Footer Actions -->
-    <div class="bg-white px-6 py-4 flex gap-3 border-t border-gray-200">
-      <button (click)="submitReview()" [disabled]="!isReviewFormValid() || isSubmittingReview"
-        class="px-8 py-2.5 w-full bg-[#991B1B] hover:bg-[#7F1D1D] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium rounded-md transition-all duration-200 flex items-center justify-center gap-2 shadow-sm">
-        <div *ngIf="isSubmittingReview"
-          class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-        {{ isSubmittingReview ? (currentLang === 'fr' ? 'Envoi...' : 'Sending...') : (currentLang === 'fr' ? 'Publier
-        votre avis' : 'Publish Review') }}
-      </button>
-      <button (click)="closeReviewModal()"
-        class="px-6 py-2.5 w-full bg-white border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm">
-        {{ currentLang === 'fr' ? 'Annuler' : 'Cancel' }}
-      </button>
+      <!-- Form Content -->
+      <div class="p-6 space-y-5">
+        <!-- Rating Stars -->
+        <div>
+          <label class="block text-base font-normal text-gray-900 mb-3">
+            {{ currentLang === "fr" ? "Votre note" : "Your Rating" }}
+          </label>
+          <div class="flex gap-1">
+            <button
+              *ngFor="let i of [1, 2, 3, 4, 5]"
+              (click)="reviewForm.score = i"
+              class="transition-transform duration-150 hover:scale-110 focus:outline-none p-0.5"
+            >
+              <svg
+                class="w-9 h-9 transition-colors"
+                [ngClass]="{
+                  'text-yellow-400': i <= reviewForm.score,
+                  'text-gray-300': i > reviewForm.score
+                }"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="0.5"
+              >
+                <path
+                  d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Comment -->
+        <div>
+          <label class="block text-base font-normal text-gray-900 mb-2">
+            {{ currentLang === "fr" ? "Votre commentaire" : "Your Comment" }}
+          </label>
+          <textarea
+            [(ngModel)]="reviewForm.comment"
+            class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#1C365B] focus:border-[#1C365B] transition resize-none"
+            rows="4"
+            [placeholder]="
+              currentLang === 'fr'
+                ? 'Écrivez votre avis (minimum 10 caractères)'
+                : 'Write your review (minimum 10 characters)'
+            "
+          ></textarea>
+        </div>
+
+        <!-- Name and Email Row -->
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Name -->
+          <div>
+            <label class="block text-base font-normal text-gray-900 mb-2">
+              {{ currentLang === "fr" ? "Votre nom" : "Your Name" }}
+            </label>
+            <input
+              [(ngModel)]="reviewForm.lastName"
+              type="text"
+              class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#1C365B] focus:border-[#1C365B] transition"
+              placeholder="Ex: Gueye"
+            />
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label class="block text-base font-normal text-gray-900 mb-2">
+              {{ currentLang === "fr" ? "Votre Prénom" : "Your First Name" }}
+            </label>
+            <input
+              [(ngModel)]="reviewForm.firstName"
+              type="text"
+              class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#1C365B] focus:border-[#1C365B] transition"
+              placeholder="Ex: Assane"
+            />
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div
+          *ngIf="reviewError"
+          class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm"
+        >
+          {{ reviewError }}
+        </div>
+
+        <!-- Success Message -->
+        <div
+          *ngIf="reviewSuccess"
+          class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md text-sm"
+        >
+          {{
+            currentLang === "fr"
+              ? "Avis envoyé avec succès!"
+              : "Review submitted successfully!"
+          }}
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="bg-white px-6 py-4 flex gap-3 border-t border-gray-200">
+        <button
+          (click)="submitReview()"
+          [disabled]="!isReviewFormValid() || isSubmittingReview"
+          class="px-8 py-2.5 w-full bg-[#991B1B] hover:bg-[#7F1D1D] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium rounded-md transition-all duration-200 flex items-center justify-center gap-2 shadow-sm"
+        >
+          <div
+            *ngIf="isSubmittingReview"
+            class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"
+          ></div>
+          {{
+            isSubmittingReview
+              ? currentLang === "fr"
+                ? "Envoi..."
+                : "Sending..."
+              : currentLang === "fr"
+              ? "Publier
+        votre avis"
+              : "Publish Review"
+          }}
+        </button>
+        <button
+          (click)="closeReviewModal()"
+          class="px-6 py-2.5 w-full bg-white border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm"
+        >
+          {{ currentLang === "fr" ? "Annuler" : "Cancel" }}
+        </button>
+      </div>
     </div>
   </div>
 </div>

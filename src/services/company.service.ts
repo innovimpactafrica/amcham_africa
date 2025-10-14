@@ -1,7 +1,12 @@
 import { Country } from './country-amcham.service';
 // company.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpParams,
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -13,11 +18,10 @@ export interface CompanyScheduleRequest {
   closed: boolean;
 }
 
-export interface RepartitionSector{
+export interface RepartitionSector {
   sectorName: string;
   searchNumber: number;
 }
-
 
 export interface CompanySchedulesRequest {
   schedules: CompanyScheduleRequest[];
@@ -30,7 +34,7 @@ export interface Company {
   countryAmchamId: number;
   id: number;
   name: string;
-  city:string,
+  city: string;
   description: string;
   address: string;
   email: string;
@@ -48,7 +52,6 @@ export interface Company {
   lon: number;
 }
 export interface SimilarCompany {
- 
   id: number;
   name: string;
   description: string;
@@ -67,13 +70,13 @@ export interface SimilarCompany {
   logo: string;
 }
 
-  // Ajoutez cette interface dans la section des interfaces
-  export interface CompanySchedule {
-    dayOfWeek: string;
-    openingTime: string | null;
-    closingTime: string | null;
-    closed: boolean;
-  }
+// Ajoutez cette interface dans la section des interfaces
+export interface CompanySchedule {
+  dayOfWeek: string;
+  openingTime: string | null;
+  closingTime: string | null;
+  closed: boolean;
+}
 
 export interface CompanySearchResponse {
   content: Company[];
@@ -110,14 +113,13 @@ export interface CompanyContactStats {
   lastMonth: number;
   currentYear: number;
 }
-export interface Ratings{
+export interface Ratings {
   firstName: string;
   lastName: string;
   comment: string;
   score: number;
   companyName: string;
 }
-
 
 export interface CompanyFormData {
   name: string;
@@ -145,16 +147,13 @@ export interface SearchParams {
   country?: string;
 }
 
-export interface CreateRatingRequest{
+export interface CreateRatingRequest {
   firstName: string;
   lastName: string;
   comment: string;
   score: number;
   companyId: number;
-
 }
-
-  
 
 export interface MembresParams {
   page?: number;
@@ -162,22 +161,21 @@ export interface MembresParams {
   name?: string;
   sector?: string;
 }
-export interface SearchStats{
+export interface SearchStats {
   total: number;
   thisWeek: number;
   lastWeek: number;
   weeklyEvolution: number;
 }
 
-export interface TotalCompany{
+export interface TotalCompany {
   totalCompanies: number;
   percentageChange: number;
   monthlyStats: { month: string; count: number }[] | null;
 }
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CompanyService {
   private readonly baseUrl = 'https://wakana.online/annuaire-amcham';
@@ -186,12 +184,13 @@ export class CompanyService {
   /**
    * Sauvegarder une une rating - POST /api/ratings
    */
+
   saveRating(ratingData: CreateRatingRequest): Observable<any> {
-    const headers = this.getAuthHeaders();
-    return this.http.post(`${this.baseUrl}/api/ratings`, ratingData, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
+    console.log(ratingData);
+
+    return this.http
+      .post(`${this.baseUrl}/api/ratings`, ratingData)
+      .pipe(catchError(this.handleError));
   }
 
   /**
@@ -199,21 +198,18 @@ export class CompanyService {
    */
   saveCompany(companyData: CompanyFormData): Observable<any> {
     const formData = this.createFormData(companyData);
-    
-    return this.http.post(`${this.baseUrl}/api/companies/save`, formData)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
 
-  
+    return this.http
+      .post(`${this.baseUrl}/api/companies/save`, formData)
+      .pipe(catchError(this.handleError));
+  }
 
   /**
    * Rechercher des entreprises - GET /api/companies/search
    */
   getCompanySearch(params: SearchParams): Observable<CompanySearchResponse> {
     let httpParams = new HttpParams();
-    
+
     // Paramètres de pagination
     if (params.page !== undefined) {
       httpParams = httpParams.set('page', params.page.toString());
@@ -221,7 +217,7 @@ export class CompanyService {
     if (params.size !== undefined) {
       httpParams = httpParams.set('size', params.size.toString());
     }
-    
+
     // Paramètres de recherche
     if (params.name) {
       httpParams = httpParams.set('name', params.name);
@@ -233,75 +229,79 @@ export class CompanyService {
       httpParams = httpParams.set('country', params.country);
     }
 
-    return this.http.get<CompanySearchResponse>(`${this.baseUrl}/api/companies/search`, { params: httpParams })
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http
+      .get<CompanySearchResponse>(`${this.baseUrl}/api/companies/search`, {
+        params: httpParams,
+      })
+      .pipe(catchError(this.handleError));
   }
 
   /**
- * Mettre à jour les horaires d'une entreprise - PUT /api/companies/{id}/schedules
- */
-updateHoraire(companyId: number, schedules: CompanyScheduleRequest[]): Observable<any> {
-  const requestBody: CompanySchedulesRequest = { schedules };
-  
-  const headers = this.getAuthHeaders();
-  
-  return this.http.put(
-    `${this.baseUrl}/api/companies/${companyId}/schedules`, 
-    requestBody,
-    { headers }
-  ).pipe(
-    catchError(this.handleError)
-  );
-}
-  
-    /**
+   * Mettre à jour les horaires d'une entreprise - PUT /api/companies/{id}/schedules
+   */
+  updateHoraire(
+    companyId: number,
+    schedules: CompanyScheduleRequest[]
+  ): Observable<any> {
+    const requestBody: CompanySchedulesRequest = { schedules };
+
+    const headers = this.getAuthHeaders();
+
+    return this.http
+      .put(
+        `${this.baseUrl}/api/companies/${companyId}/schedules`,
+        requestBody,
+        { headers }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
    * Récupération du token
    */
-    getToken(): string | null {
-      return localStorage.getItem('auth_token');
-    }
-      /**
-       * Intercepteur pour ajouter le token aux requêtes
-       */
-      getAuthHeaders(): HttpHeaders {
-        const token = this.getToken();
-        return new HttpHeaders({
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        });
-      }
-getRatings(companyId: number): Observable<Ratings[]> {
-    return this.http.get<Ratings[]>(`${this.baseUrl}/api/ratings/company/${companyId}`,
-    
-    )
-      .pipe(
-        catchError(this.handleError)
-      );
-}
+  getToken(): string | null {
+    return localStorage.getItem('auth_token');
+  }
+  /**
+   * Intercepteur pour ajouter le token aux requêtes
+   */
+  getAuthHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+  }
+  getRatings(companyId: number): Observable<Ratings[]> {
+    return this.http
+      .get<Ratings[]>(`${this.baseUrl}/api/ratings/company/${companyId}`)
+      .pipe(catchError(this.handleError));
+  }
   /**
    * Obtenir Recherches populaires - GET /api/companies/top-sectors/kpi
    */
   getRepartitionSector(): Observable<RepartitionSector[]> {
-    return this.http.get<RepartitionSector[]>(`${this.baseUrl}/api/companies/top-sectors/kpi`)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http
+      .get<RepartitionSector[]>(`${this.baseUrl}/api/companies/top-sectors/kpi`)
+      .pipe(catchError(this.handleError));
   }
-// /api/companies/{id}/similar
-getSimilarCompanies(companyId: number): Observable<SimilarCompany[]> {
-  return this.http.get<SimilarCompany[]>(`${this.baseUrl}/api/companies/${companyId}/similar`)
-    .pipe(
-      catchError(this.handleError)
-    );
-}
+  // /api/companies/{id}/similar
+  getSimilarCompanies(companyId: number): Observable<SimilarCompany[]> {
+    return this.http
+      .get<SimilarCompany[]>(
+        `${this.baseUrl}/api/companies/${companyId}/similar`
+      )
+      .pipe(catchError(this.handleError));
+  }
   /**
    * Obtenir les membres d'un pays AMCHAM - GET /api/companies/country-amcham/{countryAmchamId}
    */
-  getMembres(countryAmchamId: number, params?: MembresParams): Observable<CompanySearchResponse> {
+  getMembres(
+    countryAmchamId: number,
+    params?: MembresParams
+  ): Observable<CompanySearchResponse> {
     let httpParams = new HttpParams();
-    
+
     // Paramètres de pagination
     if (params?.page !== undefined) {
       httpParams = httpParams.set('page', params.page.toString());
@@ -309,7 +309,7 @@ getSimilarCompanies(companyId: number): Observable<SimilarCompany[]> {
     if (params?.size !== undefined) {
       httpParams = httpParams.set('size', params.size.toString());
     }
-    
+
     // Paramètres de recherche
     if (params?.name) {
       httpParams = httpParams.set('name', params.name);
@@ -318,80 +318,79 @@ getSimilarCompanies(companyId: number): Observable<SimilarCompany[]> {
       httpParams = httpParams.set('sector', params.sector);
     }
 
-    return this.http.get<CompanySearchResponse>(
-      `${this.baseUrl}/api/companies/country-amcham/${countryAmchamId}`,
-      { params: httpParams }
-    ).pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<CompanySearchResponse>(
+        `${this.baseUrl}/api/companies/country-amcham/${countryAmchamId}`,
+        { params: httpParams }
+      )
+      .pipe(catchError(this.handleError));
   }
-getSearchStats(): Observable<SearchStats> {
-
-    return this.http.get<SearchStats>(`${this.baseUrl}/api/companies/search/stats`)
-      .pipe(
-        catchError(this.handleError)
-      );
+  getSearchStats(): Observable<SearchStats> {
+    return this.http
+      .get<SearchStats>(`${this.baseUrl}/api/companies/search/stats`)
+      .pipe(catchError(this.handleError));
   }
   /**
    * Obtenir les statistiques de contacts d'une entreprise - GET /api/companies/contacts/{companyId}/circular-stats
    */
   getCompanyContact(companyId: number): Observable<CompanyContactStats> {
-    return this.http.get<CompanyContactStats>(`${this.baseUrl}/api/companies/contacts/${companyId}/circular-stats`)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http
+      .get<CompanyContactStats>(
+        `${this.baseUrl}/api/companies/contacts/${companyId}/circular-stats`
+      )
+      .pipe(catchError(this.handleError));
   }
 
   /**
    * Obtenir une entreprise par son ID
    */
   getCompanyById(id: number): Observable<Company> {
-    return this.http.get<Company>(`${this.baseUrl}/api/companies/${id}`)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http
+      .get<Company>(`${this.baseUrl}/api/companies/${id}`)
+      .pipe(catchError(this.handleError));
   }
 
-
- 
   /**
    * Mettre à jour une entreprise
    */
-  updateCompany(companyId: number, companyData: CompanyFormData): Observable<any> {
+  updateCompany(
+    companyId: number,
+    companyData: CompanyFormData
+  ): Observable<any> {
     const formData = this.createFormData(companyData);
-    
-    return this.http.put(`${this.baseUrl}/api/companies/${companyId}`, formData)
-      .pipe(
-        catchError(this.handleError)
-      );
+
+    return this.http
+      .put(`${this.baseUrl}/api/companies/${companyId}`, formData)
+      .pipe(catchError(this.handleError));
   }
 
   /**
    * Supprimer une entreprise
    */
   deleteCompany(companyId: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/api/companies/${companyId}`)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http
+      .delete(`${this.baseUrl}/api/companies/${companyId}`)
+      .pipe(catchError(this.handleError));
   }
 
   /**
    * Obtenir toutes les entreprises sans pagination
    */
   getAllCompanies(): Observable<Company[]> {
-    return this.http.get<Company[]>(`${this.baseUrl}/api/companies/all`)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http
+      .get<Company[]>(`${this.baseUrl}/api/companies/all`)
+      .pipe(catchError(this.handleError));
   }
 
   /**
    * Obtenir les entreprises par secteur
    */
-  getCompaniesBySector(sectorId: number, params?: { page?: number; size?: number }): Observable<CompanySearchResponse> {
+  getCompaniesBySector(
+    sectorId: number,
+    params?: { page?: number; size?: number }
+  ): Observable<CompanySearchResponse> {
     let httpParams = new HttpParams();
-    
+
     if (params?.page !== undefined) {
       httpParams = httpParams.set('page', params.page.toString());
     }
@@ -399,20 +398,23 @@ getSearchStats(): Observable<SearchStats> {
       httpParams = httpParams.set('size', params.size.toString());
     }
 
-    return this.http.get<CompanySearchResponse>(
-      `${this.baseUrl}/api/companies/sector/${sectorId}`,
-      { params: httpParams }
-    ).pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<CompanySearchResponse>(
+        `${this.baseUrl}/api/companies/sector/${sectorId}`,
+        { params: httpParams }
+      )
+      .pipe(catchError(this.handleError));
   }
 
   /**
    * Obtenir les entreprises par pays
    */
-  getCompaniesByCountry(country: string, params?: { page?: number; size?: number }): Observable<CompanySearchResponse> {
+  getCompaniesByCountry(
+    country: string,
+    params?: { page?: number; size?: number }
+  ): Observable<CompanySearchResponse> {
     let httpParams = new HttpParams();
-    
+
     if (params?.page !== undefined) {
       httpParams = httpParams.set('page', params.page.toString());
     }
@@ -420,22 +422,21 @@ getSearchStats(): Observable<SearchStats> {
       httpParams = httpParams.set('size', params.size.toString());
     }
 
-    return this.http.get<CompanySearchResponse>(
-      `${this.baseUrl}/api/companies/country/${country}`,
-      { params: httpParams }
-    ).pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<CompanySearchResponse>(
+        `${this.baseUrl}/api/companies/country/${country}`,
+        { params: httpParams }
+      )
+      .pipe(catchError(this.handleError));
   }
 
   /**
    * Obtenir le nombre total d'entreprises
    */
   getTotalCompanies(): Observable<TotalCompany> {
-    return this.http.get<TotalCompany>(`${this.baseUrl}/api/companies/total/kpi`)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http
+      .get<TotalCompany>(`${this.baseUrl}/api/companies/total/kpi`)
+      .pipe(catchError(this.handleError));
   }
 
   /**
@@ -443,7 +444,7 @@ getSearchStats(): Observable<SearchStats> {
    */
   private createFormData(companyData: CompanyFormData): FormData {
     const formData = new FormData();
-    
+
     // Ajouter les champs texte
     formData.append('name', companyData.name || '');
     formData.append('description', companyData.description || '');
@@ -451,12 +452,15 @@ getSearchStats(): Observable<SearchStats> {
     formData.append('email', companyData.email || '');
     formData.append('telephone', companyData.telephone || '');
     formData.append('webLink', companyData.webLink || '');
-    formData.append('countryAmchamId', companyData.countryAmchamId?.toString() || '');
+    formData.append(
+      'countryAmchamId',
+      companyData.countryAmchamId?.toString() || ''
+    );
     formData.append('sectorId', companyData.sectorId?.toString() || '');
     formData.append('videoLink', companyData.videoLink || '');
     formData.append('lat', companyData.lat?.toString() || '');
     formData.append('lon', companyData.lon?.toString() || '');
-    
+
     // Ajouter le fichier logo si présent
     if (companyData.logoFile) {
       formData.append('logoFile', companyData.logoFile);
@@ -470,7 +474,7 @@ getSearchStats(): Observable<SearchStats> {
    */
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Une erreur est survenue';
-    
+
     if (error.error instanceof ErrorEvent) {
       // Erreur côté client
       errorMessage = `Erreur: ${error.error.message}`;
@@ -478,27 +482,26 @@ getSearchStats(): Observable<SearchStats> {
       // Erreur côté serveur
       errorMessage = this.getErrorMessage(error.status, error.error);
     }
-    
+
     console.error('Erreur CompanyService:', error);
     return throwError(() => ({
       message: errorMessage,
       status: error.status,
-      error: error.error
+      error: error.error,
     }));
   }
 
-
-
-// Ajoutez cette méthode dans la classe CompanyService
-/**
- * Obtenir les horaires d'une entreprise - GET /api/companies/{id}/schedules
- */
-getHoraire(companyId: number): Observable<CompanySchedule[]> {
-  return this.http.get<CompanySchedule[]>(`${this.baseUrl}/api/companies/${companyId}/schedules`)
-    .pipe(
-      catchError(this.handleError)
-    );
-}
+  // Ajoutez cette méthode dans la classe CompanyService
+  /**
+   * Obtenir les horaires d'une entreprise - GET /api/companies/{id}/schedules
+   */
+  getHoraire(companyId: number): Observable<CompanySchedule[]> {
+    return this.http
+      .get<CompanySchedule[]>(
+        `${this.baseUrl}/api/companies/${companyId}/schedules`
+      )
+      .pipe(catchError(this.handleError));
+  }
   /**
    * Messages d'erreur selon le statut HTTP
    */
