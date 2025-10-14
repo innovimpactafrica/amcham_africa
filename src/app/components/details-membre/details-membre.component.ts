@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from "../header/header.component";
 import { LanguageService } from '../../../services/language.service';
-import { CompanyService, Company, CompanySchedule, Ratings } from '../../../services/company.service';
+import { CompanyService, Company, CompanySchedule, Ratings,CreateRatingRequest } from '../../../services/company.service';
 import { HomeService, Company as HomeCompany } from '../../../services/home.service';
 import { Subject, Subscription, forkJoin, switchMap, takeUntil } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -51,6 +51,21 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
   isLoading = true;
   mapUrl: SafeResourceUrl | null = null;
 
+  // ===== PROPRIÉTÉS POUR LA POPUP D'AVIS =====
+showReviewModal: boolean = false;
+showSuccessModal: boolean = false;
+isSubmittingReview: boolean = false;
+reviewError: string = '';
+hoverScore: number = 0;
+
+reviewForm = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  score: 0,
+  comment: ''
+};
+
   certificationsSimules = [
     'ISO 9001:2015',
     'SOC 2 Type II',
@@ -74,6 +89,7 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
     'Support and maintenance'
   ];
   private destroy$ = new Subject<void>();
+reviewSuccess: any;
   get texts() {
     return this.currentLang === 'fr' ? {
       giveReview: 'Donner un avis',
@@ -219,6 +235,38 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
     
     
   }
+    
+
+ 
+// ===== MÉTHODE POUR OUVRIR LA POPUP =====
+laisserAvis() {
+  this.resetReviewForm();
+  this.showReviewModal = true;
+}
+
+// ===== MÉTHODE POUR FERMER LA POPUP =====
+closeReviewModal() {
+  this.showReviewModal = false;
+  this.reviewError = '';
+  this.resetReviewForm();
+}
+
+// ===== MÉTHODE POUR FERMER LE MODAL DE SUCCÈS =====
+closeSuccessModal() {
+  this.showSuccessModal = false;
+}
+private resetReviewForm(): void {
+  this.reviewForm = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    score: 0,
+    comment: ''
+  };
+  this.reviewError = '';
+  this.hoverScore = 0;
+}
+
   
   
   
@@ -264,53 +312,7 @@ private loadRatings() {
 }
 
 
-  loadMembreDetails() {
-    this.isLoading = true;
-    forkJoin({
-      company: this.companyService.getCompanyById(this.membreId),
-      schedules: this.companyService.getHoraire(this.membreId)
-    }).subscribe({
-      next: ({ company, schedules }) => {
-        this.membre = company;
-        console.log('Données du membre:', this.membre);
-        this.horaires = schedules;
-        this.isLoading = false;
 
-        // Initialiser la carte après avoir chargé les données du membre
-        this.initializeMap();
-
-        this.companyService.getRatings(this.membreId).subscribe({
-          next: (ratings) => {
-            this.ratings = ratings;
-            if (this.ratings.length < 3) {
-              while (this.ratings.length < 3) {
-                this.ratings = [...this.ratings, ...this.ratings.slice(0, 3 - this.ratings.length)];
-              }
-              this.displayedRatings = this.ratings;
-            } else {
-              this.displayedRatings = [
-                ...this.ratings.slice(-2),
-                ...this.ratings,
-                ...this.ratings.slice(0, 2)
-              ];
-              this.currentRatingIndex = 2;
-              this.startRatingCarousel();
-            }
-          },
-          error: (error) => {
-            console.warn('Aucun rating disponible pour cette entreprise', error);
-            this.ratings = [];
-            this.displayedRatings = [];
-          }
-        });
-      },
-      error: (error) => {
-        console.error('Erreur lors du chargement des données du membre:', error);
-        this.isLoading = false;
-        this.router.navigate(['/membres']);
-      }
-    });
-  }
 
   // Méthode pour initialiser la carte Google Maps
   private initializeMap(): void {
@@ -482,10 +484,7 @@ loadMembresSimilaires() {
     return addressParts.join(', ');
   }
 
-  laisserAvis() {
-    console.log('Laisser un avis pour:', this.membre?.name);
-  }
-
+ 
   contactMembre(membre: MembreDisplay): void {
     if (membre.email) {
       window.location.href = `mailto:${membre.email}`;
@@ -497,7 +496,115 @@ loadMembresSimilaires() {
   voirFiche(membreId: number) {
     this.router.navigate(['/membre', membreId]);
   }
+submitReview(): void {
+  if (!this.isReviewFormValid() || !this.membre) {
+    this.reviewError = this.currentLang === 'fr' 
+      ? 'Veuillez remplir tous les champs obligatoires' 
+      : 'Please fill in all required fields';
+    return;
+  }
 
+  this.isSubmittingReview = true;
+  this.reviewError = '';
+
+  // Préparation des données pour l'API
+  const ratingRequest: CreateRatingRequest = {
+    firstName: this.reviewForm.firstName.trim() || 'Anonyme',
+    lastName: this.reviewForm.lastName.trim() || '',
+    score: this.reviewForm.score,
+    comment: this.reviewForm.comment.trim(),
+    companyId: this.membre.id // ID du membre depuis le membre chargé
+  };
+
+  // Appel du service
+  this.companyService.saveRating(ratingRequest).subscribe({
+    next: (response) => {
+      console.log('Avis envoyé avec succès:', response);
+      this.isSubmittingReview = false;
+      
+      // Fermer la modal de formulaire
+      this.showReviewModal = false;
+      
+      // Afficher le modal de succès
+      this.showSuccessModal = true;
+      
+      // Fermer le modal de succès après 3 secondes
+      setTimeout(() => {
+        this.closeSuccessModal();
+        // Recharger les avis pour afficher le nouveau
+        this.loadMembreDetails();
+      }, 3000);
+    },
+    error: (error) => {
+      console.error('Erreur lors de l\'envoi de l\'avis:', error);
+      this.isSubmittingReview = false;
+      this.reviewError = this.currentLang === 'fr'
+        ? 'Une erreur s\'est produite lors de l\'envoi de votre avis. Veuillez réessayer.'
+        : 'An error occurred while submitting your review. Please try again.';
+    }
+  });
+}
+
+
+
+// ===== VALIDATION DU FORMULAIRE =====
+isReviewFormValid(): boolean {
+  return (
+    this.reviewForm.firstName.trim() !== '' &&
+    this.reviewForm.lastName.trim() !== '' &&
+    this.reviewForm.score > 0 &&
+    this.reviewForm.comment.trim() !== '' &&
+    this.reviewForm.comment.length >= 10
+  );
+}
+
+  loadMembreDetails() {
+    this.isLoading = true;
+    forkJoin({
+      company: this.companyService.getCompanyById(this.membreId),
+      schedules: this.companyService.getHoraire(this.membreId)
+    }).subscribe({
+      next: ({ company, schedules }) => {
+        this.membre = company;
+        console.log('Données du membre:', this.membre);
+        this.horaires = schedules;
+        this.isLoading = false;
+
+        // Initialiser la carte après avoir chargé les données du membre
+        this.initializeMap();
+
+        this.companyService.getRatings(this.membreId).subscribe({
+          next: (ratings) => {
+            this.ratings = ratings;
+            if (this.ratings.length < 3) {
+              while (this.ratings.length < 3) {
+                this.ratings = [...this.ratings, ...this.ratings.slice(0, 3 - this.ratings.length)];
+              }
+              this.displayedRatings = this.ratings;
+            } else {
+              this.displayedRatings = [
+                ...this.ratings.slice(-2),
+                ...this.ratings,
+                ...this.ratings.slice(0, 2)
+              ];
+              this.currentRatingIndex = 2;
+              this.startRatingCarousel();
+            }
+          },
+          error: (error) => {
+            console.warn('Aucun rating disponible pour cette entreprise', error);
+            this.ratings = [];
+            this.displayedRatings = [];
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des données du membre:', error);
+        this.isLoading = false;
+        this.router.navigate(['/membres']);
+      }
+    });
+  }
   voirTousLesMembres() {
     this.router.navigate(['/membres']);
   }

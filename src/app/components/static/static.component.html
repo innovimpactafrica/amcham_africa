@@ -2,7 +2,7 @@
 
 <div class="min-h-screen bg-gray-50 p-6">
   <div class="max-w-7xl mx-auto">
-    
+
     <!-- En-tête -->
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ texts.statistics }}</h1>
@@ -13,11 +13,11 @@
 
     <!-- Graphiques principaux -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-      
+
       <!-- Visites par jour -->
       <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ texts.visitsPerDay }}</h3>
-        
+
         <!-- État de chargement -->
         <div *ngIf="isLoadingVisits" class="h-64 flex items-center justify-center">
           <div class="text-center">
@@ -29,7 +29,11 @@
         <!-- Erreur -->
         <div *ngIf="visitsError && !isLoadingVisits" class="h-64 flex items-center justify-center">
           <div class="text-center text-red-600">
-            {{ visitsError }}
+            <svg class="w-12 h-12 mx-auto mb-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-sm">{{ visitsError }}</p>
           </div>
         </div>
 
@@ -42,54 +46,60 @@
       <!-- Recherches populaires -->
       <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ texts.popularSearches }}</h3>
-        <div class="space-y-4">
-          <div *ngFor="let search of popularSearches; let i = index" class="flex items-center">
-            <div class="flex-1">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-sm font-medium text-gray-700">{{ getPopularSearchTerm(search.term) }}</span>
-                <span class="text-sm text-gray-500">{{ search.count }}</span>
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-2">
-                <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" 
-                     [style.width.%]="(search.count / popularSearches[0].count) * 100"></div>
-              </div>
-            </div>
+
+        <!-- État de chargement -->
+        <div *ngIf="isLoadingPopularSearches" class="h-64 flex items-center justify-center">
+          <div class="text-center">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p class="mt-2 text-gray-600">{{ texts.loading }}</p>
           </div>
+        </div>
+
+        <!-- Erreur -->
+        <div *ngIf="popularSearchesError && !isLoadingPopularSearches" class="h-64 flex items-center justify-center">
+          <div class="text-center text-red-600">
+            <svg class="w-12 h-12 mx-auto mb-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-sm">{{ popularSearchesError }}</p>
+          </div>
+        </div>
+
+        <!-- Graphique -->
+        <div *ngIf="!isLoadingPopularSearches && !popularSearchesError" class="h-64 relative">
+          <canvas #popularSearchesChart></canvas>
         </div>
       </div>
     </div>
 
     <!-- Graphiques secondaires -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      
+
       <!-- Membres par secteur -->
       <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ texts.membersBySector }}</h3>
-        
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">{{ texts.membersBySector }}</h3>
+
         <!-- État de chargement -->
-        <div *ngIf="isLoadingSectors" class="text-center py-8">
+        <div *ngIf="isLoadingSectors" class="text-center py-12">
           <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p class="mt-2 text-gray-600">{{ texts.loading }}</p>
+          <p class="mt-2 text-gray-600 text-sm">{{ texts.loading }}</p>
         </div>
 
         <!-- Erreur -->
-        <div *ngIf="sectorError && !isLoadingSectors" class="text-center py-8 text-red-600">
-          {{ sectorError }}
+        <div *ngIf="sectorError && !isLoadingSectors" class="text-center py-12 text-red-600">
+          <svg class="w-12 h-12 mx-auto mb-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-sm">{{ sectorError }}</p>
         </div>
 
-        <!-- Données chargées -->
-        <div *ngIf="!isLoadingSectors && !sectorError" class="flex flex-col lg:flex-row items-center">
-          <div class="h-64 w-64 relative mb-4 lg:mb-0">
+        <!-- Graphique avec labels externes -->
+        <div *ngIf="!isLoadingSectors && !sectorError" class="relative">
+          <!-- Canvas pour le diagramme circulaire -->
+          <div class="relative mx-auto" style="height: 300px; max-width: 350px;">
             <canvas #sectorsChart></canvas>
-          </div>
-          <div class="lg:ml-6 space-y-2 text-sm w-full max-w-xs">
-            <div *ngFor="let sector of sectorData" class="flex items-center justify-between">
-              <div class="flex items-center">
-                <div class="w-3 h-3 rounded-full mr-2" [style.background]="sector.color"></div>
-                <span class="text-gray-700">{{ sector.sectorName }}</span>
-              </div>
-              <span class="text-gray-600">{{ companySectorService.formatPercentage(sector.percentage) }}</span>
-            </div>
           </div>
         </div>
       </div>
@@ -97,7 +107,7 @@
       <!-- Clics sur bannières -->
       <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ texts.bannerClicks }}</h3>
-        
+
         <!-- État de chargement -->
         <div *ngIf="isLoadingBannerClicks" class="h-64 flex items-center justify-center">
           <div class="text-center">
@@ -109,7 +119,11 @@
         <!-- Erreur -->
         <div *ngIf="bannerClicksError && !isLoadingBannerClicks" class="h-64 flex items-center justify-center">
           <div class="text-center text-red-600">
-            {{ bannerClicksError }}
+            <svg class="w-12 h-12 mx-auto mb-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-sm">{{ bannerClicksError }}</p>
           </div>
         </div>
 

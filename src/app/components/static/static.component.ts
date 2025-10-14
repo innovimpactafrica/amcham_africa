@@ -6,7 +6,8 @@ import { LanguageService } from '../../../services/language.service';
 import { CompanySectorService, SectorKPI } from '../../../services/company-sector.service';
 import { Subscription } from 'rxjs';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
-import { CardStateComponent } from '../card-state/card-state.component';
+import { CardStateComponent } from "../card-state/card-state.component";
+import { CompanyService, RepartitionSector } from '../../../services/company.service';
 
 // Register Chart.js components
 Chart.register(...registerables);
@@ -22,11 +23,17 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('visitsChart', { static: false }) visitsChart!: ElementRef<HTMLCanvasElement>;
   @ViewChild('sectorsChart', { static: false }) sectorsChart!: ElementRef<HTMLCanvasElement>;
   @ViewChild('bannerClicksChart', { static: false }) bannerClicksChart!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('popularSearchesChart', { static: false }) popularSearchesChart!: ElementRef<HTMLCanvasElement>;
 
   private chartInstances: Chart[] = [];
   private langSubscription!: Subscription;
   currentLang = 'fr';
   currentRoute: string;
+
+  // Données dynamiques pour les recherches populaires
+  popularSearches: RepartitionSector[] = [];
+  isLoadingPopularSearches = true;
+  popularSearchesError = '';
 
   // Données statistiques
   stats = {
@@ -42,15 +49,6 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
   visitsData: { date: string; visits: number }[] = [];
   isLoadingVisits = true;
   visitsError = '';
-
-  popularSearches = [
-    { term: 'Technologie', count: 180 },
-    { term: 'Finance', count: 140 },
-    { term: 'Paris', count: 100 },
-    { term: 'États-Unis', count: 85 },
-    { term: 'Innovation', count: 75 },
-    { term: 'Commerce', count: 60 }
-  ];
 
   // Données dynamiques pour les secteurs
   sectorData: SectorKPI[] = [];
@@ -124,7 +122,8 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private router: Router,
     private languageService: LanguageService,
-    public companySectorService: CompanySectorService
+    public companySectorService: CompanySectorService,
+    private companyService: CompanyService
   ) {
     this.currentRoute = this.router.url;
   }
@@ -141,6 +140,7 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loadSectorData();
     this.loadVisitsKpi();
     this.loadClicksKpi();
+    this.loadPopularSearches();
   }
 
   ngAfterViewInit(): void {
@@ -149,6 +149,7 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
       this.createVisitsChart();
       this.createSectorsChart();
       this.createBannerClicksChart();
+      this.createPopularSearchesChart();
     }, 100);
   }
 
@@ -161,6 +162,42 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
     this.chartInstances.forEach(chart => {
       chart.destroy();
     });
+  }
+
+  /**
+   * Charger les recherches populaires depuis l'API
+   */
+  private loadPopularSearches(): void {
+    this.isLoadingPopularSearches = true;
+    this.popularSearchesError = '';
+
+    this.companyService.getRepartitionSector().subscribe({
+      next: (data: RepartitionSector[]) => {
+        // Trier par nombre de recherches décroissant et prendre les 6 premiers
+        this.popularSearches = data
+          .sort((a, b) => b.searchNumber - a.searchNumber)
+          .slice(0, 6);
+        this.isLoadingPopularSearches = false;
+        
+        setTimeout(() => {
+          this.updatePopularSearchesChart();
+        }, 100);
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des recherches populaires:', error);
+        this.popularSearchesError = this.texts.errorLoading;
+        this.isLoadingPopularSearches = false;
+      }
+    });
+  }
+
+  /**
+   * Calculer le pourcentage de la barre de progression
+   */
+  getSearchPercentage(searchNumber: number): number {
+    if (this.popularSearches.length === 0) return 0;
+    const maxSearch = Math.max(...this.popularSearches.map(s => s.searchNumber));
+    return maxSearch > 0 ? (searchNumber / maxSearch) * 100 : 0;
   }
 
   /**
@@ -501,6 +538,98 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
+   * Créer le graphique des recherches populaires
+   */
+  private createPopularSearchesChart(): void {
+    if (!this.popularSearchesChart?.nativeElement) return;
+
+    const ctx = this.popularSearchesChart.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    if (this.isLoadingPopularSearches || this.popularSearches.length === 0) {
+      this.createEmptyPopularSearchesChart(ctx);
+      return;
+    }
+
+    this.createDynamicPopularSearchesChart(ctx);
+  }
+
+  /**
+   * Créer un graphique vide pendant le chargement
+   */
+  private createEmptyPopularSearchesChart(ctx: CanvasRenderingContext2D): void {
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: [this.texts.loading],
+        datasets: [{
+          data: [0],
+          backgroundColor: '#E5E7EB',
+          borderWidth: 0,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        }
+      }
+    });
+
+    this.chartInstances.push(chart);
+  }
+
+  /**
+   * Créer le graphique dynamique avec les vraies données
+   */
+  private createDynamicPopularSearchesChart(ctx: CanvasRenderingContext2D): void {
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: this.popularSearches.map(search => search.sectorName),
+        datasets: [{
+          data: this.popularSearches.map(search => search.searchNumber),
+          backgroundColor: '#3B82F6',
+          borderColor: '#3B82F6',
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y', // Barres horizontales
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                return `${context.parsed.x} recherches`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            grid: { color: '#E5E7EB' },
+            ticks: { color: '#6B7280', precision: 0 }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: '#6B7280' }
+          }
+        }
+      }
+    });
+
+    this.chartInstances.push(chart);
+  }
+
+  /**
    * Mettre à jour le graphique des visites
    */
   private updateVisitsChart(): void {
@@ -563,6 +692,27 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  /**
+   * Mettre à jour le graphique des recherches populaires
+   */
+  private updatePopularSearchesChart(): void {
+    const searchChartIndex = this.chartInstances.findIndex(chart => 
+      chart.canvas === this.popularSearchesChart?.nativeElement
+    );
+    
+    if (searchChartIndex !== -1) {
+      this.chartInstances[searchChartIndex].destroy();
+      this.chartInstances.splice(searchChartIndex, 1);
+    }
+
+    if (this.popularSearchesChart?.nativeElement) {
+      const ctx = this.popularSearchesChart.nativeElement.getContext('2d');
+      if (ctx) {
+        this.createDynamicPopularSearchesChart(ctx);
+      }
+    }
+  }
+
   private updateChartsLanguage(): void {
     this.chartInstances.forEach(chart => {
       chart.destroy();
@@ -573,6 +723,7 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
       this.createVisitsChart();
       this.createSectorsChart();
       this.createBannerClicksChart();
+      this.createPopularSearchesChart();
     }, 100);
   }
 

@@ -13,6 +13,12 @@ export interface CompanyScheduleRequest {
   closed: boolean;
 }
 
+export interface RepartitionSector{
+  sectorName: string;
+  searchNumber: number;
+}
+
+
 export interface CompanySchedulesRequest {
   schedules: CompanyScheduleRequest[];
 }
@@ -139,6 +145,17 @@ export interface SearchParams {
   country?: string;
 }
 
+export interface CreateRatingRequest{
+  firstName: string;
+  lastName: string;
+  comment: string;
+  score: number;
+  companyId: number;
+
+}
+
+  
+
 export interface MembresParams {
   page?: number;
   size?: number;
@@ -166,6 +183,16 @@ export class CompanyService {
   private readonly baseUrl = 'https://wakana.online/annuaire-amcham';
 
   constructor(private http: HttpClient) {}
+  /**
+   * Sauvegarder une une rating - POST /api/ratings
+   */
+  saveRating(ratingData: CreateRatingRequest): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.baseUrl}/api/ratings`, ratingData, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
 
   /**
    * Sauvegarder une entreprise - POST /api/companies/save
@@ -253,7 +280,15 @@ getRatings(companyId: number): Observable<Ratings[]> {
         catchError(this.handleError)
       );
 }
-
+  /**
+   * Obtenir Recherches populaires - GET /api/companies/top-sectors/kpi
+   */
+  getRepartitionSector(): Observable<RepartitionSector[]> {
+    return this.http.get<RepartitionSector[]>(`${this.baseUrl}/api/companies/top-sectors/kpi`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
 // /api/companies/{id}/similar
 getSimilarCompanies(companyId: number): Observable<SimilarCompany[]> {
   return this.http.get<SimilarCompany[]>(`${this.baseUrl}/api/companies/${companyId}/similar`)
