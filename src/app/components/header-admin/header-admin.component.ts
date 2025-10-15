@@ -320,7 +320,9 @@ export class HeaderAdminComponent implements OnInit, OnDestroy {
   navigateToCategories(): void {
     this.router.navigate(['/categories']);
   }
-  
+  navigateToHome(){
+    this.router.navigate(['/']);
+  }
   isActiveRoute(route: string): boolean {
     return this.router.url.includes(route);
   }

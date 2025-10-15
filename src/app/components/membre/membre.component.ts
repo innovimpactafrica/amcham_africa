@@ -142,6 +142,7 @@ export class MembreComponent implements OnInit, OnDestroy {
     // Charger les données initiales
     this.loadCountriesAndSectors();
     this.loadMembres();
+    console.log(this.loadMembres())
   }
 
   ngOnDestroy(): void {

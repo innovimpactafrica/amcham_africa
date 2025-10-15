@@ -300,7 +300,9 @@ export class HeaderMembreComponent implements OnInit, OnDestroy {
       this.router.navigate(['/horaire']);
     }
   }
-
+  navigateToHome(){
+    this.router.navigate(['/']); 
+  }
   // Méthodes de gestion des langues
   toggleLanguagePopup(event?: Event): void {
     if (event) {
