@@ -24,6 +24,7 @@ export class HeaderAdminComponent implements OnInit, OnDestroy {
   showSettingsDropdown = false;
   private langSubscription!: Subscription;
   currentLang = 'fr';
+  showLogoutModal: boolean = false;
   
   // Données de l'entreprise
   companyData: Company | null = null;
@@ -102,6 +103,47 @@ export class HeaderAdminComponent implements OnInit, OnDestroy {
     
     // Charger les données de l'entreprise
     this.loadCompanyData();
+  }
+  /**
+   * Ouvrir le modal de confirmation de déconnexion
+   */
+  openLogoutModal(): void {
+    this.showLogoutModal = true;
+    console.log('Modal de déconnexion ouvert');
+  }
+
+  /**
+   * Fermer le modal de confirmation de déconnexion
+   */
+  closeLogoutModal(): void {
+    this.showLogoutModal = false;
+    console.log('Modal de déconnexion fermé');
+  }
+
+  /**
+   * Confirmer et exécuter la déconnexion
+   */
+  confirmLogout(): void {
+    console.log('Déconnexion confirmée');
+    this.closeLogoutModal();
+    this.logout();
+  }
+
+  /**
+   * Effectuer la déconnexion et rediriger vers la page de login
+   */
+  private logout(): void {
+    try {
+      // Appel du service d'authentification pour déconnecter
+      this.authService.logout();
+      
+      // Redirection vers la page de connexion
+      this.router.navigate(['/login']);
+      
+      console.log('✅ Déconnexion réussie');
+    } catch (error) {
+      console.error('❌ Erreur lors de la déconnexion:', error);
+    }
   }
 
   ngOnDestroy(): void {

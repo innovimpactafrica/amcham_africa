@@ -149,7 +149,8 @@
             <path
               d="M8.64331 15.857H6.07031V9.43H8.64231V15.858L8.64331 15.857ZM13.7863 15.857H11.2143V3H13.7863V15.857ZM18.9283 15.857H16.3573V6.857H18.9283V15.857Z"
               fill="currentColor" />
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M21.5 20.7141H3.5V18.7141H21.5V20.7141Z" fill="currentColor" />
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M21.5 20.7141H3.5V18.7141H21.5V20.7141Z"
+              fill="currentColor" />
           </svg>
 
           {{ texts.statistics }}
@@ -219,6 +220,21 @@
                   <p class="text-sm text-gray-500">{{ texts.categoriesDescription }}</p>
                 </div>
               </div>
+              <button (click)="openLogoutModal()" type="button" aria-label="Se déconnecter"
+                class="inline-flex items-center p-2 px-4 py-2 bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:ring-red-300 text-black rounded-md shadow-sm transition">
+                <!-- SVG icône déconnexion -->
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true">
+                  <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                  <path d="M21 12H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                  <path d="M9 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+
+                <span class="font-medium text-sm">Se déconnecter</span>
+              </button>
             </div>
           </div>
         </div>
@@ -267,3 +283,18 @@
 <!-- Overlay pour fermer le dropdown en cliquant à l'extérieur -->
 <div *ngIf="showSettingsDropdown" (click)="showSettingsDropdown = false" class="fixed inset-0 z-40 bg-transparent">
 </div>
+<div *ngIf="showLogoutModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  (click)="closeLogoutModal()">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-md" (click)="$event.stopPropagation()">
+    <h2 class="text-lg font-semibold mb-4">Confirmer la déconnexion</h2>
+    <p class="mb-6">Êtes-vous sûr de vouloir vous déconnecter ?</p>
+    <div class="flex justify-end space-x-4">
+      <button (click)="closeLogoutModal()"
+        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+        Annuler
+      </button>
+      <button (click)="confirmLogout()" class="px-4 py-2 bg-[#1D365D] text-white rounded-lg  transition">
+        Déconnexion
+      </button>
+    </div>
+  </div>

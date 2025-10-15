@@ -45,6 +45,7 @@ export class HeaderMembreComponent implements OnInit, OnDestroy {
   isLoading: boolean = true;
   errorMessage: string = '';
   private companySubscription!: Subscription;
+  showLogoutModal: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -148,6 +149,47 @@ export class HeaderMembreComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+  /**
+   * Ouvrir le modal de confirmation de déconnexion
+   */
+  openLogoutModal(): void {
+    this.showLogoutModal = true;
+    console.log('Modal de déconnexion ouvert');
+  }
+
+  /**
+   * Fermer le modal de confirmation de déconnexion
+   */
+  closeLogoutModal(): void {
+    this.showLogoutModal = false;
+    console.log('Modal de déconnexion fermé');
+  }
+
+  /**
+   * Confirmer et exécuter la déconnexion
+   */
+  confirmLogout(): void {
+    console.log('Déconnexion confirmée');
+    this.closeLogoutModal();
+    this.logout();
+  }
+
+  /**
+   * Effectuer la déconnexion et rediriger vers la page de login
+   */
+  private logout(): void {
+    try {
+      // Appel du service d'authentification pour déconnecter
+      this.authService.logout();
+      
+      // Redirection vers la page de connexion
+      this.router.navigate(['/login']);
+      
+      console.log('✅ Déconnexion réussie');
+    } catch (error) {
+      console.error('❌ Erreur lors de la déconnexion:', error);
+    }
   }
 
   /**
