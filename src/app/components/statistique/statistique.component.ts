@@ -7,8 +7,9 @@ import { HeaderMembreComponent } from "../header-membre/header-membre.component"
 import { LanguageService } from '../../../services/language.service';
 import { AuthService } from '../../../services/auth.service';
 import { StatisticsService, VueProfilData, ChronologieStats, VueProfilTotal, ContactRecuStats } from '../../../services/statistics.service';
-import { CompanyService } from '../../../services/company.service'; // Import du service Membre
+import { CompanyService } from '../../../services/company.service';
 import { Subscription } from 'rxjs';
+import { catchError, of } from 'rxjs';
 
 Chart.register(...registerables);
 
@@ -31,8 +32,8 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
   
   // Données dynamiques
   companyId: number | null = null;
-  membreId: number | null = null; // Nouvelle propriété pour l'ID du membre
-  membreUpdatedAt: string = ''; // Nouvelle propriété pour la date de mise à jour du membre
+  membreId: number | null = null;
+  membreUpdatedAt: string = '';
   vueProfilTotalData: VueProfilTotal | null = null;
   contactRecuData: ContactRecuStats | null = null;
   vueProfilChartData: VueProfilData[] = [];
@@ -49,14 +50,13 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
     private languageService: LanguageService,
     private statisticsService: StatisticsService,
     private authService: AuthService,
-    private companyService: CompanyService, // Injection du service Membre
+    private companyService: CompanyService,
     private cdRef: ChangeDetectorRef,
     private ngZone: NgZone
   ) {
     this.currentRoute = this.router.url;
   }
 
-  // Textes dynamiques
   get texts() {
     return this.currentLang === 'fr' ? {
       pageTitle: 'Statistiques de votre profil',
@@ -79,7 +79,8 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
       errorLoading: 'Erreur lors du chargement des statistiques',
       sessionExpired: 'Session expirée. Veuillez vous reconnecter.',
       noCompany: 'Aucune entreprise associée à votre compte',
-      noMembre: 'Aucun membre associé à votre compte'
+      noMembre: 'Aucun membre associé à votre compte',
+      retry: 'Réessayer'
     } : {
       pageTitle: 'Your Profile Statistics',
       pageDescription: 'Track your profile performance and visitor engagement.',
@@ -101,11 +102,11 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
       errorLoading: 'Error loading statistics',
       sessionExpired: 'Session expired. Please log in again.',
       noCompany: 'No company associated with your account',
-      noMembre: 'No member associated with your account'
+      noMembre: 'No member associated with your account',
+      retry: 'Retry'
     };
   }
 
-  // Métriques principales formatées - MODIFIÉ pour utiliser membreUpdatedAt
   get metriques() {
     return {
       vuesProfil: {
@@ -121,7 +122,6 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
         croissancePositive: this.contactRecuData ? this.contactRecuData.weeklyEvolution >= 0 : true
       },
       derniereMiseAJour: {
-        // MODIFICATION ICI : Utilisation de membreUpdatedAt au lieu de lastUpdateDate
         valeur: this.membreUpdatedAt ? this.formatFullDate(this.membreUpdatedAt) : '--/--/----',
         croissance: this.vueProfilTotalData ? this.formatEvolution(this.vueProfilTotalData.weeklyEvolution) : '+0%',
         periode: this.texts.sinceLastMonth,
@@ -130,7 +130,6 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
     };
   }
 
-  // Données pour la légende du graphique en secteurs
   get donneesChronologie() {
     if (!this.chronologieData) {
       return [
@@ -150,7 +149,6 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // S'abonner aux changements de langue
     this.langSubscription = this.languageService.currentLang$.subscribe(lang => {
       this.currentLang = lang;
       if (this.dataLoaded && this.chartsInitialized) {
@@ -162,18 +160,13 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // Charger les données après que la vue soit initialisée
     this.loadUserAndStatistics();
   }
 
-  /**
-   * Charger les données de l'utilisateur pour récupérer le companyId et membreId dynamiquement
-   */
   private loadUserAndStatistics(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Vérifier d'abord l'authentification
     if (!this.authService.isAuthenticated()) {
       this.errorMessage = this.texts.sessionExpired;
       this.isLoading = false;
@@ -182,12 +175,22 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    // Récupérer les informations utilisateur depuis l'API
-    this.authService.getCurrentUserFromAPI().subscribe({
+    this.authService.getCurrentUserFromAPI().pipe(
+      catchError(error => {
+        console.error('❌ [Statistique] Erreur lors de la récupération des informations utilisateur:', error);
+        return of(null);
+      })
+    ).subscribe({
       next: (currentUser) => {
+        if (!currentUser) {
+          this.errorMessage = this.texts.errorLoading;
+          this.isLoading = false;
+          this.cdRef.detectChanges();
+          return;
+        }
+
         console.log('✅ [Statistique] Utilisateur récupéré avec succès:', currentUser);
         
-        // Vérifier si l'utilisateur a une entreprise associée
         if (!currentUser.companyId) {
           this.errorMessage = this.texts.noCompany;
           this.isLoading = false;
@@ -196,16 +199,14 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         this.companyId = currentUser.companyId;
-        this.membreId = currentUser.id; // Récupération de l'ID du membre depuis l'utilisateur
+        this.membreId = currentUser.id;
         console.log('🔍 [Statistique] Chargement des statistiques pour companyId:', this.companyId, 'et membreId:', this.membreId);
 
-        // Charger les statistiques avec le companyId récupéré et les données du membre
         this.loadAllStatistics();
       },
       error: (error) => {
-        console.error('❌ [Statistique] Erreur lors de la récupération des informations utilisateur:', error);
+        console.error('❌ [Statistique] Erreur critique:', error);
         
-        // Gestion des erreurs d'authentification
         if (error.status === 401 || error.status === 403) {
           this.errorMessage = this.texts.sessionExpired;
           this.isLoading = false;
@@ -232,24 +233,37 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.isLoading = true;
 
-    // Charger toutes les statistiques en parallèle, y compris les données du membre
-    Promise.all([
+    Promise.allSettled([
       this.loadVueProfilTotal(),
       this.loadContactRecu(),
       this.loadVueProfil(),
       this.loadChronologie(),
-      this.loadMembreData() // NOUVELLE MÉTHODE pour charger les données du membre
-    ]).then(() => {
+      this.loadMembreData()
+    ]).then((results) => {
       this.ngZone.run(() => {
+        // Vérifier si toutes les promesses ont échoué
+        const allFailed = results.every(result => result.status === 'rejected');
+        
+        if (allFailed) {
+          this.errorMessage = this.texts.errorLoading;
+          console.error('❌ Toutes les statistiques ont échoué');
+        } else {
+          // Log des résultats pour debug
+          results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+              console.warn(`⚠️ Statistique ${index} échouée:`, result.reason);
+            }
+          });
+        }
+
         this.isLoading = false;
         this.dataLoaded = true;
         
-        // Initialiser les graphiques après le chargement des données
         this.initializeChartsWithRetry();
       });
     }).catch(error => {
       this.ngZone.run(() => {
-        console.error('Erreur lors du chargement des statistiques:', error);
+        console.error('❌ Erreur lors du chargement des statistiques:', error);
         this.errorMessage = this.texts.errorLoading;
         this.isLoading = false;
         this.dataLoaded = true;
@@ -257,29 +271,154 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /**
-   * NOUVELLE MÉTHODE : Charger les données du membre pour récupérer updatedAt
-   */
   private loadMembreData(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.companyId) {
-        reject(new Error('Membre ID non disponible'));
+        console.warn('⚠️ Company ID non disponible pour charger les données du membre');
+        resolve(); // On résout quand même pour ne pas bloquer
         return;
       }
 
-      this.companyService.getCompanyById(this.companyId).subscribe({
+      this.companyService.getCompanyById(this.companyId).pipe(
+        catchError(error => {
+          console.error('❌ Erreur lors du chargement des données du membre:', error);
+          return of(null);
+        })
+      ).subscribe({
         next: (company) => {
-          // Stocker la date de mise à jour du membre
-      
-          this.membreUpdatedAt = company.updatedAt || '';
-          console.log('✅ [Statistique] Données du membre chargées avec updatedAt:', this.membreUpdatedAt);
+          if (company) {
+            this.membreUpdatedAt = company.updatedAt || '';
+            console.log('✅ [Statistique] Données du membre chargées avec updatedAt:', this.membreUpdatedAt);
+          }
           resolve();
         },
         error: (error) => {
-          console.error('Erreur lors du chargement des données du membre:', error);
-          // Ne pas rejeter pour ne pas bloquer le chargement des autres données
-          // On continue même si les données du membre ne sont pas disponibles
+          console.error('❌ Erreur critique lors du chargement des données du membre:', error);
+          resolve(); // On résout quand même
+        }
+      });
+    });
+  }
+
+  private loadVueProfilTotal(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.companyId) {
+        reject(new Error('Company ID non disponible'));
+        return;
+      }
+
+      this.statisticsService.getVueProfilTotal(this.companyId).pipe(
+        catchError(error => {
+          console.error('❌ Erreur getVueProfilTotal:', error);
+          return of(null);
+        })
+      ).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.vueProfilTotalData = data;
+            console.log('✅ [Statistique] Vues profil total chargées:', data);
+            resolve();
+          } else {
+            console.warn('⚠️ Aucune donnée pour vues profil total');
+            reject(new Error('Aucune donnée'));
+          }
+        },
+        error: (error) => {
+          console.error('❌ Erreur critique lors du chargement des vues totales:', error);
+          reject(error);
+        }
+      });
+    });
+  }
+
+  private loadContactRecu(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.companyId) {
+        reject(new Error('Company ID non disponible'));
+        return;
+      }
+
+      this.statisticsService.getContactRecu(this.companyId).pipe(
+        catchError(error => {
+          console.error('❌ Erreur getContactRecu:', error);
+          return of(null);
+        })
+      ).subscribe({
+        next: (data) => {
+          if (data) {
+            this.contactRecuData = data;
+            console.log('✅ [Statistique] Contacts reçus chargés:', data);
+            resolve();
+          } else {
+            console.warn('⚠️ Aucune donnée pour contacts reçus');
+            reject(new Error('Aucune donnée'));
+          }
+        },
+        error: (error) => {
+          console.error('❌ Erreur critique lors du chargement des contacts reçus:', error);
+          reject(error);
+        }
+      });
+    });
+  }
+
+  private loadVueProfil(): Promise<void> {
+    // console.log(this.loadVueProfilTotal())
+
+    return new Promise((resolve, reject) => {
+      if (!this.companyId) {
+        reject(new Error('Company ID non disponible'));
+        return;
+      }
+
+      this.statisticsService.getVueProfil(this.companyId).pipe(
+        catchError(error => {
+          console.error('❌ Erreur getVueProfil:', error);
+          return of([]);
+        })
+      ).subscribe({
+        next: (data) => {
+          this.vueProfilChartData = data || [];
+          if (data && data.length > 0) {
+            this.lastUpdateDate = this.formatFullDate(data[data.length - 1].date);
+          }
+          console.log('✅ [Statistique] Vues profil chargées:', data);
           resolve();
+        },
+        error: (error) => {
+          console.error('❌ Erreur critique lors du chargement des vues profil:', error);
+          reject(error);
+        }
+      });
+    });
+  }
+
+  private loadChronologie(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.companyId) {
+        reject(new Error('Company ID non disponible'));
+        return;
+      }
+
+      this.statisticsService.getChronologie(this.companyId).pipe(
+        catchError(error => {
+          console.error('❌ Erreur getChronologie:', error);
+          return of(null);
+        })
+      ).subscribe({
+        next: (data) => {
+          if (data) {
+            this.chronologieData = data;
+            console.log('✅ [Statistique] Chronologie chargée:', data);
+            resolve();
+          } else {
+            console.warn('⚠️ Aucune donnée pour chronologie');
+            reject(new Error('Aucune donnée'));
+          }
+        },
+        error: (error) => {
+          console.error('❌ Erreur critique lors du chargement de la chronologie:', error);
+          reject(error);
         }
       });
     });
@@ -303,101 +442,12 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     };
 
-    // Premier essai avec un délai raisonnable
     setTimeout(() => tryInitialize(), 100);
-  }
-
-  private loadVueProfilTotal(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (!this.companyId) {
-        reject(new Error('Company ID non disponible'));
-        return;
-      }
-
-      this.statisticsService.getVueProfilTotal(this.companyId).subscribe({
-        next: (data: any) => {
-          this.vueProfilTotalData = data;
-          console.log('✅ [Statistique] Vues profil total chargées:', data);
-          resolve();
-        },
-        error: (error) => {
-          console.error('Erreur lors du chargement des vues totales:', error);
-          reject(error);
-        }
-      });
-    });
-  }
-
-  private loadContactRecu(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (!this.companyId) {
-        reject(new Error('Company ID non disponible'));
-        return;
-      }
-
-      this.statisticsService.getContactRecu(this.companyId).subscribe({
-        next: (data) => {
-          this.contactRecuData = data;
-          console.log('✅ [Statistique] Contacts reçus chargés:', data);
-          resolve();
-        },
-        error: (error) => {
-          console.error('Erreur lors du chargement des contacts reçus:', error);
-          reject(error);
-        }
-      });
-    });
-  }
-
-  private loadVueProfil(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (!this.companyId) {
-        reject(new Error('Company ID non disponible'));
-        return;
-      }
-
-      this.statisticsService.getVueProfil(this.companyId).subscribe({
-        next: (data) => {
-          this.vueProfilChartData = data;
-          if (data.length > 0) {
-            this.lastUpdateDate = this.formatFullDate(data[data.length - 1].date);
-          }
-          console.log('✅ [Statistique] Vues profil chargées:', data);
-          resolve();
-        },
-        error: (error) => {
-          console.error('Erreur lors du chargement des vues profil:', error);
-          reject(error);
-        }
-      });
-    });
-  }
-
-  private loadChronologie(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (!this.companyId) {
-        reject(new Error('Company ID non disponible'));
-        return;
-      }
-
-      this.statisticsService.getChronologie(this.companyId).subscribe({
-        next: (data) => {
-          this.chronologieData = data;
-          console.log('✅ [Statistique] Chronologie chargée:', data);
-          resolve();
-        },
-        error: (error) => {
-          console.error('Erreur lors du chargement de la chronologie:', error);
-          reject(error);
-        }
-      });
-    });
   }
 
   private initCharts(): void {
     console.log('🔄 Initialisation des graphiques...');
     
-    // Utiliser NgZone pour exécuter en dehors du cycle Angular
     this.ngZone.runOutsideAngular(() => {
       setTimeout(() => {
         if (this.lineChartCanvas?.nativeElement) {
@@ -427,7 +477,6 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
         return;
       }
 
-      // Détruire le graphique existant s'il y en a un
       if (this.lineChartInstance) {
         this.lineChartInstance.destroy();
       }
@@ -504,7 +553,6 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
         return;
       }
 
-      // Détruire le graphique existant s'il y en a un
       if (this.pieChartInstance) {
         this.pieChartInstance.destroy();
       }
@@ -618,19 +666,17 @@ export class StatistiqueComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 100);
   }
 
-  // Méthode pour rafraîchir les données
   refreshData(): void {
     this.isLoading = true;
     this.dataLoaded = false;
     this.chartsInitialized = false;
     this.errorMessage = '';
     
-    // Réinitialiser les données
     this.vueProfilTotalData = null;
     this.contactRecuData = null;
     this.vueProfilChartData = [];
     this.chronologieData = null;
-    this.membreUpdatedAt = ''; // Réinitialiser aussi la date du membre
+    this.membreUpdatedAt = '';
     
     this.loadAllStatistics();
   }

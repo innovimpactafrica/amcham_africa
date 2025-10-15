@@ -76,7 +76,7 @@ navigateToHome (){
     console.log('Connexion réussie:', user);
     
     // Redirection basée sur le profil
-    if (user.profil === 'ADMIN_AMCHAM') {
+    if (user.profil === 'ADMIN_AMCHAM' || user.profil === 'SUPER_ADMIN') {
       this.router.navigate(['/members']);
     } else {
       // Pour ADMIN_COMPANY ou tout autre profil
