@@ -490,7 +490,7 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
     this.chartInstances.push(chart);
   }
 
-  private createDynamicBannerClicksChart(ctx: CanvasRenderingContext2D): void {
+private createDynamicBannerClicksChart(ctx: CanvasRenderingContext2D): void {
     const chart = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -498,9 +498,9 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
         datasets: [{
           data: this.bannerClicksData.map(d => d.clicks),
           backgroundColor: '#1E40AF',
-          borderColor: '#1E40AF',
-          borderWidth: 1,
-          borderRadius: 4
+          borderWidth: 0,
+          borderRadius: 0,
+          barThickness: 50
         }]
       },
       options: {
@@ -509,25 +509,35 @@ export class StaticComponent implements OnInit, OnDestroy, AfterViewInit {
         plugins: {
           legend: {
             display: false
+          },
+          tooltip: {
+            enabled: true,
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            padding: 12,
+            displayColors: false,
+            callbacks: {
+              title: () => '',
+              label: (context) => {
+                return `${context.parsed.y} clics`;
+              }
+            }
           }
         },
         scales: {
           x: {
-            grid: {
-              display: false
-            },
-            ticks: {
-              color: '#6B7280',
-              maxRotation: 45
-            }
+            display: false
           },
           y: {
             beginAtZero: true,
             grid: {
-              color: '#E5E7EB'
+              color: 'rgba(229, 231, 235, 0.5)'
             },
             ticks: {
-              color: '#6B7280'
+              color: '#9CA3AF',
+              precision: 0,
+              font: {
+                size: 10
+              }
             }
           }
         }
