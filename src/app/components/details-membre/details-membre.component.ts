@@ -60,7 +60,6 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
   isLoading = true;
   mapUrl: SafeResourceUrl | null = null;
 
-
   // ===== PROPRIÉTÉS POUR LA POPUP D'AVIS =====
   showReviewModal: boolean = false;
   showSuccessModal: boolean = false;
@@ -68,10 +67,10 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
   reviewError: string = '';
   hoverScore: number = 0;
 
-  private carouselInterval: any = null; // ✅ "private" corrige l’erreur d’accès
+  private carouselInterval: any = null;
 
-  itemsPerView = 1; // Nombre d’éléments visibles en même temps (mobile = 1, desktop = 2-3)
-  translatePercent = 0; // Position actuelle du carrousel (pour transform: translateX)
+  itemsPerView = 1;
+  translatePercent = 0;
 
   reviewForm = {
     firstName: '',
@@ -103,8 +102,10 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
     'Technology consulting',
     'Support and maintenance',
   ];
+  
   private destroy$ = new Subject<void>();
   reviewSuccess: any;
+
   get texts() {
     return this.currentLang === 'fr'
       ? {
@@ -205,6 +206,7 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     window.scrollTo(0, 0);
 
+    // CORRECTION : UN SEUL ABONNEMENT AUX PARAMÈTRES DE ROUTE
     this.route.params
       .pipe(
         switchMap((params) => {
@@ -213,7 +215,6 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
           return forkJoin({
             company: this.companyService.getCompanyById(this.membreId),
             schedules: this.companyService.getHoraire(this.membreId),
-            //ratings: this.loadRatings() // ajouté ici
           });
         }),
         takeUntil(this.destroy$)
@@ -222,30 +223,23 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
         next: ({ company, schedules }) => {
           this.membre = company;
           this.horaires = schedules;
-
           this.isLoading = false;
 
           this.loadMembresSimilaires();
           this.initializeMap();
           this.loadRatings();
-          // gérer le carousel ratings ici
         },
-        error: () => {
+        error: (error) => {
+          console.error('Erreur lors du chargement des données:', error);
           this.isLoading = false;
+          // Redirection vers la page des membres en cas d'erreur
+          setTimeout(() => {
+            this.router.navigate(['/membres']);
+          }, 2000);
         },
       });
 
-    this.langSubscription = this.languageService.currentLang$.subscribe(
-      (lang) => {
-        this.currentLang = lang;
-      }
-    );
-    /*this.route.params.subscribe(params => {
-      this.membreId = +params['id'];
-      this.loadMembreDetails();
-      
-    });*/
-
+    // UN SEUL ABONNEMENT AU CHANGEMENT DE LANGUE
     this.langSubscription = this.languageService.currentLang$.subscribe(
       (lang) => {
         this.currentLang = lang;
@@ -272,6 +266,7 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
   closeSuccessModal() {
     this.showSuccessModal = false;
   }
+
   private resetReviewForm(): void {
     this.reviewForm = {
       firstName: '',
@@ -288,6 +283,8 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
     this.stopRatingCarousel();
     this.destroy$.next();
     this.destroy$.complete();
+    
+    // Nettoyage de tous les abonnements
     if (this.langSubscription) {
       this.langSubscription.unsubscribe();
     }
@@ -311,6 +308,7 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
       this.mapUrl = null;
     }
   }
+
   private mapSimilarCompanyToMembreDisplay(company: any): MembreDisplay {
     return {
       id: company.id,
@@ -323,24 +321,22 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
       website: company.webLink || 'N/A',
       descriptionFr: company.description || '',
       descriptionEn: company.description || '',
-
       logo: company.logo || '',
       pictures: company.pictures || [],
       address: company.address || 'N/A',
       email: company.email || 'N/A',
       country: company.country || 'N/A',
       countryAmcham: company.countryAmcham || 'N/A',
-
-      // ... mapping complet avec gestion des propriétés manquantes
-      city: company.city || '', // Gestion de la propriété city
+      city: company.city || '',
     };
   }
+
   loadMembresSimilaires() {
     this.companyService.getSimilarCompanies(this.membreId).subscribe({
       next: (companies) => {
         this.membresSimilaires = companies
           .filter((c) => c.id !== this.membreId)
-          .slice(0, 3) // Limiter à 3 membres
+          .slice(0, 3)
           .map((c) => this.mapSimilarCompanyToMembreDisplay(c));
       },
       error: (error) => {
@@ -376,7 +372,6 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
 
   getSafeVideoUrl(): SafeResourceUrl | null {
     if (!this.membre?.videoLink) return null;
-    // Convert YouTube watch URL to embed URL
     const videoId = this.membre.videoLink.split('v=')[1]?.split('&')[0];
     const embedUrl = videoId
       ? `https://www.youtube.com/embed/${videoId}`
@@ -487,6 +482,7 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
   voirFiche(membreId: number) {
     this.router.navigate(['/membre', membreId]);
   }
+
   submitReview(): void {
     if (!this.isReviewFormValid() || !this.membre) {
       this.reviewError =
@@ -499,32 +495,24 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
     this.isSubmittingReview = true;
     this.reviewError = '';
 
-    // Préparation des données pour l'API
     const ratingRequest: CreateRatingRequest = {
       firstName: this.reviewForm.firstName.trim() || 'Anonyme',
       lastName: this.reviewForm.lastName.trim() || '',
       score: this.reviewForm.score,
       comment: this.reviewForm.comment.trim(),
-      companyId: this.membre.id, // ID du membre depuis le membre chargé
+      companyId: this.membre.id,
     };
 
-    // Appel du service
     this.companyService.saveRating(ratingRequest).subscribe({
       next: (response) => {
         console.log('Avis envoyé avec succès:', response);
         this.isSubmittingReview = false;
-
-        // Fermer la modal de formulaire
         this.showReviewModal = false;
-
-        // Afficher le modal de succès
         this.showSuccessModal = true;
 
-        // Fermer le modal de succès après 3 secondes
         setTimeout(() => {
           this.closeSuccessModal();
-          // Recharger les avis pour afficher le nouveau
-          this.loadMembreDetails();
+          this.loadRatings(); // Recharger les avis
         }, 3000);
       },
       error: (error) => {
@@ -549,62 +537,9 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadMembreDetails() {
-    this.isLoading = true;
-    forkJoin({
-      company: this.companyService.getCompanyById(this.membreId),
-      schedules: this.companyService.getHoraire(this.membreId),
-    }).subscribe({
-      next: ({ company, schedules }) => {
-        this.membre = company;
-        console.log('Données du membre:', this.membre);
-        this.horaires = schedules;
-        this.isLoading = false;
+  // CORRECTION : SUPPRIMEZ LA MÉTHODE loadMembreDetails() DUPLIQUÉE
+  // Elle est déjà gérée dans l'abonnement aux paramètres de route
 
-        // Initialiser la carte après avoir chargé les données du membre
-        this.initializeMap();
-
-        this.companyService.getRatings(this.membreId).subscribe({
-          next: (ratings) => {
-            this.ratings = ratings;
-            if (this.ratings.length < 3) {
-              while (this.ratings.length < 3) {
-                this.ratings = [
-                  ...this.ratings,
-                  ...this.ratings.slice(0, 3 - this.ratings.length),
-                ];
-              }
-              this.displayedRatings = this.ratings;
-            } else {
-              this.displayedRatings = [
-                ...this.ratings.slice(-2),
-                ...this.ratings,
-                ...this.ratings.slice(0, 2),
-              ];
-              this.currentRatinIndex = 2;
-              this.startRatingCarousel();
-            }
-          },
-          error: (error) => {
-            console.warn(
-              'Aucun rating disponible pour cette entreprise',
-              error
-            );
-            this.ratings = [];
-            this.displayedRatings = [];
-          },
-        });
-      },
-      error: (error) => {
-        console.error(
-          'Erreur lors du chargement des données du membre:',
-          error
-        );
-        this.isLoading = false;
-        this.router.navigate(['/membres']);
-      },
-    });
-  }
   voirTousLesMembres() {
     this.router.navigate(['/membres']);
   }
@@ -660,10 +595,8 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
   nextRating() {
     if (this.displayedRatings.length === 0) return;
 
-    // 🔥 CORRECTION : Logique de carrousel infini
     this.currentRatinIndex++;
 
-    // Si on arrive à la fin du tableau étendu, revenir au début sans transition
     if (this.currentRatinIndex >= this.displayedRatings.length - 1) {
       setTimeout(() => {
         this.noTransition = true;
@@ -675,20 +608,20 @@ export class DetailsMembreComponent implements OnInit, OnDestroy {
     }
   }
 
-  //  CORRECTION : Méthode pour obtenir le dot actif
-getActiveDot(): number {
-  if (this.ratings.length === 0) return 0;
+  getActiveDot(): number {
+    if (this.ratings.length === 0) return 0;
 
-  const totalGroups = Math.ceil(this.ratings.length / this.itemsPerView);
-  const activeGroup = Math.floor(this.currentRatinIndex / this.itemsPerView);
+    const totalGroups = Math.ceil(this.ratings.length / this.itemsPerView);
+    const activeGroup = Math.floor(this.currentRatinIndex / this.itemsPerView);
 
-  return activeGroup % totalGroups;
-}
+    return activeGroup % totalGroups;
+  }
 
-getDots(): number[] {
-  const totalGroups = Math.ceil(this.ratings.length / this.itemsPerView);
-  return Array.from({ length: totalGroups }, (_, i) => i);
-}
+  getDots(): number[] {
+    const totalGroups = Math.ceil(this.ratings.length / this.itemsPerView);
+    return Array.from({ length: totalGroups }, (_, i) => i);
+  }
+
   private createDefaultRating(): Ratings {
     return {
       firstName: 'Anonymous',
@@ -703,66 +636,56 @@ getDots(): number[] {
   private calculateItemsPerView() {
     const w = window.innerWidth;
     if (w >= 1024) {
-      this.itemsPerView = 3; // lg -> 3 par vue
+      this.itemsPerView = 3;
     } else if (w >= 640) {
-      this.itemsPerView = 2; // sm -> 2 par vue
+      this.itemsPerView = 2;
     } else {
-      this.itemsPerView = 1; // mobile -> 1 par vue
+      this.itemsPerView = 1;
     }
   }
 
   // Prépare displayedRatings et évite les espaces vides
   private setupCarousel() {
-    // determine itemsPerView
     this.calculateItemsPerView();
 
-    // si pas de ratings -> fallback
     if (!this.ratings || this.ratings.length === 0) {
       this.ratings = [this.createDefaultRating()];
     }
 
-    // si on a moins d'items que itemsPerView, dupliquer jusqu'à remplir (évite blancs)
     const needed =
       this.itemsPerView - (this.ratings.length % this.itemsPerView);
     if (this.ratings.length < this.itemsPerView) {
-      // clone autant que nécessaire pour atteindre itemsPerView
       this.displayedRatings = [...this.ratings];
       while (this.displayedRatings.length < this.itemsPerView) {
         this.displayedRatings.push(...this.ratings.map((r) => ({ ...r })));
       }
     } else {
-      // sinon on peut juste utiliser la liste telle quelle
       this.displayedRatings = [...this.ratings];
     }
 
-    // reset index et calcul translate
-    this.currentRatinIndex= 0;
+    this.currentRatinIndex = 0;
     this.updateTranslate();
   }
 
-  // met à jour translatePercent en fonction du currentIndex et itemsPerView
+  // met à jour translatePercent
   private updateTranslate() {
-    // Chaque “pas” doit correspondre à la largeur d'un item (100 / itemsPerView)
-    // Nous voulons glisser d'un "item group" (itemsPerView) à la fois -> translate = currentIndex * (100 / itemsPerView)
     this.translatePercent = +(
       this.currentRatinIndex *
       (100 / this.itemsPerView)
     ).toFixed(4);
-    
-
   }
 
   // démarre le carousel (auto-play)
   private startRatingCarousel(intervalMs = 4000) {
-    this.stopRatingCarousel(); // s'assurer qu'il n'y ait pas 2 intervals
+    this.stopRatingCarousel();
     if (!this.displayedRatings || this.displayedRatings.length === 0) return;
 
     const maxIndex =
       Math.ceil(this.displayedRatings.length / this.itemsPerView) - 1;
     this.carouselInterval = setInterval(() => {
-      this.noTransition = false; // on veut la transition normale
+      this.noTransition = false;
       this.currentRatinIndex =
-        this.currentRatinIndex+ 1 > maxIndex ? 0 : this.currentRatinIndex + 1;
+        this.currentRatinIndex + 1 > maxIndex ? 0 : this.currentRatinIndex + 1;
       this.updateTranslate();
     }, intervalMs);
   }
@@ -780,17 +703,7 @@ getDots(): number[] {
     return index;
   }
 
-  // gestion resize pour recalculer itemsPerView et réajuster
-  private handleResize = () => {
-    const prev = this.itemsPerView;
-    this.calculateItemsPerView();
-    if (prev !== this.itemsPerView) {
-      // recalculer displayedRatings pour éviter trous
-      this.setupCarousel();
-    }
-  };
-
-  // Appel initial pour charger les ratings (exemple)
+  // Appel initial pour charger les ratings
   private loadRatings() {
     this.companyService
       .getRatings(this.membreId)

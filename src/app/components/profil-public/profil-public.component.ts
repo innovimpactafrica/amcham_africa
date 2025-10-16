@@ -159,9 +159,9 @@ export class ProfilPublicComponent implements OnInit, OnDestroy {
       return;
     }
     
+    console.log('🔍 [ProfilPublic] Navigation vers /membre/' + this.companyData.id);
     
     // Naviguer vers la page de détails avec l'ID de l'entreprise
-    // Ouvre dans un nouvel onglet pour permettre la comparaison
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['/membre', this.companyData.id])
     );
@@ -179,7 +179,6 @@ export class ProfilPublicComponent implements OnInit, OnDestroy {
         : 'Cannot edit: missing information');
       return;
     }
-    
     // console.log('✏️ [ProfilPublic] Navigation vers la page d\'édition');
     
     this.router.navigate(['/apropos']);
