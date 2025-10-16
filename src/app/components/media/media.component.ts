@@ -8,11 +8,12 @@ import { LanguageService } from '../../../services/language.service';
 import { AuthService } from '../../../services/auth.service';
 import { CompanyService, Company, CompanyFormData } from '../../../services/company.service';
 import { Subscription } from 'rxjs';
+import { ProfilPublicComponent } from "../profil-public/profil-public.component";
 
 @Component({
   selector: 'app-media',
   standalone: true,
-  imports: [CommonModule, HeaderMembreComponent],
+  imports: [CommonModule, HeaderMembreComponent, ProfilPublicComponent],
   templateUrl: './media.component.html',
   styleUrls: ['./media.component.css']
 })

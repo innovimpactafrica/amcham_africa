@@ -85,7 +85,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   membres: MembreDisplay[] = [];
 
   // ID du pays AMCHAM
-  countryAmchamId = 1;
+  // countryAmchamId = 1;
 
   partenaires: Partenaire[] = [];
 
@@ -189,8 +189,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     ] : [
       { number: this.formatNumber(this.totalContacts), label: 'Contacts established', icon: 'users' },
       { number: this.formatNumber(this.totalCompanies), label: 'Companies', icon: 'building' },
-      { number: `${this.totalCountries}+`, label: 'Countries represented', icon: 'globe' },
-      { number: `${this.totalSectors}+`, label: 'Activity sectors', icon: 'clock' }
+      { number: `${this.totalCountries}`, label: 'Countries represented', icon: 'globe' },
+      { number: `${this.totalSectors}`, label: 'Activity sectors', icon: 'clock' }
     ];
   }
 

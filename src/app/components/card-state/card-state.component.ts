@@ -200,13 +200,33 @@ export class CardStateComponent implements OnInit, OnDestroy {
     return growth >= 0 ? 'text-emerald-600' : 'text-red-600';
   }
 
-  // Formater le pourcentage de croissance
-  formatGrowth(growth: number | undefined): string {
-    if (growth === undefined || growth === null) return '+0%';
-    
-    const sign = growth >= 0 ? '+' : '';
-    return `${sign}${growth}%`;
+ /**
+ * Formate le pourcentage de croissance avec arrondi à 2 chiffres après la virgule
+ * Exemples :
+ * - 12.345678 → "+12,35%" (FR) ou "+12.35%" (EN)
+ * - -5.678 → "-5,68%" (FR) ou "-5.68%" (EN)
+ * - 0 → "+0,00%" (FR) ou "+0.00%" (EN)
+ * - 8.5 → "+8,50%" (FR) ou "+8.50%" (EN)
+ */
+formatGrowth(growth: number | undefined): string {
+  if (growth === undefined || growth === null || isNaN(growth)) {
+    return this.currentLang === 'fr' ? '+0,00%' : '+0.00%';
   }
+
+  // Arrondir à 2 chiffres après la virgule
+  const roundedGrowth = Math.round(growth * 100) / 100;
+  
+  // Déterminer le signe
+  const sign = roundedGrowth >= 0 ? '+' : '';
+
+  if (this.currentLang === 'fr') {
+    // Format français : virgule comme séparateur décimal
+    return `${sign}${roundedGrowth.toFixed(2).replace('.', ',')}%`;
+  } else {
+    // Format anglais : point comme séparateur décimal
+    return `${sign}${roundedGrowth.toFixed(2)}%`;
+  }
+}
 
   // Recharger les données
   reloadData(): void {

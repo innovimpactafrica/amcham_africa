@@ -7,11 +7,12 @@ import { LanguageService } from '../../../services/language.service';
 import { AuthService } from '../../../services/auth.service';
 import { CompanyService, CompanySchedule, Company, CompanyScheduleRequest } from '../../../services/company.service';
 import { Subscription } from 'rxjs';
+import { ProfilPublicComponent } from "../profil-public/profil-public.component";
 
 @Component({
   selector: 'app-horaire',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterOutlet, CommonModule, HeaderMembreComponent],
+  imports: [ReactiveFormsModule, RouterOutlet, CommonModule, HeaderMembreComponent, ProfilPublicComponent],
   templateUrl: './horaire.component.html',
   styleUrls: ['./horaire.component.css']
 })

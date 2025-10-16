@@ -8,11 +8,12 @@ import { AuthService } from '../../../services/auth.service';
 import { CompanyService, Company, CompanyFormData } from '../../../services/company.service';
 import { SecteurService, SecteurResponse, Country } from '../../../services/secteur.service';
 import { Subscription, forkJoin } from 'rxjs';
+import { ProfilPublicComponent } from "../profil-public/profil-public.component";
 
 @Component({
   selector: 'app-apropos',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterOutlet, CommonModule, HeaderMembreComponent],
+  imports: [ReactiveFormsModule, RouterOutlet, CommonModule, HeaderMembreComponent, ProfilPublicComponent],
   templateUrl: './apropos.component.html',
   styleUrls: ['./apropos.component.css']
 })
@@ -150,7 +151,21 @@ export class AproposComponent implements OnInit, OnDestroy {
       this.langSubscription.unsubscribe();
     }
   }
-
+  navigateToDetaisMembre(){
+    this.router.navigate(['/membre/:id']);
+  }
+  // navigateToDetaisMembre(): void {
+  //   if (!this.companyData?.id) {
+  //     console.warn('⚠️ Impossible de naviguer : ID de l\'entreprise manquant');
+  //     alert(this.currentLang === 'fr' 
+  //       ? 'Impossible d\'afficher l\'aperçu : informations manquantes'
+  //       : 'Cannot display preview: missing information');
+  //     return;
+  //   }
+    
+  //   // Naviguer vers la page de détails avec l'ID de l'entreprise
+  //   this.router.navigate(['/membre', this.companyData.id]);
+  // }
   /**
    * Charger toutes les données initiales en parallèle
    */
